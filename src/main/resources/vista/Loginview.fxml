@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="consultorio.controlador.LoginController"
+      spacing="20" alignment="CENTER"
+      style="-fx-background-color: #f8f9fa;"
+stylesheets="@../styles.css">
+
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30"/>
+    </padding>
+
+    <ImageView fx:id="logoImage" fitWidth="200" fitHeight="200" preserveRatio="true">
+        <image>
+            <Image url="@../imagenes/Logo.png" />
+        </image>
+    </ImageView>
+
+    <Label text="Consultorio Médico" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="15" alignment="CENTER">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+
+        <columnConstraints>
+            <ColumnConstraints halignment="RIGHT"/>
+            <ColumnConstraints halignment="LEFT"/>
+        </columnConstraints>
+
+        <Label text="Usuario:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="userField" promptText="Usuario" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Contraseña:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <PasswordField fx:id="passField" promptText="Contraseña" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Button fx:id="loginButton" text="Login" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                style="-fx-background-color: #4a90e2; -fx-text-fill: white; -fx-font-weight: bold;"
+                onAction="#handleLogin"/>
+        <!--on action llama a la funcion "handle login del controlador" -->
+
+    </GridPane>
+
+    <ImageView fx:id="doctorImage" fitWidth="100" fitHeight="100" preserveRatio="true">
+        <image>
+            <Image url="@../imagenes/doctor.png" />
+        </image>
+    </ImageView>
+
+</VBox>

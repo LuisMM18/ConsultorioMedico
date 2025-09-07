@@ -1,20 +1,32 @@
 package consultorio;
 
-import consultorio.vista.LoginView;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.net.URL;
 
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        // Crear instancia del LoginView
-        LoginView loginView = new LoginView();
+        // NOTA: El nombre del archivo debe coincidir EXACTAMENTE
+        // Si se llama "Loginview.fxml" (con v minúscula), usa eso
+        URL fxmlUrl = getClass().getResource("/vista/Loginview.fxml");
 
-        // Crear la escena con el LoginView
-        Scene scene = new Scene(loginView, 900, 600);
+        if (fxmlUrl == null) {
+            System.err.println("No se pudo encontrar el archivo FXML");
+            // Probemos con mayúscula por si acaso
+            fxmlUrl = getClass().getResource("/vista/LoginView.fxml");
+        }
 
-        stage.setTitle("Login - Consultorio Médico");
+        if (fxmlUrl == null) {
+            throw new RuntimeException("No se puede encontrar el archivo LoginView.fxml");
+        }
+
+        Parent root = FXMLLoader.load(fxmlUrl);
+        Scene scene = new Scene(root, 900, 600);
+        stage.setTitle("Login - Consultorio Medico");
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
