@@ -2,10 +2,15 @@ package consultorio.controlador;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
 import java.io.IOException;
 
 public class MainController {
@@ -52,7 +57,48 @@ public class MainController {
         contentArea.getChildren().setAll(vistaCitas);
         actualizarBotonActivo(btnCitas);
     }
+ /*
+@FXML
+private void cambiarVistaNotas() {
+    VBox contenedorNotas = new VBox(20);
+    contenedorNotas.setStyle("-fx-padding: 40; -fx-alignment: center;");
 
+    Label titulo = new Label("Mis notas");
+    titulo.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
+
+    VBox listaNotas = new VBox(10);
+    listaNotas.setStyle("-fx-background-color: #fff; -fx-padding: 30; -fx-border-color: #888; -fx-border-width: 2;");
+
+    // Ejemplo de 3 notas
+    for (int i = 1; i <= 3; i++) {
+        HBox filaNota = new HBox(15);
+        filaNota.setStyle("-fx-alignment: center-left;");
+
+        Label lblNota = new Label("Nota " + i + ":");
+        lblNota.setStyle("-fx-font-size: 16px;");
+
+        Button btnEditar = new Button("Editar");
+        btnEditar.setStyle("-fx-background-color: #90cdf4; -fx-text-fill: #222; -fx-font-weight: bold;");
+
+        Button btnEliminar = new Button("Eliminar");
+        btnEliminar.setStyle("-fx-background-color: #bbb; -fx-text-fill: #222;");
+
+        filaNota.getChildren().addAll(lblNota, btnEditar, btnEliminar);
+        listaNotas.getChildren().add(filaNota);
+    }
+
+    Button btnAgregar = new Button("Agregar Nota");
+    btnAgregar.setStyle("-fx-background-color: #90cdf4; -fx-font-size: 16px; -fx-padding: 10 30 10 30;");
+
+    VBox cajaCentral = new VBox(20, titulo, listaNotas, btnAgregar);
+    cajaCentral.setStyle("-fx-alignment: center; -fx-padding: 30; -fx-border-color: #888; -fx-border-width: 1;");
+
+    contenedorNotas.getChildren().add(cajaCentral);
+
+    contentArea.getChildren().setAll(contenedorNotas);
+    actualizarBotonActivo(null); // O el botón de notas si lo tienes
+}
+*/
     @FXML
     private void cambiarVistaPacientes() {
         VBox vistaPacientes = new VBox();
@@ -92,6 +138,17 @@ public class MainController {
     private void cerrarSesion() {
         try {
             // Aquí irá la lógica para volver al login
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Loginview.fxml"));
+            Parent root = (Parent) loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Login - Consultorio Medico");
+            stage.setScene(new Scene(root,1200, 800));
+            stage.setResizable(false);
+            stage.show();
+
+            Stage currentStage = (Stage) contentArea.getScene().getWindow();
+            currentStage.hide();
             System.out.println("Cerrando sesión...");
 
         } catch (Exception e) {
