@@ -5,7 +5,7 @@
 
 <VBox prefHeight="420.0" prefWidth="605.0" spacing="20" style="-fx-padding: 30;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
 
-    <Label alignment="CENTER" prefHeight="35.0" prefWidth="550.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Editar Nota:" />
+    <Label alignment="CENTER" prefHeight="35.0" prefWidth="550.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Editar Nota" />
     <GridPane>
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
