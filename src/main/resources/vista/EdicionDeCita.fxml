@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="537.0" prefWidth="607.0" spacing="20" style="-fx-padding: 30;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+
+    <Label alignment="CENTER" prefHeight="35.0" prefWidth="550.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Edicion de Cita" />
+    <GridPane>
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <children>
+            <TextField prefHeight="25.0" prefWidth="524.0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+            <Label alignment="TOP_LEFT" prefHeight="35.0" prefWidth="550.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Paciente:" />
+            <Label alignment="TOP_LEFT" layoutX="10.0" layoutY="8.0" prefHeight="35.0" prefWidth="550.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Fecha y Hora:" GridPane.rowIndex="3" />
+            <Label alignment="TOP_LEFT" layoutX="10.0" layoutY="101.0" prefHeight="35.0" prefWidth="550.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Tipo de Consulta:" GridPane.rowIndex="6" />
+            <TextField layoutX="10.0" layoutY="44.0" maxWidth="-Infinity" prefHeight="25.0" prefWidth="260.0" GridPane.rowIndex="4" />
+            <TextField alignment="CENTER_RIGHT" layoutX="10.0" layoutY="167.0" maxWidth="-Infinity" prefHeight="25.0" prefWidth="262.0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+            <TextField layoutX="10.0" layoutY="136.0" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+            <Label alignment="TOP_LEFT" layoutX="10.0" layoutY="186.0" prefHeight="35.0" prefWidth="274.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Notas:" GridPane.rowIndex="9" />
+            <TextField layoutX="10.0" layoutY="213.0" GridPane.columnSpan="2" GridPane.rowIndex="10" />
+        </children>
+    </GridPane>
+    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0" VBox.vgrow="ALWAYS">
+        <children>
+            <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="49.0" prefWidth="141.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: black; -fx-font-weight: bold;" text="Guardar" />
+            <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="49.0" prefWidth="141.0" style="-fx-background-color: A9A9A9; -fx-text-fill: black; -fx-font-weight: bold;" text="Cancelar" />
+        </children>
+    </HBox>
+
+</VBox>
