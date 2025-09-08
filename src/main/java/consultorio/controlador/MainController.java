@@ -16,7 +16,7 @@ import java.io.IOException;
 public class MainController {
 
     @FXML private StackPane contentArea;
-    @FXML private Button btnInicio, btnCitas, btnPacientes, btnAgendar;
+    @FXML private Button btnInicio, btnCitas, btnPacientes, btnAgendar, btnCalendario;
     @FXML private Label lblUsuario;
 
     @FXML
@@ -99,6 +99,15 @@ private void cambiarVistaNotas() {
     actualizarBotonActivo(null); // O el botón de notas si lo tienes
 }
 */
+
+    @FXML
+    private void cambiarVistaCalendario(){
+        VBox vistaCalendario = new VBox();
+        vistaCalendario.getChildren().add(new Label("Calendario - En desarrollo"));
+        contentArea.getChildren().setAll(vistaCalendario);
+        actualizarBotonActivo(btnCalendario);
+    }
+
     @FXML
     private void cambiarVistaPacientes() {
         VBox vistaPacientes = new VBox();
@@ -123,7 +132,7 @@ private void cambiarVistaNotas() {
 
     private void actualizarBotonActivo(Button botonActivo) {
         // Restablecer todos los botones
-        Button[] botones = {btnInicio, btnCitas, btnPacientes, btnAgendar};
+        Button[] botones = {btnInicio, btnCitas, btnCalendario, btnPacientes, btnAgendar};
         for (Button boton : botones) {
             boton.getStyleClass().remove("nav-button-active");
         }

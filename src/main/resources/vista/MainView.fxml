@@ -37,6 +37,7 @@
             <!-- Botones de navegación -->
             <Button fx:id="btnInicio" text="Inicio" styleClass="nav-button" onAction="#cambiarVistaInicio"/>
             <Button fx:id="btnCitas" text="Citas de Hoy" styleClass="nav-button" onAction="#cambiarVistaCitas"/>
+            <Button fx:id="btnCalendario" text="Calendario" styleClass="nav-button" onAction="#cambiarVistaCalendario"/>
             <Button fx:id="btnPacientes" text="Pacientes" styleClass="nav-button" onAction="#cambiarVistaPacientes"/>
             <Button fx:id="btnAgendar" text="Agendar Cita" styleClass="nav-button" onAction="#cambiarVistaAgendar"/>
 
