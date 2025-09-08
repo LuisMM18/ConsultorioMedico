@@ -29,7 +29,7 @@
    </GridPane>
     <HBox alignment="CENTER" prefHeight="168.0" prefWidth="548.0" spacing="100.0" VBox.vgrow="ALWAYS">
         <children>
-            <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="49.0" prefWidth="141.0" style="-fx-background-color: #4a90e2; -fx-text-fill: black; -fx-font-weight: bold;" text="Guardar" />
+            <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="49.0" prefWidth="141.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: black; -fx-font-weight: bold;" text="Guardar" />
             <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="49.0" prefWidth="141.0" style="-fx-background-color: A9A9A9; -fx-text-fill: black; -fx-font-weight: bold;" text="Cancelar" />
         </children>
     </HBox>
