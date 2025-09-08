@@ -18,7 +18,7 @@
 /* Botones de navegación */
 .nav-button {
     -fx-background-color: transparent;
-    -fx-text-fill: #ecf0f1;
+    -fx-text-fill: Black;
     -fx-font-size: 14px;
     -fx-alignment: CENTER_LEFT;
     -fx-padding: 10 15;
@@ -56,6 +56,6 @@
 
 .table-view .column-header {
     -fx-background-color: #3498db;
-    -fx-text-fill: white;
+    -fx-text-fill: Black;
     -fx-font-weight: bold;
 }
