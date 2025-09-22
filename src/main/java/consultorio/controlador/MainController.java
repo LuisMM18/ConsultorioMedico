@@ -118,7 +118,7 @@ private void cambiarVistaNotas() {
                     ((consultorio.controlador.CalendarController) ctrl).setMainController(this);
                 }
 
-                /* Hacer que la vista ocupe todo el contentArea */
+                /* Hacer que la vista ocupe atodo el contentArea */
                 if (calendarioRoot instanceof javafx.scene.layout.Region) {
                     javafx.scene.layout.Region region = (javafx.scene.layout.Region) calendarioRoot;
                     region.prefWidthProperty().bind(contentArea.widthProperty());
