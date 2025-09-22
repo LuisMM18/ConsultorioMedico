@@ -36,7 +36,7 @@
             <Button fx:id="btnCalendario" onAction="#cambiarVistaCalendario" styleClass="nav-button" text="Calendario" />
             <Button fx:id="btnPacientes" onAction="#cambiarVistaPacientes" styleClass="nav-button" text="Pacientes" />
             <Button fx:id="btnAgendar" onAction="#cambiarVistaAgendar" styleClass="nav-button" text="Agendar Cita" />
-
+            <Button fx:id="btnAjustes" onAction="#cambiarVistaAjustes" styleClass="nav-button" text="Ajustes de cuenta" />
 
             <Region VBox.vgrow="ALWAYS" />
 
