@@ -18,6 +18,8 @@ public class MainController {
     @FXML private StackPane contentArea;
     @FXML private Button btnInicio, btnCitas, btnPacientes, btnAgendar, btnCalendario;
     @FXML private Label lblUsuario;
+    private Parent calendarioRoot = null;
+    private FXMLLoader calendarioLoader = null;
 
     @FXML
     public void initialize() {
@@ -28,7 +30,7 @@ public class MainController {
     }
 
     @FXML
-    private void cambiarVistaInicio() {
+    public void cambiarVistaInicio() {
         try {
             // Crear una vista simple en lugar de cargar FXML
             VBox vistaInicio = new VBox();
@@ -101,11 +103,50 @@ private void cambiarVistaNotas() {
 */
 
     @FXML
-    private void cambiarVistaCalendario(){
-        VBox vistaCalendario = new VBox();
-        vistaCalendario.getChildren().add(new Label("Calendario - En desarrollo"));
-        contentArea.getChildren().setAll(vistaCalendario);
-        actualizarBotonActivo(btnCalendario);
+    public void cambiarVistaCalendario(){
+        try{
+            // Cargar solo la primera vez (cache)
+            if (calendarioRoot == null) {
+                // Ajusta la ruta si tu FXML está en resources/vista/CalendarioView.fxml
+                //FXMLLoader loader = new FXMLLoader(getClass().getResource("vista/CalendarioView.fxml"));
+                calendarioLoader = new FXMLLoader(getClass().getResource("/vista/CalendarioView.fxml"));
+                calendarioRoot = calendarioLoader.load();
+
+                // Si quieres acceder al controlador del calendario para pasar datos o llamar métodos:
+                Object ctrl = calendarioLoader.getController();
+                if (ctrl instanceof consultorio.controlador.CalendarController) {
+                    ((consultorio.controlador.CalendarController) ctrl).setMainController(this);
+                }
+
+                /* Hacer que la vista ocupe todo el contentArea */
+                if (calendarioRoot instanceof javafx.scene.layout.Region) {
+                    javafx.scene.layout.Region region = (javafx.scene.layout.Region) calendarioRoot;
+                    region.prefWidthProperty().bind(contentArea.widthProperty());
+                    region.prefHeightProperty().bind(contentArea.heightProperty());
+                } else {
+                    // Como fallback: fijar anclas si root es AnchorPane — esto funciona si contentArea fuera AnchorPane.
+                    javafx.scene.layout.AnchorPane.setTopAnchor(calendarioRoot, 0.0);
+                    javafx.scene.layout.AnchorPane.setBottomAnchor(calendarioRoot, 0.0);
+                    javafx.scene.layout.AnchorPane.setLeftAnchor(calendarioRoot, 0.0);
+                    javafx.scene.layout.AnchorPane.setRightAnchor(calendarioRoot, 0.0);
+                }
+            }
+
+            // Reemplazar el contenido del contentArea por la vista del calendario
+            contentArea.getChildren().setAll(calendarioRoot);
+            actualizarBotonActivo(btnCalendario);
+        } catch (NullPointerException npe){
+            npe.printStackTrace();
+            System.err.println("Ruta FXML nula — revisa la ubicación de /vista/CalendarioView.fxml");
+            mostrarVistaDeError("Calendario no encontrado (ruta FXML incorrecta)");
+        } catch (Exception ex){
+            ex.printStackTrace();
+            mostrarVistaDeError("Error inesperado al cargar calendario");
+        }
+        //VBox vistaCalendario = new VBox();
+        //vistaCalendario.getChildren().add(new Label("Calendario - En desarrollo"));
+        //contentArea.getChildren().setAll(vistaCalendario);
+        //actualizarBotonActivo(btnCalendario);
     }
 
     @FXML
