@@ -37,23 +37,11 @@ public class LoginController {
     }
 
     private boolean autenticarUsuario(String usuario, String contraseña) {
-        // Tu lógica de autenticación con la base de datos
+        // hacer el login
         return !usuario.isEmpty() && !contraseña.isEmpty();
     }
 
-    /*private void abrirVistaPrincipal() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/vista/MainView.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Sistema de Consultorio Médico");
-            stage.setScene(new Scene(root, 1200, 800));
-            stage.setMaximized(true);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            mostrarError("Error al cargar la aplicación");
-        }
-    }*/
+
     private void abrirVistaPrincipal() {
         try {
             // Verificar que el archivo existe

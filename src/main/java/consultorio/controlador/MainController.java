@@ -11,13 +11,18 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+
 import java.io.IOException;
 
 public class MainController {
 
     @FXML private StackPane contentArea;
-    @FXML private Button btnInicio, btnCitas, btnPacientes, btnAgendar;
+    @FXML private Button btnInicio, btnCitas, btnPacientes, btnAgendar, btnCalendario, btnAjustes;
     @FXML private Label lblUsuario;
+    private Parent calendarioRoot = null;
+    private FXMLLoader calendarioLoader = null;
+    private Parent ajustesRoot = null;
+    private FXMLLoader ajustesLoader = null;
 
     @FXML
     public void initialize() {
@@ -28,25 +33,20 @@ public class MainController {
     }
 
     @FXML
-    private void cambiarVistaInicio() {
+    public void cambiarVistaInicio() {
         try {
-            // Crear una vista simple en lugar de cargar FXML
-            VBox vistaInicio = new VBox();
-            vistaInicio.setSpacing(20);
-            vistaInicio.setStyle("-fx-padding: 30;");
+            // Cargar el archivo FXML de la vista de citas
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/InicioView.fxml"));
+            Parent vistaCitas = loader.load();
 
-            Label titulo = new Label("Bienvenida/o Recepcionista");
-            titulo.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+            // Reemplazar el contenido actual con la nueva vista
+            contentArea.getChildren().setAll(vistaCitas);
 
-            Label subtitulo = new Label("Sistema de Consultorio Médico");
-            vistaInicio.getChildren().addAll(titulo, subtitulo);
-
-            contentArea.getChildren().setAll(vistaInicio);
+            // Mantener el botón activo
             actualizarBotonActivo(btnInicio);
 
-        } catch (Exception e) {
-            System.err.println("Error en vista inicio: " + e.getMessage());
-            mostrarVistaDeError("Error cargando inicio");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -99,12 +99,102 @@ private void cambiarVistaNotas() {
     actualizarBotonActivo(null); // O el botón de notas si lo tienes
 }
 */
+
+    @FXML
+    public void cambiarVistaCalendario(){
+        try{
+            // Cargar solo la primera vez (cache)
+            if (calendarioRoot == null) {
+                // Ajusta la ruta si tu FXML está en resources/vista/CalendarioView.fxml
+                //FXMLLoader loader = new FXMLLoader(getClass().getResource("vista/CalendarioView.fxml"));
+                calendarioLoader = new FXMLLoader(getClass().getResource("/vista/CalendarioView.fxml"));
+                calendarioRoot = calendarioLoader.load();
+
+                // Si quieres acceder al controlador del calendario para pasar datos o llamar métodos:
+                Object ctrl = calendarioLoader.getController();
+                if (ctrl instanceof consultorio.controlador.CalendarController) {
+                    ((consultorio.controlador.CalendarController) ctrl).setMainController(this);
+                }
+
+                /* Hacer que la vista ocupe atodo el contentArea */
+                if (calendarioRoot instanceof javafx.scene.layout.Region) {
+                    javafx.scene.layout.Region region = (javafx.scene.layout.Region) calendarioRoot;
+                    region.prefWidthProperty().bind(contentArea.widthProperty());
+                    region.prefHeightProperty().bind(contentArea.heightProperty());
+                } else {
+                    // Como fallback: fijar anclas si root es AnchorPane — esto funciona si contentArea fuera AnchorPane.
+                    javafx.scene.layout.AnchorPane.setTopAnchor(calendarioRoot, 0.0);
+                    javafx.scene.layout.AnchorPane.setBottomAnchor(calendarioRoot, 0.0);
+                    javafx.scene.layout.AnchorPane.setLeftAnchor(calendarioRoot, 0.0);
+                    javafx.scene.layout.AnchorPane.setRightAnchor(calendarioRoot, 0.0);
+                }
+            }
+
+            // Reemplazar el contenido del contentArea por la vista del calendario
+            contentArea.getChildren().setAll(calendarioRoot);
+            actualizarBotonActivo(btnCalendario);
+        } catch (NullPointerException npe){
+            npe.printStackTrace();
+            System.err.println("Ruta FXML nula — revisa la ubicación de /vista/CalendarioView.fxml");
+            mostrarVistaDeError("Calendario no encontrado (ruta FXML incorrecta)");
+        } catch (Exception ex){
+            ex.printStackTrace();
+            mostrarVistaDeError("Error inesperado al cargar calendario");
+        }
+        //VBox vistaCalendario = new VBox();
+        //vistaCalendario.getChildren().add(new Label("Calendario - En desarrollo"));
+        //contentArea.getChildren().setAll(vistaCalendario);
+        //actualizarBotonActivo(btnCalendario);
+    }
+
     @FXML
     private void cambiarVistaPacientes() {
         VBox vistaPacientes = new VBox();
         vistaPacientes.getChildren().add(new Label("Pacientes - En desarrollo"));
         contentArea.getChildren().setAll(vistaPacientes);
         actualizarBotonActivo(btnPacientes);
+    }
+
+    @FXML
+    public void cambiarVistaAjustes(){
+        try {
+            // Cargar solo la primera vez (cache)
+            if (ajustesRoot == null) {
+                // Ajusta la ruta según tu estructura de resources
+                ajustesLoader = new FXMLLoader(getClass().getResource("/vista/Ajustes.fxml"));
+                ajustesRoot = ajustesLoader.load();
+
+                // Si quieres pasar la referencia del MainController al controlador de ajustes:
+                Object ctrl = ajustesLoader.getController();
+                if (ctrl instanceof consultorio.controlador.AjustesController) {
+                    ((consultorio.controlador.AjustesController) ctrl).setMainController(this);
+                }
+
+                /* Hacer que la vista ocupe todo el contentArea */
+                if (ajustesRoot instanceof javafx.scene.layout.Region) {
+                    javafx.scene.layout.Region region = (javafx.scene.layout.Region) ajustesRoot;
+                    region.prefWidthProperty().bind(contentArea.widthProperty());
+                    region.prefHeightProperty().bind(contentArea.heightProperty());
+                } else {
+                    javafx.scene.layout.AnchorPane.setTopAnchor(ajustesRoot, 0.0);
+                    javafx.scene.layout.AnchorPane.setBottomAnchor(ajustesRoot, 0.0);
+                    javafx.scene.layout.AnchorPane.setLeftAnchor(ajustesRoot, 0.0);
+                    javafx.scene.layout.AnchorPane.setRightAnchor(ajustesRoot, 0.0);
+                }
+            }
+
+            // Reemplazar el contenido del contentArea por la vista de ajustes
+            contentArea.getChildren().setAll(ajustesRoot);
+            actualizarBotonActivo(btnPacientes); // o el botón que corresponda para Ajustes
+
+        } catch (NullPointerException npe) {
+            npe.printStackTrace();
+            System.err.println("Ruta FXML nula — revisa la ubicación de /vista/Ajustes.fxml");
+            mostrarVistaDeError("Ajustes no encontrado (ruta FXML incorrecta)");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            mostrarVistaDeError("Error inesperado al cargar ajustes");
+        }
     }
 
     @FXML
@@ -123,7 +213,7 @@ private void cambiarVistaNotas() {
 
     private void actualizarBotonActivo(Button botonActivo) {
         // Restablecer todos los botones
-        Button[] botones = {btnInicio, btnCitas, btnPacientes, btnAgendar};
+        Button[] botones = {btnInicio, btnCitas, btnCalendario, btnPacientes, btnAgendar, btnAjustes};
         for (Button boton : botones) {
             boton.getStyleClass().remove("nav-button-active");
         }
