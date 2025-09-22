@@ -30,23 +30,18 @@ public class MainController {
     @FXML
     private void cambiarVistaInicio() {
         try {
-            // Crear una vista simple en lugar de cargar FXML
-            VBox vistaInicio = new VBox();
-            vistaInicio.setSpacing(20);
-            vistaInicio.setStyle("-fx-padding: 30;");
+            // Cargar el archivo FXML de la vista de citas
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/InicioView.fxml"));
+            Parent vistaCitas = loader.load();
 
-            Label titulo = new Label("Bienvenida/o Recepcionista");
-            titulo.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+            // Reemplazar el contenido actual con la nueva vista
+            contentArea.getChildren().setAll(vistaCitas);
 
-            Label subtitulo = new Label("Sistema de Consultorio Médico");
-            vistaInicio.getChildren().addAll(titulo, subtitulo);
-
-            contentArea.getChildren().setAll(vistaInicio);
+            // Mantener el botón activo
             actualizarBotonActivo(btnInicio);
 
-        } catch (Exception e) {
-            System.err.println("Error en vista inicio: " + e.getMessage());
-            mostrarVistaDeError("Error cargando inicio");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
