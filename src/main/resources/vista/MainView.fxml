@@ -25,8 +25,8 @@
             <Separator style="-fx-background-color: #9ADDFF; -fx-padding: 10 0;" />
 
             <!-- Información del usuario -->
-            <Label style="-fx-font-size: 12px;" text="Bienvenido/a" />
-            <Label fx:id="lblUsuario" style="-fx-font-weight: bold;" text="Recepcionista" textFill="Black" />
+            <Label prefHeight="18.0" prefWidth="191.0" style="-fx-font-size: 12px;" text="Bienvenido/a" />
+            <Label fx:id="lblUsuario" prefHeight="18.0" prefWidth="199.0" style="-fx-font-weight: bold;" text="Recepcionista" textFill="Black" />
 
             <Separator style="-fx-background-color: #9ADDFF; -fx-padding: 10 0;" />
 
