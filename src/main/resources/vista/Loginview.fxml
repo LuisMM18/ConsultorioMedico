@@ -36,11 +36,11 @@
         <PasswordField fx:id="passField" promptText="Contraseña" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
         <Button fx:id="loginButton" onAction="#handleLogin" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;" text="Login" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <rowConstraints>
-         <RowConstraints />
-         <RowConstraints />
-         <RowConstraints />
-      </rowConstraints>
+        <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+        </rowConstraints>
         <!--on action llama a la funcion "handle login del controlador" -->
 
     </GridPane>
