@@ -41,7 +41,7 @@
             <RowConstraints />
             <RowConstraints />
         </rowConstraints>
-        <!--on action llama a la funcion "handle login del controlador" -->
+        <!--on action llama a la funcion  -->
 
     </GridPane>
 

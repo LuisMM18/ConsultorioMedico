@@ -18,14 +18,20 @@
           AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <children>
             <Button text="Diciembre 2024 ←" onAction="#mesAnterior"
-                    style="-fx-background-color: #D9D9D9; -fx-border-color: #969696;"/>
+                    style="-fx-background-color: #D9D9D9; -fx-border-color: #969696; -fx-border-radius: 8px;"
+                    onMouseEntered="#hoverEnter"
+                    onMouseExited="#hoverExit"/>
             <TextField editable="false" alignment="CENTER" prefWidth="220.0" text="Enero 2025"
                        style="-fx-background-color: white; -fx-border-color: black; -fx-font-size: 14px; -fx-font-weight: bold;"/>
             <Button text="→ Febrero 2025" onAction="#mesSiguiente"
-                    style="-fx-background-color: #D9D9D9; -fx-border-color: #969696;"/>
+                    style="-fx-background-color: #D9D9D9; -fx-border-color: #969696; -fx-border-radius: 8px;"
+                    onMouseEntered="#hoverEnter"
+                    onMouseExited="#hoverExit"/>
             <Pane HBox.hgrow="ALWAYS"/>
-            <Button text="Generar Reporte"
-                    style="-fx-background-color: #D9D9D9; -fx-border-color: #969696;"/>
+            <Button text="Generar Reporte" onAction="#GenerarReporte"
+                    style="-fx-background-color: #D9D9D9; -fx-border-color: #969696; -fx-border-radius: 8px;"
+                    onMouseEntered="#hoverEnter"
+                    onMouseExited="#hoverExit"/>
         </children>
     </HBox>
 
