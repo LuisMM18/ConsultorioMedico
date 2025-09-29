@@ -3,16 +3,12 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #f0f0f0;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane style="-fx-background-color: #f0f0f0;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
     <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #d3d3d3;" BorderPane.alignment="CENTER">
+        <HBox alignment="CENTER_LEFT" style="-fx-background-color: #d3d3d3;" BorderPane.alignment="CENTER">
             <children>
-                <Label prefHeight="35.0" prefWidth="479.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Lunes 1 / Abril / 2026">
-                    <font>
-                        <Font size="16.0" />
-                    </font>
+                <Label maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Lunes 1 / Abril / 2026" HBox.hgrow="ALWAYS">
                     <padding>
                         <Insets left="20.0" />
                     </padding>
@@ -21,69 +17,82 @@
         </HBox>
     </top>
     <center>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;" BorderPane.alignment="CENTER">
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="893.0" prefWidth="331.0" style="-fx-background-color: transparent;" BorderPane.alignment="CENTER">
             <content>
-                <VBox fx:id="appointmentContainer" prefWidth="200.0" spacing="10.0" style="-fx-background-color: transparent;">
+                <VBox fx:id="appointmentContainer" maxWidth="Infinity" spacing="10.0" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
                     <children>
-                        <VBox style="-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white;">
+                        <!-- CITA 1 -->
+                        <VBox maxWidth="Infinity" style="-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white;">
                             <children>
                                 <HBox alignment="TOP_RIGHT" spacing="5.0">
                                     <children>
-                                        <Label prefHeight="18.0" prefWidth="613.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="2:00 pm" HBox.hgrow="ALWAYS" />
+                                        <Label maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="2:00 pm" HBox.hgrow="ALWAYS" />
                                         <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-padding: 0; -fx-font-weight: bold; -fx-font-size: 24px;" text="X" />
                                     </children>
                                 </HBox>
-                                <Label prefHeight="35.0" prefWidth="430.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Cirugía Emiliano Barajas" wrapText="true" />
+                                <Label maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Cirugía Emiliano Barajas" wrapText="true" />
                                 <HBox alignment="BOTTOM_RIGHT">
                                     <children>
-                                        <Button mnemonicParsing="false" style="-fx-background-color: #add8e6; -fx-font-weight: bold; -fx-font-size: 24px;" text="Editar" />
+                                        <Button contentDisplay="BOTTOM" layoutY="713.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="141.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: black; -fx-font-weight: bold;" text="Editar" />
                                     </children>
                                 </HBox>
                             </children>
                         </VBox>
-                  <VBox layoutX="10.0" layoutY="10.0" style="-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white;">
-                     <children>
-                        <HBox alignment="TOP_RIGHT" spacing="5.0">
-                           <children>
-                              <Label prefHeight="18.0" prefWidth="613.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="4:00 pm" HBox.hgrow="ALWAYS" />
-                              <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-padding: 0; -fx-font-weight: bold; -fx-font-size: 24px;" text="X" />
-                           </children>
-                        </HBox>
-                        <Label prefHeight="35.0" prefWidth="435.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Chequeo Marcos de la Villa" wrapText="true" />
-                        <HBox alignment="BOTTOM_RIGHT">
-                           <children>
-                              <Button mnemonicParsing="false" style="-fx-background-color: #add8e6; -fx-font-weight: bold; -fx-font-size: 24px;" text="Editar" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-                  <VBox layoutX="10.0" layoutY="164.0" style="-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white;">
-                     <children>
-                        <HBox alignment="TOP_RIGHT" spacing="5.0">
-                           <children>
-                              <Label prefHeight="18.0" prefWidth="613.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="6:00 pm" HBox.hgrow="ALWAYS" />
-                              <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-padding: 0; -fx-font-weight: bold; -fx-font-size: 24px;" text="X" />
-                           </children>
-                        </HBox>
-                        <Label prefHeight="35.0" prefWidth="435.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Chequeo Carlos Antonio" wrapText="true" />
-                        <HBox alignment="BOTTOM_RIGHT">
-                           <children>
-                              <Button mnemonicParsing="false" style="-fx-background-color: #add8e6; -fx-font-weight: bold; -fx-font-size: 24px;" text="Editar" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
+
+                        <!-- CITA 2 -->
+                        <VBox maxWidth="Infinity" style="-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white;">
+                            <children>
+                                <HBox alignment="TOP_RIGHT" spacing="5.0">
+                                    <children>
+                                        <Label maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="4:00 pm" HBox.hgrow="ALWAYS" />
+                                        <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-padding: 0; -fx-font-weight: bold; -fx-font-size: 24px;" text="X" />
+                                    </children>
+                                </HBox>
+                                <Label maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Chequeo Marcos de la Villa" wrapText="true" />
+                                <HBox alignment="BOTTOM_RIGHT">
+                                    <children>
+                                        <Button contentDisplay="BOTTOM" layoutY="713.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="141.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: black; -fx-font-weight: bold;" text="Editar" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+
+                        <!-- CITA 3 -->
+                        <VBox maxWidth="Infinity" style="-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white;">
+                            <children>
+                                <HBox alignment="TOP_RIGHT" spacing="5.0">
+                                    <children>
+                                        <Label maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="6:00 pm" HBox.hgrow="ALWAYS" />
+                                        <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-padding: 0; -fx-font-weight: bold; -fx-font-size: 24px;" text="X" />
+                                    </children>
+                                </HBox>
+                                <Label maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Chequeo Carlos Antonio" wrapText="true" />
+                                <HBox alignment="BOTTOM_RIGHT">
+                                    <children>
+                                        <!-- <Button mnemonicParsing="false" style="-fx-background-color: #add8e6; -fx-font-weight: bold; -fx-font-size: 24px;" text="Editar" /> -->
+                                        <Button contentDisplay="BOTTOM" layoutY="713.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="141.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: black; -fx-font-weight: bold;" text="Editar" />
+
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
                     </children>
                 </VBox>
             </content>
         </ScrollPane>
     </center>
     <right>
-        <VBox alignment="TOP_CENTER" prefWidth="150.0" spacing="20.0" BorderPane.alignment="CENTER">
+        <VBox alignment="TOP_CENTER" maxHeight="Infinity" spacing="20.0" BorderPane.alignment="CENTER">
             <children>
-                <Button mnemonicParsing="false" prefHeight="51.0" prefWidth="131.0" style="-fx-background-color: #add8e6; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 24px;" text="Nuevo" />
-            <Pane prefHeight="372.0" prefWidth="150.0" />
-            <Button layoutX="25.0" layoutY="30.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="137.0" style="-fx-background-color: #add8e6; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 24px;" text="Guardar" />
+                <!-- <Button maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: #add8e6; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 24px;" text="Nuevo" /> -->
+                <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="49.0" prefWidth="141.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: black; -fx-font-weight: bold;" text="Nuevo" />
+                <Pane prefHeight="634.0" prefWidth="141.0" VBox.vgrow="ALWAYS">
+               <children>
+                      <!-- <Button layoutY="283.0" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: #add8e6; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 24px;" text="Guardar" /> -->
+                   <Button contentDisplay="BOTTOM" layoutY="713.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="141.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: black; -fx-font-weight: bold;" text="Guardar" />
+
+
+               </children></Pane>
             </children>
             <padding>
                 <Insets top="20.0" />
