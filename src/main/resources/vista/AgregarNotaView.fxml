@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <VBox prefHeight="420.0" prefWidth="605.0" spacing="20" style="-fx-padding: 30;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
 
@@ -21,16 +22,28 @@
          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
      </rowConstraints>
       <children>
-         <Label prefHeight="35.0" prefWidth="550.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Titulo:" />
-         <TextField GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="2" />
-         <Label layoutX="10.0" layoutY="5.0" prefHeight="35.0" prefWidth="550.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Notas:" GridPane.rowIndex="4" />
-         <TextField layoutX="10.0" layoutY="45.0" GridPane.columnSpan="2" GridPane.rowIndex="5" GridPane.rowSpan="2" />
+         <Label prefHeight="35.0" prefWidth="550.0" style="-fx-font-size: 20;" text="Titulo:" />
+         <TextField prefHeight="30.0" prefWidth="131.0" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="2">
+            <font>
+               <Font size="14.0" />
+            </font></TextField>
+         <Label layoutX="10.0" layoutY="5.0" prefHeight="35.0" prefWidth="550.0" style="-fx-font-size: 20;" text="Notas:" GridPane.rowIndex="4" />
+         <TextField layoutX="10.0" layoutY="45.0" prefHeight="30.0" prefWidth="501.0" GridPane.columnSpan="2" GridPane.rowIndex="5" GridPane.rowSpan="2">
+            <font>
+               <Font size="14.0" />
+            </font></TextField>
       </children>
    </GridPane>
     <HBox alignment="CENTER" prefHeight="168.0" prefWidth="548.0" spacing="100.0" VBox.vgrow="ALWAYS">
         <children>
-            <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="49.0" prefWidth="141.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: black; -fx-font-weight: bold;" text="Guardar" />
-            <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="49.0" prefWidth="141.0" style="-fx-background-color: A9A9A9; -fx-text-fill: black; -fx-font-weight: bold;" text="Cancelar" />
+            <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;" text="Guardar">
+            <font>
+               <Font size="15.0" />
+            </font></Button>
+            <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: A9A9A9; -fx-text-fill: white; -fx-font-weight: bold;" text="Cancelar">
+            <font>
+               <Font size="15.0" />
+            </font></Button>
         </children>
     </HBox>
 

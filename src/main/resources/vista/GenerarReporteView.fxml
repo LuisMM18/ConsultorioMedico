@@ -19,21 +19,21 @@
         </HBox>
         <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" spacing="20.0">
             <children>
-                <Label alignment="CENTER" prefHeight="35.0" prefWidth="117.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Intervalo:" />
+                <Label alignment="CENTER" prefHeight="35.0" prefWidth="117.0" style="-fx-font-size: 20;" text="Intervalo:" />
                 <ComboBox prefHeight="39.0" prefWidth="273.0" promptText="Semana/Mes" />
             </children>
         </HBox>
       <HBox prefHeight="22.0" prefWidth="561.0" />
         <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" spacing="20.0">
             <children>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="117.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Semana:" />
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="117.0" style="-fx-font-size: 20;" text="Semana:" />
                 <TextField prefHeight="43.0" prefWidth="272.0" promptText="Ejemplo: (1 - 7, 8 - 14, 15 - 21, ...)" />
             </children>
         </HBox>
       <HBox prefHeight="20.0" prefWidth="561.0" />
         <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" spacing="20.0">
             <children>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="117.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Destino:" />
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="117.0" style="-fx-font-size: 20;" text="Destino:" />
                 <TextField prefHeight="44.0" prefWidth="272.0" promptText="C:/user/...." />
             </children>
         </HBox>

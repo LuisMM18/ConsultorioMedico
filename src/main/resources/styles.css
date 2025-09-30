@@ -58,3 +58,53 @@
     -fx-text-fill: Black;
     -fx-font-weight: bold;
 }
+
+/* JDSD - MATERIALES DE LOGIN Y CALENDARIO */
+/* JDSD - MATERIALES DE LOGIN Y CALENDARIO */
+/* JDSD - MATERIALES DE LOGIN Y CALENDARIO */
+
+/* Botón principal (ejemplo: Login) */
+.button-primaryy {
+    -fx-background-color: #4a90e2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-padding: 8 16;
+}
+
+.button-primary:hover {
+    -fx-background-color: #3a7bc8;
+}
+
+/* Botones de navegación de calendario (Mes anterior, Mes siguiente) */
+.calendar-nav-button {
+    -fx-background-color: #D9D9D9;
+    -fx-text-fill: black;
+    -fx-border-color: #969696;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 5 12;
+    -fx-font-weight: normal;
+}
+
+.calendar-nav-button:hover {
+    -fx-background-color: #bfbfbf;
+}
+
+/* Botón de acción (Generar Reporte, etc.) */
+.calendar-action-button {
+    -fx-background-color: #4a90e2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-padding: 6 14;
+}
+
+.calendar-action-button:hover {
+    -fx-background-color: #3a7bc8;
+}
+
+
+
