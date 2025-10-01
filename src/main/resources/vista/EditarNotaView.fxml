@@ -2,42 +2,49 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox prefHeight="420.0" prefWidth="605.0" spacing="20"
-      xmlns="http://javafx.com/javafx/17.0.12"
-      xmlns:fx="http://javafx.com/fxml/1"
-      style="-fx-background-color: #f8f9fa; -fx-padding: 30;">
+<VBox prefHeight="420.0" prefWidth="605.0" spacing="20" style="-fx-background-color: #f8f9fa; -fx-padding: 30;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
 
     <!-- Título -->
-    <Label text="Editar Nota"
-           alignment="CENTER"
-           prefWidth="Infinity"
-           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    <Label alignment="CENTER" prefWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Editar Nota" />
 
     <!-- Formulario -->
-    <GridPane hgap="10" vgap="18">
+    <GridPane hgap="10" prefHeight="85.0" prefWidth="545.0" vgap="18">
         <columnConstraints>
-            <ColumnConstraints minWidth="120.0" prefWidth="150.0"/>
-            <ColumnConstraints hgrow="ALWAYS" minWidth="200.0" prefWidth="420.0"/>
+            <ColumnConstraints minWidth="120.0" prefWidth="150.0" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200.0" prefWidth="420.0" />
         </columnConstraints>
 
-        <Label text="Titulo:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        <TextField fx:id="tituloField"
-                   GridPane.columnIndex="1" GridPane.rowIndex="0"
-                   style="-fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;"/>
+        <Label text="Titulo:" GridPane.columnIndex="0" GridPane.rowIndex="0">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
+        <TextField fx:id="tituloField" style="-fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-        <Label text="Notas:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-        <TextField fx:id="notasField"
-                   GridPane.columnIndex="1" GridPane.rowIndex="1"
-                   style="-fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;"/>
+        <Label text="Notas:" GridPane.columnIndex="0" GridPane.rowIndex="1">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
+        <TextField fx:id="notasField" prefHeight="0.0" prefWidth="403.0" style="-fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
     </GridPane>
 
     <!-- Botones: idénticos al Login -->
     <HBox alignment="CENTER" spacing="100">
-        <Button text="Guardar" prefHeight="49.0" prefWidth="141.0"
-                style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;"/>
-        <Button text="Cancelar" prefHeight="49.0" prefWidth="141.0"
-                style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;"/>
+      <children>
+           <Button prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Guardar">
+            <font>
+               <Font size="14.0" />
+            </font></Button>
+           <Button prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Cancelar">
+            <font>
+               <Font size="14.0" />
+            </font></Button>
+      </children>
     </HBox>
 
 </VBox>
