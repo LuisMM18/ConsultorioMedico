@@ -32,34 +32,34 @@
             <!-- Paciente -->
             <Label style="-fx-font-size: 20px;" text="Paciente:" />
             <TextField maxWidth="Infinity" GridPane.columnSpan="2" GridPane.rowIndex="1">
-            <font>
-               <Font size="14.0" />
-            </font></TextField>
+                <font>
+                    <Font size="14.0" />
+                </font></TextField>
 
             <!-- Fecha y Hora -->
             <Label style="-fx-font-size: 20px;" text="Fecha y Hora:" GridPane.rowIndex="3" />
             <TextField maxWidth="Infinity" GridPane.rowIndex="4">
-            <font>
-               <Font size="14.0" />
-            </font></TextField>
+                <font>
+                    <Font size="14.0" />
+                </font></TextField>
             <TextField maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="4">
-            <font>
-               <Font size="14.0" />
-            </font></TextField>
+                <font>
+                    <Font size="14.0" />
+                </font></TextField>
 
             <!-- Tipo de consulta -->
             <Label style="-fx-font-size: 20px;" text="Tipo de Consulta:" GridPane.rowIndex="6" />
             <TextField maxWidth="Infinity" GridPane.columnSpan="2" GridPane.rowIndex="7">
-            <font>
-               <Font size="14.0" />
-            </font></TextField>
+                <font>
+                    <Font size="14.0" />
+                </font></TextField>
 
             <!-- Notas -->
             <Label style="-fx-font-size: 20px;" text="Notas:" GridPane.rowIndex="9" />
             <TextField maxWidth="Infinity" GridPane.columnSpan="2" GridPane.rowIndex="10">
-            <font>
-               <Font size="14.0" />
-            </font></TextField>
+                <font>
+                    <Font size="14.0" />
+                </font></TextField>
         </children>
     </GridPane>
 
@@ -67,13 +67,13 @@
     <HBox alignment="CENTER" spacing="100" VBox.vgrow="ALWAYS">
         <children>
             <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="40.0" prefWidth="131.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;" text="Guardar">
-            <font>
-               <Font size="15.0" />
-            </font></Button>
+                <font>
+                    <Font size="15.0" />
+                </font></Button>
             <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="40.0" prefWidth="131.0" style="-fx-background-color: A9A9A9; -fx-text-fill: white; -fx-font-weight: bold;" text="Cancelar">
-            <font>
-               <Font size="15.0" />
-            </font></Button>
+                <font>
+                    <Font size="15.0" />
+                </font></Button>
         </children>
     </HBox>
 

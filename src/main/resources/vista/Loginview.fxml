@@ -32,20 +32,20 @@
 
         <Label text="Usuario:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
         <TextField fx:id="userField" promptText="Usuario" GridPane.columnIndex="1" GridPane.rowIndex="0">
-         <font>
-            <Font size="14.0" />
-         </font></TextField>
+            <font>
+                <Font size="14.0" />
+            </font></TextField>
 
         <Label text="Contraseña:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
         <PasswordField fx:id="passField" promptText="Contraseña" GridPane.columnIndex="1" GridPane.rowIndex="1">
-         <font>
-            <Font size="13.0" />
-         </font></PasswordField>
+            <font>
+                <Font size="13.0" />
+            </font></PasswordField>
 
         <Button fx:id="loginButton" onAction="#handleLogin" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;" text="Login" GridPane.columnIndex="1" GridPane.rowIndex="2">
-         <font>
-            <Font size="14.0" />
-         </font></Button>
+            <font>
+                <Font size="14.0" />
+            </font></Button>
         <rowConstraints>
             <RowConstraints />
             <RowConstraints />
