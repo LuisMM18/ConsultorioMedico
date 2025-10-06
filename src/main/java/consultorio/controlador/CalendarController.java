@@ -95,8 +95,8 @@ public class CalendarController {
         int diasEnMes = yearMonth.lengthOfMonth();
         LocalDate primerDiaMes = fechaActual.withDayOfMonth(1);
 
-        int diaSemana = primerDiaMes.getDayOfWeek().getValue(); // Lunes=1 ... Domingo=7
-        if (diaSemana == 7) diaSemana = 0; // Ajustar domingo al inicio si quieres que empiece en lunes
+        int diaSemana = primerDiaMes.getDayOfWeek().getValue()-1; // Lunes=1 ... Domingo=7
+
 
         int row = 0;
         int col = diaSemana;
@@ -114,7 +114,7 @@ public class CalendarController {
     }
     private StackPane crearCeldaDia(int dia) {
         StackPane celda = new StackPane();
-        celda.setStyle("-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;");
+        celda.setStyle("-fx-border-color: #DDE3EA; -fx-border-width: 1 1 1 1;");
 
         VBox vbox = new VBox();
         vbox.setSpacing(4);

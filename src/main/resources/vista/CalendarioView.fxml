@@ -1,257 +1,234 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.shape.*?>
 
-<AnchorPane prefHeight="642.0" prefWidth="899.0"
-            style="-fx-background-color: #f2fafc;"
-            xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="consultorio.controlador.CalendarController">
+<AnchorPane prefHeight="642.0" prefWidth="899.0" style="-fx-background-color: #f2fafc;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="consultorio.controlador.CalendarController">
 
     <!-- Barra superior gris con controles -->
-    <HBox spacing="10.0" alignment="CENTER_LEFT"
-          style="-fx-background-color: #D9D9D9; -fx-padding: 10 10 10 10;"
-          AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+    <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: #D9D9D9; -fx-padding: 10 10 10 10;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <children>
-            <Button fx:id="mesAnterior" text="Diciembre 2024 ←" onAction="#mesAnterior"
-                    style="-fx-background-color: #D9D9D9; -fx-border-color: #969696; -fx-border-radius: 8px;"
-                    onMouseEntered="#hoverEnter"
-                    onMouseExited="#hoverExit"/>
-            <TextField fx:id="labelMes" editable="false" alignment="CENTER" prefWidth="220.0" text="Enero 2025"
-                       style="-fx-background-color: white; -fx-border-color: black; -fx-font-size: 14px; -fx-font-weight: bold;"/>
-            <Button fx:id="mesSiguiente" text="→ Febrero 2025" onAction="#mesSiguiente"
-                    style="-fx-background-color: #D9D9D9; -fx-border-color: #969696; -fx-border-radius: 8px;"
-                    onMouseEntered="#hoverEnter"
-                    onMouseExited="#hoverExit"/>
-            <Pane HBox.hgrow="ALWAYS"/>
-            <Button text="Generar Reporte" onAction="#GenerarReporte"
-                    style="-fx-background-color: #D9D9D9; -fx-border-color: #969696; -fx-border-radius: 8px;"
-                    onMouseEntered="#hoverEnter"
-                    onMouseExited="#hoverExit"/>
+            <Button fx:id="mesAnterior" onAction="#mesAnterior" onMouseEntered="#hoverEnter" onMouseExited="#hoverExit" style="-fx-background-color: #D9D9D9; -fx-border-color: #969696; -fx-border-radius: 8px;" text="Diciembre 2024 ←" />
+            <TextField fx:id="labelMes" alignment="CENTER" editable="false" prefWidth="220.0" style="-fx-background-color: white; -fx-border-color: black; -fx-font-size: 14px; -fx-font-weight: bold;" text="Enero 2025" />
+            <Button fx:id="mesSiguiente" onAction="#mesSiguiente" onMouseEntered="#hoverEnter" onMouseExited="#hoverExit" style="-fx-background-color: #D9D9D9; -fx-border-color: #969696; -fx-border-radius: 8px;" text="→ Febrero 2025" />
+            <Pane HBox.hgrow="ALWAYS" />
+            <Button onAction="#GenerarReporte" onMouseEntered="#hoverEnter" onMouseExited="#hoverExit" style="-fx-background-color: #D9D9D9; -fx-border-color: #969696; -fx-border-radius: 8px;" text="Generar Reporte" />
         </children>
     </HBox>
 
     <!-- Encabezados de días -->
-    <GridPane fx:id="" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+    <GridPane fx:id="" layoutX="-6.0" layoutY="50.0" prefHeight="43.0" prefWidth="906.0" AnchorPane.leftAnchor="-6.0" AnchorPane.rightAnchor="-1.0">
         <columnConstraints>
-            <ColumnConstraints percentWidth="14.2857"/>
-            <ColumnConstraints percentWidth="14.2857"/>
-            <ColumnConstraints percentWidth="14.2857"/>
-            <ColumnConstraints percentWidth="14.2857"/>
-            <ColumnConstraints percentWidth="14.2857"/>
-            <ColumnConstraints percentWidth="14.2857"/>
-            <ColumnConstraints percentWidth="14.2857"/>
+            <ColumnConstraints percentWidth="14.2857" />
+            <ColumnConstraints percentWidth="14.2857" />
+            <ColumnConstraints percentWidth="14.2857" />
+            <ColumnConstraints percentWidth="14.2857" />
+            <ColumnConstraints percentWidth="14.2857" />
+            <ColumnConstraints percentWidth="14.2857" />
+            <ColumnConstraints percentWidth="14.2857" />
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints prefHeight="44.0"/>
+            <RowConstraints prefHeight="44.0" />
         </rowConstraints>
         <children>
-            <StackPane GridPane.columnIndex="0" style="-fx-background-color: #65C2FF;">
-                <children><Label text="Lunes" style="-fx-font-weight: bold; -fx-text-fill: white;"/></children>
+            <StackPane style="-fx-background-color: #65C2FF;" GridPane.columnIndex="0">
+                <children><Label style="-fx-font-weight: bold; -fx-text-fill: white;" text="Lunes" /></children>
             </StackPane>
-            <StackPane GridPane.columnIndex="1" style="-fx-background-color: #65C2FF;">
-                <children><Label text="Martes" style="-fx-font-weight: bold; -fx-text-fill: white;"/></children>
+            <StackPane style="-fx-background-color: #65C2FF;" GridPane.columnIndex="1">
+                <children><Label style="-fx-font-weight: bold; -fx-text-fill: white;" text="Martes" /></children>
             </StackPane>
-            <StackPane GridPane.columnIndex="2" style="-fx-background-color: #65C2FF;">
-                <children><Label text="Miércoles" style="-fx-font-weight: bold; -fx-text-fill: white;"/></children>
+            <StackPane style="-fx-background-color: #65C2FF;" GridPane.columnIndex="2">
+                <children><Label style="-fx-font-weight: bold; -fx-text-fill: white;" text="Miércoles" /></children>
             </StackPane>
-            <StackPane GridPane.columnIndex="3" style="-fx-background-color: #65C2FF;">
-                <children><Label text="Jueves" style="-fx-font-weight: bold; -fx-text-fill: white;"/></children>
+            <StackPane style="-fx-background-color: #65C2FF;" GridPane.columnIndex="3">
+                <children><Label style="-fx-font-weight: bold; -fx-text-fill: white;" text="Jueves" /></children>
             </StackPane>
-            <StackPane GridPane.columnIndex="4" style="-fx-background-color: #65C2FF;">
-                <children><Label text="Viernes" style="-fx-font-weight: bold; -fx-text-fill: white;"/></children>
+            <StackPane style="-fx-background-color: #65C2FF;" GridPane.columnIndex="4">
+                <children><Label style="-fx-font-weight: bold; -fx-text-fill: white;" text="Viernes" /></children>
             </StackPane>
-            <StackPane GridPane.columnIndex="5" style="-fx-background-color: #65C2FF;">
-                <children><Label text="Sábado" style="-fx-font-weight: bold; -fx-text-fill: white;"/></children>
+            <StackPane style="-fx-background-color: #65C2FF;" GridPane.columnIndex="5">
+                <children><Label style="-fx-font-weight: bold; -fx-text-fill: white;" text="Sábado" /></children>
             </StackPane>
-            <StackPane GridPane.columnIndex="6" style="-fx-background-color: #65C2FF;">
-                <children><Label text="Domingo" style="-fx-font-weight: bold; -fx-text-fill: white;"/></children>
+            <StackPane prefHeight="50.0" prefWidth="125.0" style="-fx-background-color: #65C2FF;" GridPane.columnIndex="6">
+                <children><Label style="-fx-font-weight: bold; -fx-text-fill: white;" text="Domingo" /></children>
             </StackPane>
         </children>
     </GridPane>
 
     <!-- Grid de días (6 filas x 7 columnas) -->
-    <GridPane fx:id="gridDias" AnchorPane.topAnchor="98.0" AnchorPane.bottomAnchor="10.0"
-              AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
-              hgap="0" vgap="0"
-              style="-fx-background-color: white; -fx-border-color: #DDE3EA; -fx-border-width: 1;">
+    <GridPane fx:id="gridDias" hgap="0" style="-fx-background-color: white; -fx-border-color: #DDE3EA; -fx-border-width: 1;" vgap="0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="98.0">
         <columnConstraints>
-            <ColumnConstraints percentWidth="14.2857"/>
-            <ColumnConstraints percentWidth="14.2857"/>
-            <ColumnConstraints percentWidth="14.2857"/>
-            <ColumnConstraints percentWidth="14.2857"/>
-            <ColumnConstraints percentWidth="14.2857"/>
-            <ColumnConstraints percentWidth="14.2857"/>
-            <ColumnConstraints percentWidth="14.2857"/>
+            <ColumnConstraints percentWidth="14.2857" />
+            <ColumnConstraints percentWidth="14.2857" />
+            <ColumnConstraints percentWidth="14.2857" />
+            <ColumnConstraints percentWidth="14.2857" />
+            <ColumnConstraints percentWidth="14.2857" />
+            <ColumnConstraints percentWidth="14.2857" />
+            <ColumnConstraints percentWidth="14.2857" />
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints percentHeight="16.6667"/>
-            <RowConstraints percentHeight="16.6667"/>
-            <RowConstraints percentHeight="16.6667"/>
-            <RowConstraints percentHeight="16.6667"/>
-            <RowConstraints percentHeight="16.6667"/>
-            <RowConstraints percentHeight="16.6667"/>
+            <RowConstraints percentHeight="16.6667" />
+            <RowConstraints percentHeight="16.6667" />
+            <RowConstraints percentHeight="16.6667" />
+            <RowConstraints percentHeight="16.6667" />
+            <RowConstraints percentHeight="16.6667" />
+            <RowConstraints percentHeight="16.6667" />
         </rowConstraints>
 
         <!-- ====== Fila 1: 1..7 ====== -->
         <!-- Día 1 con eventos de ejemplo -->
-        <StackPane GridPane.columnIndex="0" GridPane.rowIndex="0"
-                   style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="0" GridPane.rowIndex="0">
             <children>
-                <VBox spacing="4" alignment="TOP_LEFT" maxWidth="Infinity" maxHeight="Infinity" style="-fx-padding: 6;">
+                <VBox alignment="TOP_LEFT" maxHeight="Infinity" maxWidth="Infinity" spacing="4" style="-fx-padding: 6;">
                     <HBox>
-                        <Pane HBox.hgrow="ALWAYS"/>
-                        <Label text="1" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/>
+                        <Pane HBox.hgrow="ALWAYS" />
+                        <Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="1" />
                     </HBox>
-                    <HBox spacing="8" alignment="CENTER_LEFT">
-                        <Circle radius="3" fill="#2D8CFF"/>
-                        <Label text="2:00 pm" style="-fx-font-size:12px; -fx-text-fill:#1A1A1A;"/>
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Circle fill="#2D8CFF" radius="3" />
+                        <Label style="-fx-font-size:12px; -fx-text-fill:#1A1A1A;" text="2:00 pm" />
                     </HBox>
-                    <HBox spacing="8" alignment="CENTER_LEFT">
-                        <Circle radius="3" fill="#2D8CFF"/>
-                        <Label text="4:00 pm" style="-fx-font-size:12px; -fx-text-fill:#1A1A1A;"/>
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Circle fill="#2D8CFF" radius="3" />
+                        <Label style="-fx-font-size:12px; -fx-text-fill:#1A1A1A;" text="4:00 pm" />
                     </HBox>
-                    <HBox spacing="8" alignment="CENTER_LEFT">
-                        <Circle radius="3" fill="#2D8CFF"/>
-                        <Label text="6:00 pm" style="-fx-font-size:12px; -fx-text-fill:#1A1A1A;"/>
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Circle fill="#2D8CFF" radius="3" />
+                        <Label style="-fx-font-size:12px; -fx-text-fill:#1A1A1A;" text="6:00 pm" />
                     </HBox>
                 </VBox>
             </children>
         </StackPane>
 
-        <StackPane GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="2" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="2" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="2" GridPane.rowIndex="0" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="3" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="2" GridPane.rowIndex="0">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="3" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="3" GridPane.rowIndex="0" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="4" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="3" GridPane.rowIndex="0">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="4" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="4" GridPane.rowIndex="0" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="5" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="4" GridPane.rowIndex="0">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="5" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="5" GridPane.rowIndex="0" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="6" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="5" GridPane.rowIndex="0">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="6" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="6" GridPane.rowIndex="0" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 0 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="7" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 0 1 0;" GridPane.columnIndex="6" GridPane.rowIndex="0">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="7" /></HBox></VBox></children>
         </StackPane>
 
         <!-- ====== Fila 2: 8..14 (con eventos ejemplo en 9) ====== -->
-        <StackPane GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="8" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="0" GridPane.rowIndex="1">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="8" /></HBox></VBox></children>
         </StackPane>
 
-        <StackPane GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <children>
-                <VBox spacing="4" alignment="TOP_LEFT" maxWidth="Infinity" maxHeight="Infinity" style="-fx-padding: 6;">
+                <VBox alignment="TOP_LEFT" maxHeight="Infinity" maxWidth="Infinity" spacing="4" style="-fx-padding: 6;">
                     <HBox>
-                        <Pane HBox.hgrow="ALWAYS"/>
-                        <Label text="9" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/>
+                        <Pane HBox.hgrow="ALWAYS" />
+                        <Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="9" />
                     </HBox>
-                    <HBox spacing="8" alignment="CENTER_LEFT">
-                        <Circle radius="3" fill="#2D8CFF"/>
-                        <Label text="4:00 pm" style="-fx-font-size:12px; -fx-text-fill:#1A1A1A;"/>
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Circle fill="#2D8CFF" radius="3" />
+                        <Label style="-fx-font-size:12px; -fx-text-fill:#1A1A1A;" text="4:00 pm" />
                     </HBox>
-                    <HBox spacing="8" alignment="CENTER_LEFT">
-                        <Circle radius="3" fill="#2D8CFF"/>
-                        <Label text="6:00 pm" style="-fx-font-size:12px; -fx-text-fill:#1A1A1A;"/>
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Circle fill="#2D8CFF" radius="3" />
+                        <Label style="-fx-font-size:12px; -fx-text-fill:#1A1A1A;" text="6:00 pm" />
                     </HBox>
                 </VBox>
             </children>
         </StackPane>
 
-        <StackPane GridPane.columnIndex="2" GridPane.rowIndex="1" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="10" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="10" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="3" GridPane.rowIndex="1" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="11" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="3" GridPane.rowIndex="1">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="11" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="4" GridPane.rowIndex="1" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="12" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="4" GridPane.rowIndex="1">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="12" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="5" GridPane.rowIndex="1" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="13" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="5" GridPane.rowIndex="1">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="13" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="6" GridPane.rowIndex="1" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 0 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="14" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 0 1 0;" GridPane.columnIndex="6" GridPane.rowIndex="1">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="14" /></HBox></VBox></children>
         </StackPane>
 
         <!-- ====== Fila 3: 15..21 ====== -->
-        <StackPane GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="15" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="0" GridPane.rowIndex="2">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="15" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="16" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="16" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="2" GridPane.rowIndex="2" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="17" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="17" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="3" GridPane.rowIndex="2" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="18" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="3" GridPane.rowIndex="2">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="18" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="4" GridPane.rowIndex="2" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="19" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="4" GridPane.rowIndex="2">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="19" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="5" GridPane.rowIndex="2" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="20" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="5" GridPane.rowIndex="2">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="20" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="6" GridPane.rowIndex="2" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 0 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="21" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 0 1 0;" GridPane.columnIndex="6" GridPane.rowIndex="2">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="21" /></HBox></VBox></children>
         </StackPane>
 
         <!-- ====== Fila 4: 22..28 ====== -->
-        <StackPane GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="22" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="0" GridPane.rowIndex="3">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="22" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="1" GridPane.rowIndex="3" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="23" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="23" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="2" GridPane.rowIndex="3" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="24" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="2" GridPane.rowIndex="3">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="24" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="3" GridPane.rowIndex="3" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="25" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="3" GridPane.rowIndex="3">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="25" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="4" GridPane.rowIndex="3" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="26" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="4" GridPane.rowIndex="3">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="26" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="5" GridPane.rowIndex="3" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="27" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="5" GridPane.rowIndex="3">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="27" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="6" GridPane.rowIndex="3" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 0 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="28" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 0 1 0;" GridPane.columnIndex="6" GridPane.rowIndex="3">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="28" /></HBox></VBox></children>
         </StackPane>
 
         <!-- ====== Fila 5: 29..31 + huecos ====== -->
-        <StackPane GridPane.columnIndex="0" GridPane.rowIndex="4" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="29" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="0" GridPane.rowIndex="4">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="29" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="1" GridPane.rowIndex="4" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="30" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="30" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="2" GridPane.rowIndex="4" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;">
-            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS"/><Label text="31" style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;"/></HBox></VBox></children>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="2" GridPane.rowIndex="4">
+            <children><VBox style="-fx-padding: 6;"><HBox><Pane HBox.hgrow="ALWAYS" /><Label style="-fx-text-fill:#6E7A8A; -fx-font-size:12px;" text="31" /></HBox></VBox></children>
         </StackPane>
-        <StackPane GridPane.columnIndex="3" GridPane.rowIndex="4" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;"/>
-        <StackPane GridPane.columnIndex="4" GridPane.rowIndex="4" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;"/>
-        <StackPane GridPane.columnIndex="5" GridPane.rowIndex="4" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;"/>
-        <StackPane GridPane.columnIndex="6" GridPane.rowIndex="4" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 0 1 0;"/>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 1 0;" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 0 1 0;" GridPane.columnIndex="6" GridPane.rowIndex="4" />
 
         <!-- ====== Fila 6: huecos ====== -->
-        <StackPane GridPane.columnIndex="0" GridPane.rowIndex="5" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 0 0;"/>
-        <StackPane GridPane.columnIndex="1" GridPane.rowIndex="5" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 0 0;"/>
-        <StackPane GridPane.columnIndex="2" GridPane.rowIndex="5" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 0 0;"/>
-        <StackPane GridPane.columnIndex="3" GridPane.rowIndex="5" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 0 0;"/>
-        <StackPane GridPane.columnIndex="4" GridPane.rowIndex="5" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 0 0;"/>
-        <StackPane GridPane.columnIndex="5" GridPane.rowIndex="5" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 0 0;"/>
-        <StackPane GridPane.columnIndex="6" GridPane.rowIndex="5" style="-fx-border-color: #DDE3EA; -fx-border-width: 0 0 0 0;"/>
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 0 0;" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 0 0;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 0 0;" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 0 0;" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 0 0;" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 1 0 0;" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+        <StackPane style="-fx-border-color: #DDE3EA; -fx-border-width: 0 0 0 0;" GridPane.columnIndex="6" GridPane.rowIndex="5" />
 
     </GridPane>
 
