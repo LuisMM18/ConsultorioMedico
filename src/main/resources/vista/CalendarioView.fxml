@@ -18,13 +18,13 @@
           style="-fx-background-color: #D9D9D9; -fx-padding: 10 10 10 10;"
           AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <children>
-            <Button text="Diciembre 2024 ←" onAction="#mesAnterior"
+            <Button fx:id="mesAnterior" text="Diciembre 2024 ←" onAction="#mesAnterior"
                     style="-fx-background-color: #D9D9D9; -fx-border-color: #969696; -fx-border-radius: 8px;"
                     onMouseEntered="#hoverEnter"
                     onMouseExited="#hoverExit"/>
-            <TextField editable="false" alignment="CENTER" prefWidth="220.0" text="Enero 2025"
+            <TextField fx:id="labelMes" editable="false" alignment="CENTER" prefWidth="220.0" text="Enero 2025"
                        style="-fx-background-color: white; -fx-border-color: black; -fx-font-size: 14px; -fx-font-weight: bold;"/>
-            <Button text="→ Febrero 2025" onAction="#mesSiguiente"
+            <Button fx:id="mesSiguiente" text="→ Febrero 2025" onAction="#mesSiguiente"
                     style="-fx-background-color: #D9D9D9; -fx-border-color: #969696; -fx-border-radius: 8px;"
                     onMouseEntered="#hoverEnter"
                     onMouseExited="#hoverExit"/>
@@ -37,7 +37,7 @@
     </HBox>
 
     <!-- Encabezados de días -->
-    <GridPane AnchorPane.topAnchor="54.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+    <GridPane fx:id="" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <columnConstraints>
             <ColumnConstraints percentWidth="14.2857"/>
             <ColumnConstraints percentWidth="14.2857"/>
@@ -76,7 +76,7 @@
     </GridPane>
 
     <!-- Grid de días (6 filas x 7 columnas) -->
-    <GridPane AnchorPane.topAnchor="98.0" AnchorPane.bottomAnchor="10.0"
+    <GridPane fx:id="gridDias" AnchorPane.topAnchor="98.0" AnchorPane.bottomAnchor="10.0"
               AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
               hgap="0" vgap="0"
               style="-fx-background-color: white; -fx-border-color: #DDE3EA; -fx-border-width: 1;">
