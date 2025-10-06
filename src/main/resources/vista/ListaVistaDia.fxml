@@ -5,108 +5,196 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane style="-fx-background-color: #f0f0f0;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane
+        fx:controller="consultorio.controlador.ListaVistaDiaController"
+        xmlns="http://javafx.com/javafx/17.0.12"
+        xmlns:fx="http://javafx.com/fxml/1"
+        style="-fx-background-color: #f0f0f0;">
 
+    <!-- CABECERA -->
     <top>
         <HBox alignment="CENTER_LEFT" style="-fx-background-color: #d3d3d3;" BorderPane.alignment="CENTER">
             <children>
-                <Label maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Lunes 1 / Abril / 2026" HBox.hgrow="ALWAYS">
-                    <padding><Insets left="20.0" /></padding>
+                <Label maxWidth="Infinity"
+                       style="-fx-font-size: 24px; -fx-font-weight: bold;"
+                       text="Lunes 1 / Abril / 2026"
+                       HBox.hgrow="ALWAYS">
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding>
                 </Label>
             </children>
         </HBox>
     </top>
 
+    <!-- CONTENIDO CENTRAL -->
     <center>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent;" BorderPane.alignment="CENTER">
+        <ScrollPane fitToWidth="true"
+                    hbarPolicy="NEVER"
+                    style="-fx-background-color: transparent;"
+                    BorderPane.alignment="CENTER">
             <content>
-                <VBox fx:id="appointmentContainer" maxWidth="Infinity" spacing="10.0" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
-                    <children>
+                <VBox fx:id="appointmentContainer"
+                      maxWidth="Infinity"
+                      spacing="10.0"
+                      style="-fx-background-color: transparent;"
+                      VBox.vgrow="ALWAYS">
 
-                        <!-- CITA 1 -->
-                        <VBox maxWidth="Infinity" style="-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white;">
-                            <children>
-                                <HBox alignment="TOP_RIGHT" spacing="5.0">
-                                    <children>
-                                        <Label maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="2:00 pm" HBox.hgrow="ALWAYS" />
-                                        <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-padding: 0; -fx-font-weight: bold; -fx-font-size: 20px;" text="X" />
-                                    </children>
-                                </HBox>
-                                <Label maxWidth="Infinity" style="-fx-font-size: 20px;" text="Cirugía Emiliano Barajas" wrapText="true" />
-                                <HBox alignment="BOTTOM_RIGHT">
-                                    <children>
-                                        <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="31.0" prefWidth="70.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;" text="Editar">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font></Button>
-                                    </children>
-                                </HBox>
-                            </children>
-                        </VBox>
+                    <!-- CITA 1 -->
+                    <VBox maxWidth="Infinity"
+                          style="-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white;">
+                        <children>
+                            <HBox alignment="TOP_RIGHT" spacing="5.0">
+                                <children>
+                                    <Label maxWidth="Infinity"
+                                           style="-fx-font-size: 24px; -fx-font-weight: bold;"
+                                           text="2:00 pm"
+                                           HBox.hgrow="ALWAYS" />
+                                    <Button mnemonicParsing="false"
+                                            style="-fx-background-color: transparent; -fx-padding: 0; -fx-font-weight: bold; -fx-font-size: 20px;"
+                                            text="X"
+                                            onAction="#onEliminar" />
+                                </children>
+                            </HBox>
+                            <Label maxWidth="Infinity"
+                                   style="-fx-font-size: 20px;"
+                                   text="Cirugía Emiliano Barajas"
+                                   wrapText="true" />
+                            <HBox alignment="BOTTOM_RIGHT">
+                                <children>
+                                    <Button contentDisplay="BOTTOM"
+                                            mnemonicParsing="false"
+                                            prefHeight="31.0"
+                                            prefWidth="70.0"
+                                            style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;"
+                                            text="Editar"
+                                            onAction="#onEditar">
+                                        <font>
+                                            <Font size="15.0" />
+                                        </font>
+                                    </Button>
+                                </children>
+                            </HBox>
+                        </children>
+                    </VBox>
 
-                        <!-- CITA 2 -->
-                        <VBox maxWidth="Infinity" style="-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white;">
-                            <children>
-                                <HBox alignment="TOP_RIGHT" spacing="5.0">
-                                    <children>
-                                        <Label maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="4:00 pm" HBox.hgrow="ALWAYS" />
-                                        <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-padding: 0; -fx-font-weight: bold; -fx-font-size: 20px;" text="X" />
-                                    </children>
-                                </HBox>
-                                <Label maxWidth="Infinity" style="-fx-font-size: 20px;" text="Chequeo Marcos de la Villa" wrapText="true" />
-                                <HBox alignment="BOTTOM_RIGHT">
-                                    <children>
-                                        <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="31.0" prefWidth="70.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;" text="Editar">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font></Button>
-                                    </children>
-                                </HBox>
-                            </children>
-                        </VBox>
+                    <!-- CITA 2 -->
+                    <VBox maxWidth="Infinity"
+                          style="-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white;">
+                        <children>
+                            <HBox alignment="TOP_RIGHT" spacing="5.0">
+                                <children>
+                                    <Label maxWidth="Infinity"
+                                           style="-fx-font-size: 24px; -fx-font-weight: bold;"
+                                           text="4:00 pm"
+                                           HBox.hgrow="ALWAYS" />
+                                    <Button mnemonicParsing="false"
+                                            style="-fx-background-color: transparent; -fx-padding: 0; -fx-font-weight: bold; -fx-font-size: 20px;"
+                                            text="X"
+                                            onAction="#onEliminar" />
+                                </children>
+                            </HBox>
+                            <Label maxWidth="Infinity"
+                                   style="-fx-font-size: 20px;"
+                                   text="Chequeo Marcos de la Villa"
+                                   wrapText="true" />
+                            <HBox alignment="BOTTOM_RIGHT">
+                                <children>
+                                    <Button contentDisplay="BOTTOM"
+                                            mnemonicParsing="false"
+                                            prefHeight="31.0"
+                                            prefWidth="70.0"
+                                            style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;"
+                                            text="Editar"
+                                            onAction="#onEditar">
+                                        <font>
+                                            <Font size="15.0" />
+                                        </font>
+                                    </Button>
+                                </children>
+                            </HBox>
+                        </children>
+                    </VBox>
 
-                        <!-- CITA 3 -->
-                        <VBox maxWidth="Infinity" style="-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white;">
-                            <children>
-                                <HBox alignment="TOP_RIGHT" spacing="5.0">
-                                    <children>
-                                        <Label maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="6:00 pm" HBox.hgrow="ALWAYS" />
-                                        <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="13.0" style="-fx-background-color: transparent; -fx-padding: 0; -fx-font-weight: bold; -fx-font-size: 20px;" text="X" />
-                                    </children>
-                                </HBox>
-                                <Label maxWidth="Infinity" style="-fx-font-size: 20px;" text="Chequeo Carlos Antonio" wrapText="true" />
-                                <HBox alignment="BOTTOM_RIGHT">
-                                    <children>
-                                        <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="31.0" prefWidth="70.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;" text="Editar">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font></Button>
-                                    </children>
-                                </HBox>
-                            </children>
-                        </VBox>
+                    <!-- CITA 3 -->
+                    <VBox maxWidth="Infinity"
+                          style="-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white;">
+                        <children>
+                            <HBox alignment="TOP_RIGHT" spacing="5.0">
+                                <children>
+                                    <Label maxWidth="Infinity"
+                                           style="-fx-font-size: 24px; -fx-font-weight: bold;"
+                                           text="6:00 pm"
+                                           HBox.hgrow="ALWAYS" />
+                                    <Button mnemonicParsing="false"
+                                            prefHeight="24.0"
+                                            prefWidth="13.0"
+                                            style="-fx-background-color: transparent; -fx-padding: 0; -fx-font-weight: bold; -fx-font-size: 20px;"
+                                            text="X"
+                                            onAction="#onEliminar" />
+                                </children>
+                            </HBox>
+                            <Label maxWidth="Infinity"
+                                   style="-fx-font-size: 20px;"
+                                   text="Chequeo Carlos Antonio"
+                                   wrapText="true" />
+                            <HBox alignment="BOTTOM_RIGHT">
+                                <children>
+                                    <Button contentDisplay="BOTTOM"
+                                            mnemonicParsing="false"
+                                            prefHeight="31.0"
+                                            prefWidth="70.0"
+                                            style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;"
+                                            text="Editar"
+                                            onAction="#onEditar">
+                                        <font>
+                                            <Font size="15.0" />
+                                        </font>
+                                    </Button>
+                                </children>
+                            </HBox>
+                        </children>
+                    </VBox>
 
-                    </children>
                 </VBox>
             </content>
         </ScrollPane>
     </center>
 
-    <!-- Botonera inferior (libera el lado derecho) -->
+    <!-- BOTONERA INFERIOR -->
     <bottom>
-        <HBox alignment="CENTER" spacing="12" style="-fx-background-color: #d3d3d3;" BorderPane.alignment="CENTER">
+        <HBox alignment="CENTER"
+              spacing="12"
+              style="-fx-background-color: #d3d3d3;"
+              BorderPane.alignment="CENTER">
             <padding>
                 <Insets bottom="8.0" left="12.0" right="12.0" top="8.0" />
             </padding>
             <children>
-                <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="40.0" prefWidth="141.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;" text="Nuevo">
-               <font>
-                  <Font size="15.0" />
-               </font></Button>
-                <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="40.0" prefWidth="141.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;" text="Guardar">
-               <font>
-                  <Font size="15.0" />
-               </font></Button>
+                <Button fx:id="btnNuevo"
+                        contentDisplay="BOTTOM"
+                        mnemonicParsing="false"
+                        prefHeight="40.0"
+                        prefWidth="141.0"
+                        style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;"
+                        text="Nuevo"
+                        onAction="#onNuevo">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Button>
+                <Button fx:id="btnGuardar"
+                        contentDisplay="BOTTOM"
+                        mnemonicParsing="false"
+                        prefHeight="40.0"
+                        prefWidth="141.0"
+                        style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;"
+                        text="Guardar"
+                        onAction="#onGuardar">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Button>
             </children>
         </HBox>
     </bottom>
