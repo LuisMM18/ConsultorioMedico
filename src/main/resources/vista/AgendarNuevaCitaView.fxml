@@ -38,7 +38,7 @@
 
             <!-- Fecha y Hora -->
             <Label style="-fx-font-size: 20px;" text="Fecha y Hora:" GridPane.rowIndex="2" />
-            <DatePicker prefHeight="31.0" prefWidth="266.0" styleClass="text-field" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <DatePicker prefHeight="31.0" prefWidth="336.0" styleClass="text-field" GridPane.columnIndex="0" GridPane.rowIndex="3" />
 
             <!-- Tipo de consulta -->
             <Label style="-fx-font-size: 20px;" text="Tipo de Consulta:" GridPane.rowIndex="6" />
