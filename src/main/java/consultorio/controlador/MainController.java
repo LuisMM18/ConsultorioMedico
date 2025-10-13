@@ -91,11 +91,13 @@ public class MainController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Notas.fxml"));
                 Parent vistaNotas = loader.load();
-
+                /*
                 if (vistaNotas instanceof javafx.scene.layout.Region) {
                     ((javafx.scene.layout.Region) vistaNotas).prefWidthProperty().bind(contentArea.widthProperty());
                     ((javafx.scene.layout.Region) vistaNotas).prefHeightProperty().bind(contentArea.heightProperty());
                 }
+                */
+
 
                 contentArea.getChildren().setAll(vistaNotas);
                 actualizarBotonActivo(btnNotas);
@@ -104,6 +106,7 @@ public class MainController {
                 e.printStackTrace();
                 mostrarVistaDeError("No se pudo cargar la vista de Notas.");
             }
+
         }
 
     @FXML
@@ -192,7 +195,7 @@ public class MainController {
 
     private void actualizarBotonActivo(Button botonActivo) {
         // Restablecer todos los botones
-        Button[] botones = {btnInicio, btnCitas, btnCalendario, btnPacientes, btnAgendar, btnAjustes};
+        Button[] botones = {btnInicio, btnCitas, btnCalendario, btnPacientes, btnAgendar, btnAjustes,btnNotas};
         for (Button boton : botones) {
             boton.getStyleClass().remove("nav-button-active");
         }

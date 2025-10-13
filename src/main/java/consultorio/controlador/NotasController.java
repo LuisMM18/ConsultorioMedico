@@ -3,9 +3,16 @@ package consultorio.controlador;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
+
+import java.io.IOException;
 import java.time.LocalDate;
 
 public class NotasController {
@@ -62,6 +69,22 @@ public class NotasController {
 
     private void editarNota(Notas nota) {
         System.out.println("Editando: " + nota.getTitulo());
+    }
+    @FXML
+    public void GenerarReporte() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/GenerarReporteView.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Generar Reporte");
+            stage.initModality(Modality.APPLICATION_MODAL); // Bloquea la principal hasta cerrar
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void eliminarNota(Notas nota) {
