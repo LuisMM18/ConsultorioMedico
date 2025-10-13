@@ -4,70 +4,78 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox maxHeight="Infinity" maxWidth="Infinity" spacing="20" style="-fx-padding: 30;" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fitToWidth="true" fitToHeight="true"
+            style="-fx-background-color: transparent;"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1">
 
-    <!-- Título -->
-    <Label alignment="CENTER" maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Agendar Nueva Cita" />
+    <content>
+        <VBox spacing="20" style="-fx-padding: 30;" alignment="TOP_CENTER" maxWidth="Infinity">
 
-    <!-- Formulario -->
-    <GridPane hgap="10" maxWidth="Infinity" vgap="10">
-        <columnConstraints>
-            <ColumnConstraints hgrow="ALWAYS" />
-            <ColumnConstraints hgrow="ALWAYS" />
-        </columnConstraints>
-        <rowConstraints>
-            <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints vgrow="SOMETIMES" />
-        </rowConstraints>
-        <children>
-            <!-- Paciente -->
-            <Label style="-fx-font-size: 20px;" text="Paciente:" />
-            <TextField maxWidth="Infinity" GridPane.columnSpan="2" GridPane.rowIndex="1">
-                <font>
-                    <Font size="14.0" />
-                </font></TextField>
+            <!-- Título -->
+            <Label alignment="CENTER" maxWidth="Infinity"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;"
+                   text="Agendar Nueva Cita" />
 
-            <!-- Fecha y Hora -->
-            <Label style="-fx-font-size: 20px;" text="Fecha y Hora:" GridPane.rowIndex="2" />
-            <DatePicker prefHeight="31.0" prefWidth="336.0" styleClass="text-field" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <!-- Formulario -->
+            <GridPane hgap="10" vgap="10" maxWidth="Infinity" VBox.vgrow="ALWAYS">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS" />
+                    <ColumnConstraints hgrow="ALWAYS" />
+                </columnConstraints>
 
-            <!-- Tipo de consulta -->
-            <Label style="-fx-font-size: 20px;" text="Tipo de Consulta:" GridPane.rowIndex="6" />
-            <TextField maxWidth="Infinity" GridPane.columnSpan="2" GridPane.rowIndex="7">
-                <font>
-                    <Font size="14.0" />
-                </font></TextField>
+                <rowConstraints>
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                </rowConstraints>
 
-            <!-- Notas -->
-            <Label style="-fx-font-size: 20px;" text="Notas:" GridPane.rowIndex="9" />
-            <TextField maxWidth="Infinity" GridPane.columnSpan="2" GridPane.rowIndex="10">
-                <font>
-                    <Font size="14.0" />
-                </font></TextField>
-        </children>
-    </GridPane>
+                <children>
+                    <!-- Nombre -->
+                    <Label style="-fx-font-size: 16px;" text="Nombre del Paciente:" GridPane.rowIndex="0" />
+                    <TextField fx:id="nombreField" GridPane.rowIndex="1" promptText="Escribe el nombre completo..." />
 
-    <!-- Botones -->
-    <HBox alignment="CENTER" spacing="100" VBox.vgrow="ALWAYS">
-        <children>
-            <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="40.0" prefWidth="131.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;" text="Guardar">
-                <font>
-                    <Font size="15.0" />
-                </font></Button>
-            <Button contentDisplay="BOTTOM" mnemonicParsing="false" prefHeight="40.0" prefWidth="131.0" style="-fx-background-color: A9A9A9; -fx-text-fill: white; -fx-font-weight: bold;" text="Cancelar">
-                <font>
-                    <Font size="15.0" />
-                </font></Button>
-        </children>
-    </HBox>
+                    <!-- Fecha de Nacimiento -->
+                    <Label style="-fx-font-size: 16px;" text="Fecha de Nacimiento:" GridPane.rowIndex="2" />
+                    <DatePicker fx:id="fechaNacimientoPicker" GridPane.rowIndex="3" />
 
-</VBox>
+                    <!-- Teléfono -->
+                    <Label style="-fx-font-size: 16px;" text="Teléfono:" GridPane.rowIndex="4" />
+                    <TextField fx:id="telefonoField" GridPane.rowIndex="5" promptText="555-123-4567" />
+
+                    <!-- Correo Electrónico -->
+                    <Label style="-fx-font-size: 16px;" text="Correo Electrónico:" GridPane.rowIndex="6" />
+                    <TextField fx:id="correoField" GridPane.rowIndex="7" promptText="correo@ejemplo.com" />
+
+                    <!-- Notas -->
+                    <Label style="-fx-font-size: 16px;" text="Notas:" GridPane.rowIndex="8" />
+                    <TextField fx:id="notasField" GridPane.rowIndex="9" promptText="Notas adicionales..." />
+                </children>
+            </GridPane>
+
+            <!-- Botones -->
+            <HBox alignment="CENTER" spacing="80">
+                <Button fx:id="guardarButton"
+                        style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;"
+                        text="Guardar" prefWidth="130" prefHeight="40">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Button>
+
+                <Button fx:id="cancelarButton"
+                        style="-fx-background-color: #A9A9A9; -fx-text-fill: white; -fx-font-weight: bold;"
+                        text="Cancelar" prefWidth="130" prefHeight="40">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Button>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

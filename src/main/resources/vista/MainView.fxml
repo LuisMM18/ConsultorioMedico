@@ -9,7 +9,7 @@
 
     <!-- Panel izquierdo (navegación) -->
     <left>
-        <VBox fx:id="sidebar" prefWidth="220" spacing="10" style="-fx-background-color: #9ADDFF;">
+        <VBox fx:id="sidebar" prefHeight="631.0" prefWidth="235.0" spacing="10" style="-fx-background-color: #9ADDFF;">
             <padding>
                 <Insets bottom="20" left="15" right="15" top="20" />
             </padding>
@@ -35,6 +35,7 @@
             <Button fx:id="btnCitas" onAction="#cambiarVistaCitas" styleClass="nav-button" text="Citas de Hoy" />
             <Button fx:id="btnCalendario" onAction="#cambiarVistaCalendario" styleClass="nav-button" text="Calendario" />
             <Button fx:id="btnPacientes" onAction="#cambiarVistaPacientes" styleClass="nav-button" text="Pacientes" />
+            <Button fx:id="btnNotas" onAction="#cambiarVistaNotas" styleClass="nav-button" text="Notas" />
             <Button fx:id="btnAgendar" onAction="#cambiarVistaAgendar" styleClass="nav-button" text="Agendar Cita" />
             <Button fx:id="btnAjustes" onAction="#cambiarVistaAjustes" styleClass="nav-button" text="Ajustes de cuenta" />
 
