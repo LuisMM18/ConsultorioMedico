@@ -21,7 +21,7 @@
         <Button fx:id="buscarNotaButton" text="Buscar"
                 style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" />
         <Region HBox.hgrow="ALWAYS" />
-        <Button fx:id="agregarNotaButton" text="Nueva Nota"
+        <Button fx:id="agregarNotaButton" text="Nueva Nota" onAction="#AgregarNota"
                 style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" />
     </HBox>
 

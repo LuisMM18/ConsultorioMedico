@@ -52,7 +52,7 @@ public class NotasController {
             {
                 btnEditar.setStyle("-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;");
                 btnEliminar.setStyle("-fx-background-color: #A9A9A9; -fx-text-fill: white; -fx-font-weight: bold;");
-                btnEditar.setOnAction(e -> editarNota(getTableView().getItems().get(getIndex())));
+                btnEditar.setOnAction(e -> editarNota());
                 btnEliminar.setOnAction(e -> eliminarNota(getTableView().getItems().get(getIndex())));
             }
 
@@ -67,17 +67,30 @@ public class NotasController {
         colAcciones.setCellFactory(cellFactory);
     }
 
-    private void editarNota(Notas nota) {
-        System.out.println("Editando: " + nota.getTitulo());
-    }
     @FXML
-    public void GenerarReporte() {
+    public void editarNota() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/GenerarReporteView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/EditarNotaView.fxml"));
             Parent root = loader.load();
 
             Stage stage = new Stage();
-            stage.setTitle("Generar Reporte");
+            stage.setTitle("Editar Nota");
+            stage.initModality(Modality.APPLICATION_MODAL); // Bloquea la principal hasta cerrar
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void AgregarNota(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/AgregarNoraCita.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Editar Nota");
             stage.initModality(Modality.APPLICATION_MODAL); // Bloquea la principal hasta cerrar
             stage.setScene(new Scene(root));
             stage.showAndWait();

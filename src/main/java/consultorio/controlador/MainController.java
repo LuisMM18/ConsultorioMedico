@@ -17,7 +17,7 @@ import java.io.IOException;
 public class MainController {
 
     @FXML private StackPane contentArea;
-    @FXML private Button btnInicio, btnCitas, btnPacientes, btnAgendar, btnCalendario, btnAjustes, btnNotas;
+    @FXML private Button btnInicio, btnCitas, btnPacientes, btnAgendar, btnCalendario, btnAjustes;
     @FXML private Label lblUsuario;
     private Parent calendarioRoot = null;
     private FXMLLoader calendarioLoader = null;
@@ -86,28 +86,7 @@ public class MainController {
         }
     }
 
-    @FXML
-    public void cambiarVistaNotas(){
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Notas.fxml"));
-                Parent vistaNotas = loader.load();
-                /*
-                if (vistaNotas instanceof javafx.scene.layout.Region) {
-                    ((javafx.scene.layout.Region) vistaNotas).prefWidthProperty().bind(contentArea.widthProperty());
-                    ((javafx.scene.layout.Region) vistaNotas).prefHeightProperty().bind(contentArea.heightProperty());
-                }
-                */
 
-
-                contentArea.getChildren().setAll(vistaNotas);
-                actualizarBotonActivo(btnNotas);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                mostrarVistaDeError("No se pudo cargar la vista de Notas.");
-            }
-
-        }
 
     @FXML
     private void cambiarVistaPacientes() {
@@ -195,7 +174,7 @@ public class MainController {
 
     private void actualizarBotonActivo(Button botonActivo) {
         // Restablecer todos los botones
-        Button[] botones = {btnInicio, btnCitas, btnCalendario, btnPacientes, btnAgendar, btnAjustes,btnNotas};
+        Button[] botones = {btnInicio, btnCitas, btnCalendario, btnPacientes, btnAgendar, btnAjustes};
         for (Button boton : botones) {
             boton.getStyleClass().remove("nav-button-active");
         }

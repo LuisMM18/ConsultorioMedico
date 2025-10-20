@@ -8,7 +8,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class PacientesViewController {
 
@@ -112,11 +115,13 @@ public class PacientesViewController {
         colAcciones.setCellFactory(param -> new TableCell<>() {
             private final Button editarBtn = new Button("Editar");
             private final Button eliminarBtn = new Button("Eliminar");
-            private final HBox botones = new HBox(10, editarBtn, eliminarBtn);
+            private final Button notasBtn = new Button("Notas");
+            private final HBox botones = new HBox(10, editarBtn, eliminarBtn, notasBtn);
 
             {
                 editarBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 6;");
                 eliminarBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 6;");
+                notasBtn.setStyle("-fx-background-color: #grey; -fx-text-fill: black; -fx-background-radius: 6;");
 
                 editarBtn.setOnAction(e -> {
                     Paciente paciente = getTableView().getItems().get(getIndex());
@@ -128,6 +133,22 @@ public class PacientesViewController {
                     listaPacientes.remove(paciente);
                     totalPacientesLabel.setText(String.valueOf(listaPacientes.size()));
                 });
+                notasBtn.setOnAction(e -> {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Notas.fxml"));
+                        Parent root = loader.load();
+
+                        Stage stage = new Stage();
+                        stage.setTitle("Notas");
+                        stage.initModality(Modality.APPLICATION_MODAL); // Bloquea la principal hasta cerrar
+                        stage.setScene(new Scene(root));
+                        stage.showAndWait();
+
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
+                });
+
             }
 
             @Override

@@ -35,7 +35,6 @@
             <Button fx:id="btnCitas" onAction="#cambiarVistaCitas" styleClass="nav-button" text="Citas de Hoy" />
             <Button fx:id="btnCalendario" onAction="#cambiarVistaCalendario" styleClass="nav-button" text="Calendario" />
             <Button fx:id="btnPacientes" onAction="#cambiarVistaPacientes" styleClass="nav-button" text="Pacientes" />
-            <Button fx:id="btnNotas" onAction="#cambiarVistaNotas" styleClass="nav-button" text="Notas" />
             <Button fx:id="btnAgendar" onAction="#cambiarVistaAgendar" styleClass="nav-button" text="Agendar Cita" />
             <Button fx:id="btnAjustes" onAction="#cambiarVistaAjustes" styleClass="nav-button" text="Ajustes de cuenta" />
 
