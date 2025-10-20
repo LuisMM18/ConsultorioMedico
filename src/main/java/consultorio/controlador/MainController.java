@@ -121,7 +121,7 @@ public class MainController {
                     ((consultorio.controlador.AjustesController) ctrl).setMainController(this);
                 }
 
-                /* Hacer que la vista ocupe todo el contentArea */
+                /* Hacer que la vista ocupe dtodo el contentArea */
                 if (ajustesRoot instanceof javafx.scene.layout.Region) {
                     javafx.scene.layout.Region region = (javafx.scene.layout.Region) ajustesRoot;
                     region.prefWidthProperty().bind(contentArea.widthProperty());

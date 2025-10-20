@@ -1,5 +1,7 @@
 package consultorio.controlador;
 
+import consultorio.DAO;
+import consultorio.model.CitaCalendario;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,62 +16,64 @@ import javafx.stage.Stage;
 import lombok.Setter;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import java.awt.*;
 import java.io.IOException;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.util.Locale;
+import java.util.*;
 
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import javafx.scene.control.Tooltip;
+import javafx.geometry.Pos;
+import javafx.scene.layout.HBox;
 
-
-public class CalendarController {
+public class CalendarController  {
 
     @FXML
     private Button mesAnterior;
-
     @FXML
     private Button mesSiguiente;
-
     @FXML
     private TextField labelMes;
-
     @FXML
     private GridPane gridDias;
 
-
     private LocalDate fechaActual;
-
     @Setter
     private MainController mainController;
+    private DAO dao;
+    private final DateTimeFormatter horaFormatter = DateTimeFormatter.ofPattern("h:mm a", new Locale("es","ES"));
 
-    ;
+    // Map día -> lista de citas en ese día
+    private Map<Integer, List<CitaCalendario>> eventosPorDia = new HashMap<>();
 
     @FXML
     private void initialize() {
         System.out.println("CalendarController inicializado");
         fechaActual = LocalDate.now();
+        dao = new DAO();
         actualizarVista();
+        cargarCitasMes();    // carga inicial desde DB
         mostrarDias();
     }
 
-    // Botones del FXML (onAction="#mesAnterior" y "#mesSiguiente")
     @FXML
     private void mesAnterior(ActionEvent event) {
-        // lógica para retroceder mes
         fechaActual = fechaActual.minusMonths(1);
         actualizarVista();
+        cargarCitasMes();
         mostrarDias();
     }
 
     @FXML
     private void mesSiguiente(ActionEvent event) {
-        // lógica para avanzar mes
         fechaActual = fechaActual.plusMonths(1);
         actualizarVista();
+        cargarCitasMes();
         mostrarDias();
     }
+
     private void actualizarVista() {
         Locale es = new Locale("es", "ES");
         LocalDate mesAnt = fechaActual.minusMonths(1);
@@ -87,7 +91,21 @@ public class CalendarController {
         if (texto == null || texto.isEmpty()) return texto;
         return texto.substring(0, 1).toUpperCase() + texto.substring(1);
     }
-    // Dibuja los días en el grid con tu mismo estilo visual
+
+    // carga desde DB las citas del mes actual y llena eventosPorDia
+    private void cargarCitasMes() {
+        eventosPorDia.clear();
+        int year = fechaActual.getYear();
+        int month = fechaActual.getMonthValue();
+        List<CitaCalendario> citas = dao.getCitasForMonth(year, month);
+        for (CitaCalendario c : citas) {
+            if (c.getFechaHora() == null) continue;
+            int dia = c.getFechaHora().getDayOfMonth();
+            eventosPorDia.computeIfAbsent(dia, k -> new ArrayList<>()).add(c);
+        }
+    }
+
+    // Dibuja los días en el grid con las citas cargadas
     private void mostrarDias() {
         gridDias.getChildren().clear();
 
@@ -96,13 +114,11 @@ public class CalendarController {
         LocalDate primerDiaMes = fechaActual.withDayOfMonth(1);
 
         int diaSemana = primerDiaMes.getDayOfWeek().getValue()-1; // Lunes=1 ... Domingo=7
-
-
         int row = 0;
         int col = diaSemana;
 
         for (int dia = 1; dia <= diasEnMes; dia++) {
-            StackPane celda = crearCeldaDia(dia);
+            StackPane celda = crearCeldaDiaConEventos(dia);
             gridDias.add(celda, col, row);
 
             col++;
@@ -112,13 +128,15 @@ public class CalendarController {
             }
         }
     }
-    private StackPane crearCeldaDia(int dia) {
+
+    // Crea la celda y agrega eventos (si los hay) usando eventosPorDia
+    private StackPane crearCeldaDiaConEventos(int dia) {
         StackPane celda = new StackPane();
         celda.setStyle("-fx-border-color: #DDE3EA; -fx-border-width: 1 1 1 1;");
 
         VBox vbox = new VBox();
         vbox.setSpacing(4);
-        vbox.setAlignment(javafx.geometry.Pos.TOP_LEFT);
+        vbox.setAlignment(Pos.TOP_LEFT);
         vbox.setMaxWidth(Double.MAX_VALUE);
         vbox.setMaxHeight(Double.MAX_VALUE);
         vbox.setStyle("-fx-padding: 6;");
@@ -129,22 +147,71 @@ public class CalendarController {
         Label labelDia = new Label(String.valueOf(dia));
         labelDia.setStyle("-fx-text-fill:#6E7A8A; -fx-font-size:12px;");
         header.getChildren().addAll(espacio,labelDia);
+        vbox.getChildren().add(header);
 
-        // Ejemplo visual: agrega eventos a algunos días (puedes conectar tu BD aquí)
-        if (dia == 5 || dia == 12 || dia == 20) {
-            HBox evento = new HBox(8);
-            evento.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-            Circle punto = new Circle(3, Color.web("#2D8CFF"));
-            Label hora = new Label("4:00 pm");
-            hora.setStyle("-fx-font-size:12px; -fx-text-fill:#1A1A1A;");
-            evento.getChildren().addAll(punto,hora);
-            vbox.getChildren().addAll(header, evento);
-        } else {
-            vbox.getChildren().add(header);
+        List<CitaCalendario> citasDelDia = eventosPorDia.get(dia);
+        if (citasDelDia != null && !citasDelDia.isEmpty()) {
+            // ordenar por hora
+            citasDelDia.sort(Comparator.comparing(CitaCalendario::getFechaHora));
+            int maxMostrar = 4; // cantidad máxima de líneas a mostrar por celda
+            int mostradas = 0;
+            for (CitaCalendario c : citasDelDia) {
+                if (mostradas >= maxMostrar) {
+                    // si hay más, mostrar un resumen
+                    Label mas = new Label("… y " + (citasDelDia.size() - mostradas) + " más");
+                    mas.setStyle("-fx-font-size:11px; -fx-text-fill:#4F5966;");
+                    vbox.getChildren().add(mas);
+                    break;
+                }
+                HBox evento = crearEventoNode(c);
+                vbox.getChildren().add(evento);
+                mostradas++;
+            }
         }
 
         celda.getChildren().add(vbox);
         return celda;
+    }
+
+    // Construye visualmente la línea de evento (punto + hora + paciente/tipo)
+    private HBox crearEventoNode(CitaCalendario c) {
+        HBox evento = new HBox(6);
+        evento.setAlignment(Pos.CENTER_LEFT);
+
+        Circle punto = new Circle(3, Color.web("#2D8CFF"));
+
+        String horaStr = c.getFechaHora() != null ? c.getFechaHora().format(horaFormatter) : "";
+        String detalle = horaStr;
+        // mostrar paciente o tipo de consulta si existe
+        if (c.getPacienteNombre() != null && !c.getPacienteNombre().isEmpty()) {
+            detalle += " • " + truncate(c.getPacienteNombre(), 18);
+        } else if (c.getTipoConsulta() != null && !c.getTipoConsulta().isEmpty()) {
+            detalle += " • " + truncate(c.getTipoConsulta(), 18);
+        }
+
+        Label lbl = new Label(detalle);
+        lbl.setStyle("-fx-font-size:12px; -fx-text-fill:#1A1A1A;");
+
+        // tooltip con la info completa
+        Tooltip tip = new Tooltip();
+        StringBuilder tb = new StringBuilder();
+        tb.append(horaStr);
+        if (c.getPacienteNombre() != null && !c.getPacienteNombre().isEmpty()) {
+            tb.append(" - ").append(c.getPacienteNombre());
+        }
+        if (c.getTipoConsulta() != null && !c.getTipoConsulta().isEmpty()) {
+            tb.append("\nTipo: ").append(c.getTipoConsulta());
+        }
+        tip.setText(tb.toString());
+        Tooltip.install(evento, tip);
+
+        evento.getChildren().addAll(punto, lbl);
+        return evento;
+    }
+
+    private String truncate(String s, int len) {
+        if (s == null) return "";
+        return s.length() <= len ? s : s.substring(0, len-1) + "…";
     }
 
     // Metodo llamado desde MainController para volver al inicio
@@ -181,8 +248,4 @@ public class CalendarController {
         Button btn = (Button) e.getSource();
         btn.setStyle("-fx-background-color: #D9D9D9; -fx-border-color: #969696; -fx-border-radius: 8px;");
     }
-
-
-
-
 }

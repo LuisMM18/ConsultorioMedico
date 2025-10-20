@@ -1,5 +1,6 @@
 package consultorio.controlador;
 
+import consultorio.DAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -36,9 +37,11 @@ public class LoginController {
         }
     }
 
-    private boolean autenticarUsuario(String usuario, String contraseña) {
-        // hacer el login
-        return !usuario.isEmpty() && !contraseña.isEmpty();
+    private boolean autenticarUsuario(String usuario, String contrasena) {
+        // en caso de no poder iniciar sesión establecer código como comentario
+        //return !usuario.isEmpty() && !contraseña.isEmpty();
+        DAO dao = new DAO();
+        return dao.DAOautenticarUsuario(usuario, contrasena);
     }
 
 
