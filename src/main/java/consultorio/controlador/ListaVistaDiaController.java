@@ -91,15 +91,26 @@ public class ListaVistaDiaController {
     @FXML
     private void onEliminar(javafx.event.ActionEvent event) {
         Button boton = (Button) event.getSource();
-
-        // Buscar el VBox principal de la cita, independientemente de su estructura
-        VBox cita = null;
+        VBox citaOriginal = null;
         if (boton.getParent() instanceof HBox && boton.getParent().getParent() instanceof VBox) {
-            cita = (VBox) boton.getParent().getParent();
+            citaOriginal = (VBox) boton.getParent().getParent();
         }
 
-        if (cita != null && appointmentContainer.getChildren().contains(cita)) {
-            appointmentContainer.getChildren().remove(cita);
+        if (citaOriginal != null) {
+            // Creamos una variable final para usar en la lambda
+            final VBox citaParaEliminar = citaOriginal;
+
+            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+            alerta.setTitle("Confirmar Eliminación");
+            alerta.setHeaderText("¿Estás seguro de que deseas eliminar esta cita?");
+            alerta.setContentText("Esta acción no se puede deshacer.");
+
+            alerta.showAndWait().ifPresent(respuesta -> {
+                if (respuesta == ButtonType.OK) {
+                    // Usamos la nueva variable que sí es final
+                    appointmentContainer.getChildren().remove(citaParaEliminar);
+                }
+            });
         }
     }
 
