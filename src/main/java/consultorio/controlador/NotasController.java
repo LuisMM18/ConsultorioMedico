@@ -86,7 +86,7 @@ public class NotasController {
     @FXML
     private void AgregarNota(){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/AgregarNoraCita.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/AgregarNotaView.fxml"));
             Parent root = loader.load();
 
             Stage stage = new Stage();

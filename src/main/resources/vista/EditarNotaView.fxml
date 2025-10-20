@@ -2,49 +2,45 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<VBox prefHeight="420.0" prefWidth="605.0" spacing="20" style="-fx-background-color: #f8f9fa; -fx-padding: 30;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+    <content>
+        <VBox spacing="20" style="-fx-padding: 30;">
 
-    <!-- Título -->
-    <Label alignment="CENTER" prefWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Editar Nota" />
+            <!-- Título principal -->
+            <Label alignment="CENTER" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Editar Nota" />
 
-    <!-- Formulario -->
-    <GridPane hgap="10" prefHeight="85.0" prefWidth="545.0" vgap="18">
-        <columnConstraints>
-            <ColumnConstraints minWidth="120.0" prefWidth="150.0" />
-            <ColumnConstraints hgrow="ALWAYS" minWidth="200.0" prefWidth="420.0" />
-        </columnConstraints>
+            <!-- Formulario principal -->
+            <GridPane hgap="10" vgap="15">
+                <columnConstraints>
+                    <ColumnConstraints halignment="LEFT" minWidth="100.0" prefWidth="150.0" />
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="200.0" prefWidth="300.0" />
+                </columnConstraints>
 
-        <Label text="Titulo:" GridPane.columnIndex="0" GridPane.rowIndex="0">
-         <font>
-            <Font size="20.0" />
-         </font></Label>
-        <TextField fx:id="tituloField" style="-fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <!-- Campo: Título -->
+                <Label text="Título de la Nota:" GridPane.rowIndex="0" />
+                <TextField promptText="Ejemplo: Observaciones de la cita" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-        <Label text="Notas:" GridPane.columnIndex="0" GridPane.rowIndex="1">
-         <font>
-            <Font size="20.0" />
-         </font></Label>
-        <TextField fx:id="notasField" prefHeight="0.0" prefWidth="403.0" style="-fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <rowConstraints>
-         <RowConstraints />
-         <RowConstraints />
-      </rowConstraints>
-    </GridPane>
+                <!-- Campo: Fecha -->
+                <Label text="Fecha:" GridPane.rowIndex="1" />
+                <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-    <!-- Botones: idénticos al Login -->
-    <HBox alignment="CENTER" spacing="100">
-      <children>
-           <Button prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Guardar">
-            <font>
-               <Font size="14.0" />
-            </font></Button>
-           <Button prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Cancelar">
-            <font>
-               <Font size="14.0" />
-            </font></Button>
-      </children>
-    </HBox>
+                <!-- Campo: Contenido de la nota -->
+                <Label text="Contenido:" GridPane.rowIndex="2" />
+                <TextArea prefHeight="120.0" promptText="Escribe aquí los detalles o comentarios relevantes..." wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
+            </GridPane>
 
-</VBox>
+            <!-- Botones de acción -->
+            <HBox alignment="CENTER" spacing="80">
+                <Button prefHeight="40" prefWidth="130" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;" text="Guardar" />
+                <Button prefHeight="40" prefWidth="130" style="-fx-background-color: #A9A9A9; -fx-text-fill: white; -fx-font-weight: bold;" text="Cancelar" />
+            </HBox>
+
+        </VBox>
+    </content>
+</ScrollPane>

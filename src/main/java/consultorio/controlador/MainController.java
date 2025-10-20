@@ -17,7 +17,7 @@ import java.io.IOException;
 public class MainController {
 
     @FXML private StackPane contentArea;
-    @FXML private Button btnInicio, btnCitas, btnPacientes, btnAgendar, btnCalendario, btnAjustes;
+    @FXML private Button btnInicio, btnCitas, btnPacientes, btnCalendario, btnAjustes;
     @FXML private Label lblUsuario;
     private Parent calendarioRoot = null;
     private FXMLLoader calendarioLoader = null;
@@ -148,23 +148,6 @@ public class MainController {
         }
     }
 
-    @FXML
-    private void cambiarVistaAgendar() {
-        try {
-            // Cargar el archivo FXML de la vista de citas
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/AgendarNuevaCitaView.fxml"));
-            Parent vistaCitas = loader.load();
-
-            // Reemplazar el contenido actual con la nueva vista
-            contentArea.getChildren().setAll(vistaCitas);
-
-            // Mantener el botón activo
-            actualizarBotonActivo(btnAgendar);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void mostrarVistaDeError(String mensaje) {
         VBox vistaError = new VBox();
@@ -174,7 +157,7 @@ public class MainController {
 
     private void actualizarBotonActivo(Button botonActivo) {
         // Restablecer todos los botones
-        Button[] botones = {btnInicio, btnCitas, btnCalendario, btnPacientes, btnAgendar, btnAjustes};
+        Button[] botones = {btnInicio, btnCitas, btnCalendario, btnPacientes, btnAjustes};
         for (Button boton : botones) {
             boton.getStyleClass().remove("nav-button-active");
         }
