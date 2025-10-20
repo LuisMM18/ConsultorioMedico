@@ -3,12 +3,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fitToHeight="true" fitToWidth="true" fx:controller="consultorio.controlador.EditarNotaController" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
     <content>
         <VBox spacing="20" style="-fx-padding: 30;">
 
             <!-- Título principal -->
-            <Label alignment="CENTER" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Editar Nota" />
+            <Label alignment="CENTER" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Editar Nota" fx:id="EditarNota" />
 
             <!-- Formulario principal -->
             <GridPane hgap="10" vgap="15">
@@ -38,7 +38,7 @@
             <!-- Botones de acción -->
             <HBox alignment="CENTER" spacing="80">
                 <Button prefHeight="40" prefWidth="130" style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;" text="Guardar" />
-                <Button prefHeight="40" prefWidth="130" style="-fx-background-color: #A9A9A9; -fx-text-fill: white; -fx-font-weight: bold;" text="Cancelar" />
+                <Button onAction="#cerrarVentana" prefHeight="40" prefWidth="130" style="-fx-background-color: #A9A9A9; -fx-text-fill: white; -fx-font-weight: bold;" text="Cancelar" />
             </HBox>
 
         </VBox>

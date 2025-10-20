@@ -4,15 +4,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
 <ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="consultorio.controlador.AgendarNuevaCitaController">
 
     <content>
         <VBox alignment="TOP_CENTER" maxWidth="Infinity" spacing="20" style="-fx-padding: 30;">
 
             <!-- Título -->
-            <Label alignment="CENTER" maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Agendar Nueva Cita" />
+            <Label alignment="CENTER" maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Editar informacion de Paciente" />
 
             <!-- Formulario -->
             <GridPane hgap="10" maxWidth="Infinity" vgap="10" VBox.vgrow="ALWAYS">
@@ -29,11 +27,11 @@
                     <RowConstraints vgrow="SOMETIMES" />
                     <RowConstraints vgrow="SOMETIMES" />
                     <RowConstraints vgrow="SOMETIMES" />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
                 </rowConstraints>
 
                 <children>
@@ -52,23 +50,6 @@
                     <!-- Correo Electrónico -->
                     <Label style="-fx-font-size: 16px;" text="Correo Electrónico:" GridPane.rowIndex="6" />
                     <TextField fx:id="correoField" promptText="correo@ejemplo.com" GridPane.rowIndex="7" />
-
-                    <!-- Notas -->
-                    <Label style="-fx-font-size: 16px;" text="Fecha de la cita:" GridPane.rowIndex="8" />
-               <DatePicker GridPane.rowIndex="9" />
-               <Label style="-fx-font-size: 16;" text="Hora de la cita" GridPane.rowIndex="10" />
-                    <ChoiceBox fx:id="horaChoiceBox" prefWidth="150.0" GridPane.rowIndex="11">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="09:00 AM" />
-                                <String fx:value="10:00 AM" />
-                                <String fx:value="11:00 AM" />
-                                <String fx:value="12:00 PM" />
-                                <String fx:value="01:00 PM" />
-                                <String fx:value="02:00 PM" />
-                            </FXCollections>
-                        </items>
-                    </ChoiceBox>
                 </children>
             </GridPane>
 

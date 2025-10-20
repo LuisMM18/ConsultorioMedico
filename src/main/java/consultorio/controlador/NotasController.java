@@ -2,6 +2,7 @@ package consultorio.controlador;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -42,7 +43,21 @@ public class NotasController {
                 new Notas(2, "Llamar laboratorio", "Preguntar resultados de sangre", LocalDate.now())
         );
 
-        tablaNotas.setItems(listaNotas);
+        // Crear lista filtrada
+        FilteredList<Notas> filtrada = new FilteredList<>(listaNotas, p -> true);
+
+        // Filtro en tiempo real
+        buscarNotaField.textProperty().addListener((obs, oldValue, newValue) -> {
+            String filtro = newValue.toLowerCase();
+            filtrada.setPredicate(nota -> {
+                if (filtro.isEmpty()) return true;
+                return nota.getTitulo().toLowerCase().contains(filtro)
+                        || String.valueOf(nota.getId()).contains(filtro)
+                        || nota.getContenido().toLowerCase().contains(filtro);
+            });
+        });
+
+        tablaNotas.setItems(filtrada);
     }
 
     private void agregarBotonesAcciones() {
@@ -99,7 +114,6 @@ public class NotasController {
             e.printStackTrace();
         }
     }
-
     private void eliminarNota(Notas nota) {
         listaNotas.remove(nota);
     }

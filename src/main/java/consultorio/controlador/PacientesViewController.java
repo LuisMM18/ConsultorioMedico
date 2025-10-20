@@ -2,6 +2,7 @@ package consultorio.controlador;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -35,24 +36,38 @@ public class PacientesViewController {
 
     @FXML
     public void initialize() {
-        // Configurar las columnas
+        // Configurar columnas
         colID.setCellValueFactory(data -> data.getValue().idProperty().asObject());
         colNombre.setCellValueFactory(data -> data.getValue().nombreProperty());
         colEdad.setCellValueFactory(data -> data.getValue().edadProperty().asObject());
         colTelefono.setCellValueFactory(data -> data.getValue().telefonoProperty());
         colCorreo.setCellValueFactory(data -> data.getValue().correoProperty());
 
-        // Inicializar datos simulados
+        // Cargar datos
         cargarDatosEjemplo();
 
-        // Configurar la columna de acciones (botones editar/eliminar)
+        // Crear lista filtrada que se basa en la lista original
+        FilteredList<Paciente> filtrada = new FilteredList<>(listaPacientes, p -> true);
+
+        // Vincular el TableView a la lista filtrada
+        tablaPacientes.setItems(filtrada);
+
+        // Configurar la columna de acciones (solo se hace una vez)
         agregarColumnaAcciones();
 
-        // Asignar la lista a la tabla
-        tablaPacientes.setItems(listaPacientes);
+        // Evento de búsqueda
+        buscarField.textProperty().addListener((obs, oldValue, newValue) -> {
+            filtrada.setPredicate(paciente -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true; // muestra todos
+                }
+                String filtro = newValue.toLowerCase();
+                return paciente.getNombre().toLowerCase().contains(filtro)
+                        || String.valueOf(paciente.getId()).equals(filtro);
+            });
+        });
 
-        // Eventos
-        buscarButton.setOnAction(e -> buscarPaciente());
+        // Botón nuevo paciente
         nuevoButton.setOnAction(e -> agregarPacienteNuevo());
     }
 
@@ -67,23 +82,6 @@ public class PacientesViewController {
         totalPacientesLabel.setText(String.valueOf(listaPacientes.size()));
         nuevosMesLabel.setText("3");
         citasActivasLabel.setText("9");
-    }
-
-    private void buscarPaciente() {
-        String filtro = buscarField.getText().toLowerCase();
-        if (filtro.isEmpty()) {
-            tablaPacientes.setItems(listaPacientes);
-            return;
-        }
-
-        ObservableList<Paciente> filtrados = FXCollections.observableArrayList();
-        for (Paciente p : listaPacientes) {
-            if (p.getNombre().toLowerCase().contains(filtro) || String.valueOf(p.getId()).equals(filtro)) {
-                filtrados.add(p);
-            }
-        }
-
-        tablaPacientes.setItems(filtrados);
     }
 
     private void agregarPacienteNuevo() {
@@ -124,11 +122,26 @@ public class PacientesViewController {
                 notasBtn.setStyle("-fx-background-color: #grey; -fx-text-fill: black; -fx-background-radius: 6;");
 
                 editarBtn.setOnAction(e -> {
-                    Paciente paciente = getTableView().getItems().get(getIndex());
-                    mostrarAlerta("Editar paciente", "Editar datos de: " + paciente.getNombre());
+                    // paciente = getTableView().getItems().get(getIndex());
+                    // mostrarAlerta("Editar paciente", "Editar datos de: " + paciente.getNombre());
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/EditarPacienteView.fxml"));
+                        Parent root = loader.load();
+
+                        Stage stage = new Stage();
+                        stage.setTitle("Editar Paciente");
+                        stage.initModality(Modality.APPLICATION_MODAL); // Bloquea la principal hasta cerrar
+                        stage.setScene(new Scene(root));
+                        stage.showAndWait();
+
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
                 });
 
                 eliminarBtn.setOnAction(e -> {
+
+
                     Paciente paciente = getTableView().getItems().get(getIndex());
                     listaPacientes.remove(paciente);
                     totalPacientesLabel.setText(String.valueOf(listaPacientes.size()));

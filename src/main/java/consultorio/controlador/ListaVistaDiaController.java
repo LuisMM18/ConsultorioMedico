@@ -7,7 +7,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class ListaVistaDiaController {
 
@@ -19,8 +22,24 @@ public class ListaVistaDiaController {
 
     @FXML
     private void onNuevo() {
-        VBox nuevaCita = crearCita("Hora nueva", "Nueva cita sin descripción");
-        appointmentContainer.getChildren().add(nuevaCita);
+        //VBox nuevaCita = crearCita("Hora nueva", "Nueva cita sin descripción");
+        //appointmentContainer.getChildren().add(nuevaCita);
+
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/AgendarNuevaCitaView.fxml"));
+                Parent root = loader.load();
+
+                Stage stage = new Stage();
+                stage.setTitle("Nueva Cita");
+                stage.initModality(Modality.APPLICATION_MODAL); // Bloquea la principal hasta cerrar
+                stage.setScene(new Scene(root));
+                stage.showAndWait();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
     }
 
     @FXML
