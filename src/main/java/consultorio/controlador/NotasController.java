@@ -68,8 +68,20 @@ public class NotasController {
                 btnEditar.setStyle("-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;");
                 btnEliminar.setStyle("-fx-background-color: #A9A9A9; -fx-text-fill: white; -fx-font-weight: bold;");
                 btnEditar.setOnAction(e -> editarNota());
-                btnEliminar.setOnAction(e -> eliminarNota(getTableView().getItems().get(getIndex())));
-            }
+                btnEliminar.setOnAction(e -> {
+                    Notas nota = getTableView().getItems().get(getIndex());
+
+                    Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+                    alerta.setTitle("Confirmar Eliminación");
+                    alerta.setHeaderText("¿Estás seguro de que deseas eliminar esta nota?");
+                    alerta.setContentText("Título: " + nota.getTitulo());
+
+                    alerta.showAndWait().ifPresent(respuesta -> {
+                        if (respuesta == ButtonType.OK) {
+                            eliminarNota(nota);
+                        }
+                    });
+                });            }
 
             private final HBox pane = new HBox(10, btnEditar, btnEliminar);
 

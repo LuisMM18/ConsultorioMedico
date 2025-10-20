@@ -140,11 +140,23 @@ public class PacientesViewController {
                 });
 
                 eliminarBtn.setOnAction(e -> {
-
-
+                    // Obtener el paciente a eliminar
                     Paciente paciente = getTableView().getItems().get(getIndex());
-                    listaPacientes.remove(paciente);
-                    totalPacientesLabel.setText(String.valueOf(listaPacientes.size()));
+
+                    // Crear la alerta de confirmación
+                    Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+                    alerta.setTitle("Confirmar Eliminación");
+                    alerta.setHeaderText("¿Estás seguro de que deseas eliminar a este paciente?");
+                    alerta.setContentText(paciente.getNombre());
+
+                    // Mostrar la alerta y esperar la respuesta del usuario
+                    alerta.showAndWait().ifPresent(respuesta -> {
+                        if (respuesta == ButtonType.OK) {
+                            // Si el usuario presiona "OK", se ejecuta el código de eliminación
+                            listaPacientes.remove(paciente);
+                            totalPacientesLabel.setText(String.valueOf(listaPacientes.size()));
+                        }
+                    });
                 });
                 notasBtn.setOnAction(e -> {
                     try {
