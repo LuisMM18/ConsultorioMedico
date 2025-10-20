@@ -81,7 +81,8 @@ public class NotasController {
                             eliminarNota(nota);
                         }
                     });
-                });            }
+                });
+            }
 
             private final HBox pane = new HBox(10, btnEditar, btnEliminar);
 
