@@ -1,0 +1,47 @@
+nombre consultoriodb
+
+CREATE TABLE usuarios (
+    idUsuario INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    rol INT,
+    contrasena VARCHAR(255),
+    activo BOOLEAN DEFAULT TRUE,
+    nombre VARCHAR(100),
+    apellidoUNO VARCHAR(100),
+    apellidoDOS VARCHAR(100)
+);
+
+CREATE TABLE pacientes (
+    idPaciente INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100),
+    apellidoUNO VARCHAR(100),
+    apellidoDOS VARCHAR(100)
+);
+
+CREATE TABLE citas (
+    idCitas INT AUTO_INCREMENT PRIMARY KEY,
+    idUsuarioRef INT,
+    idPacienteRef INT,
+    fechaHora DATETIME,
+    tipoConsulta VARCHAR(100),
+    activo BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (idUsuarioRef) REFERENCES usuarios(idUsuario),
+    FOREIGN KEY (idPacienteRef) REFERENCES pacientes(idPaciente)
+);
+
+CREATE TABLE reportes (
+    idReporte INT AUTO_INCREMENT PRIMARY KEY,
+    idUsuarioRef INT NOT NULL,
+    titulo VARCHAR(255),
+    contenido TEXT,
+    fecha DATE,
+    FOREIGN KEY (idUsuarioRef) REFERENCES usuarios(idUsuario)
+);
+
+CREATE TABLE notas (
+    idNotas INT AUTO_INCREMENT PRIMARY KEY,
+    idCitasRef INT NOT NULL,
+    titulo VARCHAR(255),
+    textoNota TEXT,
+    FOREIGN KEY (idCitasRef) REFERENCES citas(idCitas)
+);
