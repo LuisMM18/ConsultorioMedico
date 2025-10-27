@@ -3,12 +3,12 @@ package consultorio;
 import consultorio.model.CitaCalendario;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 //documento para agregar funciones sql
-
 public class DAO {
     public boolean DAOautenticarUsuario(String usuario, String contrasena) {
         String sql = "SELECT 1 FROM usuarios WHERE email = ? AND contrasena = ? AND activo = 1";
@@ -75,6 +75,8 @@ public class DAO {
         if (c != null && !c.isEmpty()) { if (sb.length()>0) sb.append(" "); sb.append(c); }
         return sb.toString().trim();
     }
+
+    //CITAS
     public boolean actualizarCita(int idCitas, LocalDateTime nuevaFechaHora, String nuevoTipo) {
         String sql = "UPDATE citas SET fechaHora = ?, tipoConsulta = ? WHERE idCitas = ?";
         try (Connection conn = DBUtil.getConnection();
@@ -85,4 +87,101 @@ public class DAO {
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); return false; }
     }
+
+    public boolean crearCita(int idUsuarioRef, int idPacienteRef, LocalDateTime fechaHora, String tipoConsulta) {
+        String sql = "INSERT INTO citas (idUsuarioRef, idPacienteRef, fechaHora, tipoConsulta, activo) VALUES (?,?,?,?,1)";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idUsuarioRef);
+            ps.setInt(2, idPacienteRef);
+            ps.setTimestamp(3, Timestamp.valueOf(fechaHora));
+            ps.setString(4, tipoConsulta);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean cancelarCita(int idCitas) {
+        String sql = "UPDATE citas SET activo = 0 WHERE idCitas = ?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idCitas);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    //crear Reporte-pendiente
+    public boolean crearReporte(int idUsuarioRef, String titulo, String contenido, LocalDate fecha) {
+        String sql = "INSERT INTO reportes (idUsuarioRef, titulo, contenido, fecha) VALUES (?,?,?,?)";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, idUsuarioRef);
+            ps.setString(2, titulo);
+            ps.setString(3, contenido);
+
+            // Si no se pasa fecha, usa la actual
+            LocalDate fechaFinal = (fecha != null) ? fecha : LocalDate.now();
+            ps.setDate(4, java.sql.Date.valueOf(fechaFinal));
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+//NOTAS_pendiente
+
+    public Integer crearNota(int idCitasRef, String titulo, String texto) {
+        String sql = "INSERT INTO notas (idCitasRef, titulo, textoNota) VALUES (?,?,?)";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, idCitasRef);
+            ps.setString(2, titulo);
+            ps.setString(3, texto);
+            if (ps.executeUpdate() > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return null;
+    }
+
+
+    public boolean actualizarNota(int idNotas, String titulo, String texto) {
+        String sql = "UPDATE notas SET titulo=?, textoNota=? WHERE idNotas=?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, titulo);
+            ps.setString(2, texto);
+            ps.setInt(3, idNotas);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); return false; }
+    }
+
+    public boolean eliminarNota(int idNotas) {
+        String sql = "DELETE FROM notas WHERE idNotas=?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idNotas);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); return false; }
+    }
+
+
+
+
+
+
+
+
+
+
 }

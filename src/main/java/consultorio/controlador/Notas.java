@@ -33,3 +33,4 @@ public class Notas {
     public StringProperty contenidoProperty() { return contenido; }
     public ObjectProperty<LocalDate> fechaProperty() { return fecha; }
 }
+
