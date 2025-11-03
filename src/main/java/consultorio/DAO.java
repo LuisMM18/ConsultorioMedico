@@ -137,7 +137,8 @@ public class DAO {
         }
     }
 
-//NOTAS_pendiente
+//Notas-pendiente en BD
+    //Crear Nota
 public Integer crearNota(int idCitasRef, String titulo, String textoNota, LocalDate fecha) {
     final String sql = "INSERT INTO notas (idCitasRef, titulo, textoNota, fechaNota) VALUES (?,?,?,?)";
     try (Connection c = DBUtil.getConnection();
@@ -157,6 +158,7 @@ public Integer crearNota(int idCitasRef, String titulo, String textoNota, LocalD
     return null;
 }
 
+//act nota
     public boolean actualizarNota(int idNotas, String titulo, String textoNota, LocalDate fecha) {
         final String sql = "UPDATE notas SET titulo=?, textoNota=?, fechaNota=? WHERE idNotas=?";
         try (Connection c = DBUtil.getConnection();
@@ -171,6 +173,7 @@ public Integer crearNota(int idCitasRef, String titulo, String textoNota, LocalD
         return false;
     }
 
+    //eliminar not
     public boolean eliminarNota(int idNotas) {
         final String sql = "DELETE FROM notas WHERE idNotas=?";
         try (Connection c = DBUtil.getConnection();
@@ -180,7 +183,7 @@ public Integer crearNota(int idCitasRef, String titulo, String textoNota, LocalD
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
     }
-
+//obtener Notas por cita ID
     public List<Nota> getNotasPorCita(int idCitasRef) {
         final String sql = """
             SELECT idNotas, idCitasRef, titulo, textoNota, fechaNota
@@ -208,7 +211,7 @@ public Integer crearNota(int idCitasRef, String titulo, String textoNota, LocalD
         return list;
     }
 
-    // En consultorio.DAO
+    // no termi
     public Integer getUltimaCitaIdPorPaciente(int idPaciente) {
         final String sql = "SELECT idCitas FROM citas WHERE idPacienteRef=? AND activo=1 ORDER BY fechaHora DESC LIMIT 1";
         try (Connection c = DBUtil.getConnection();
