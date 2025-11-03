@@ -26,7 +26,7 @@ public class NotasController {
     @FXML private TableColumn<Notas, Void> colAcciones;
     @FXML private TextField buscarNotaField;
 
-    private ObservableList<Notas> listaNotas = FXCollections.observableArrayList();
+    private final ObservableList<Notas> listaNotas = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
@@ -43,17 +43,17 @@ public class NotasController {
                 new Notas(2, "Llamar laboratorio", "Preguntar resultados de sangre", LocalDate.now())
         );
 
-        // Crear lista filtrada
+        // Lista filtrada
         FilteredList<Notas> filtrada = new FilteredList<>(listaNotas, p -> true);
 
         // Filtro en tiempo real
         buscarNotaField.textProperty().addListener((obs, oldValue, newValue) -> {
-            String filtro = newValue.toLowerCase();
+            String filtro = (newValue == null) ? "" : newValue.toLowerCase();
             filtrada.setPredicate(nota -> {
                 if (filtro.isEmpty()) return true;
-                return nota.getTitulo().toLowerCase().contains(filtro)
+                return (nota.getTitulo() != null && nota.getTitulo().toLowerCase().contains(filtro))
                         || String.valueOf(nota.getId()).contains(filtro)
-                        || nota.getContenido().toLowerCase().contains(filtro);
+                        || (nota.getContenido() != null && nota.getContenido().toLowerCase().contains(filtro));
             });
         });
 
@@ -64,18 +64,23 @@ public class NotasController {
         Callback<TableColumn<Notas, Void>, TableCell<Notas, Void>> cellFactory = param -> new TableCell<>() {
             private final Button btnEditar = new Button("Editar");
             private final Button btnEliminar = new Button("Eliminar");
+            private final HBox pane = new HBox(10, btnEditar, btnEliminar);
+
             {
-                btnEditar.setStyle("-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;");
-                btnEliminar.setStyle("-fx-background-color: #A9A9A9; -fx-text-fill: white; -fx-font-weight: bold;");
-                btnEditar.setOnAction(e -> editarNota());
+                btnEditar.setStyle("-fx-background-color:#9ADDFF; -fx-text-fill:white; -fx-font-weight:bold;");
+                btnEliminar.setStyle("-fx-background-color:#A9A9A9; -fx-text-fill:white; -fx-font-weight:bold;");
+
+                btnEditar.setOnAction(e -> {
+                    Notas nota = getTableView().getItems().get(getIndex());
+                    abrirEditar(nota);
+                });
+
                 btnEliminar.setOnAction(e -> {
                     Notas nota = getTableView().getItems().get(getIndex());
-
                     Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
                     alerta.setTitle("Confirmar Eliminación");
                     alerta.setHeaderText("¿Estás seguro de que deseas eliminar esta nota?");
                     alerta.setContentText("Título: " + nota.getTitulo());
-
                     alerta.showAndWait().ifPresent(respuesta -> {
                         if (respuesta == ButtonType.OK) {
                             eliminarNota(nota);
@@ -83,8 +88,6 @@ public class NotasController {
                     });
                 });
             }
-
-            private final HBox pane = new HBox(10, btnEditar, btnEliminar);
 
             @Override
             protected void updateItem(Void item, boolean empty) {
@@ -96,30 +99,21 @@ public class NotasController {
     }
 
     @FXML
-    public void editarNota() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/EditarNotaView.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Editar Nota");
-            stage.initModality(Modality.APPLICATION_MODAL); // Bloquea la principal hasta cerrar
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    @FXML
-    private void AgregarNota(){
+    private void AgregarNota() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/AgregarNotaView.fxml"));
             Parent root = loader.load();
+            AgregarNotaController ctrl = loader.getController();
+
+            // Al guardar: agrega a la tabla; el ID se genera aquí
+            ctrl.setOnGuardar(nuevaNota -> {
+                listaNotas.add(nuevaNota);
+                tablaNotas.refresh();
+            }, this::nextId);
 
             Stage stage = new Stage();
-            stage.setTitle("Editar Nota");
-            stage.initModality(Modality.APPLICATION_MODAL); // Bloquea la principal hasta cerrar
+            stage.setTitle("Agregar Nota");
+            stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
             stage.showAndWait();
 
@@ -127,7 +121,33 @@ public class NotasController {
             e.printStackTrace();
         }
     }
+
+    private void abrirEditar(Notas nota) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/EditarNotaView.fxml"));
+            Parent root = loader.load();
+            EditarNotaController ctrl = loader.getController();
+
+            // Al guardar: refresca la tabla (es el mismo objeto editado)
+            ctrl.setNota(nota, n -> tablaNotas.refresh());
+
+            Stage stage = new Stage();
+            stage.setTitle("Editar Nota");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void eliminarNota(Notas nota) {
         listaNotas.remove(nota);
+    }
+
+    // Genera un ID consecutivo simple
+    private int nextId() {
+        return listaNotas.stream().mapToInt(Notas::getId).max().orElse(0) + 1;
     }
 }

@@ -1,6 +1,7 @@
 package consultorio;
 
 import consultorio.model.CitaCalendario;
+import consultorio.model.Nota;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -137,51 +138,91 @@ public class DAO {
     }
 
 //NOTAS_pendiente
+public Integer crearNota(int idCitasRef, String titulo, String textoNota, LocalDate fecha) {
+    final String sql = "INSERT INTO notas (idCitasRef, titulo, textoNota, fechaNota) VALUES (?,?,?,?)";
+    try (Connection c = DBUtil.getConnection();
+         PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        ps.setInt(1, idCitasRef);
+        ps.setString(2, titulo);
+        ps.setString(3, textoNota);
+        if (fecha != null) ps.setDate(4, java.sql.Date.valueOf(fecha));
+        else ps.setNull(4, Types.DATE);
 
-    public Integer crearNota(int idCitasRef, String titulo, String texto) {
-        String sql = "INSERT INTO notas (idCitasRef, titulo, textoNota) VALUES (?,?,?)";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        if (ps.executeUpdate() > 0) {
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        }
+    } catch (SQLException e) { e.printStackTrace(); }
+    return null;
+}
+
+    public boolean actualizarNota(int idNotas, String titulo, String textoNota, LocalDate fecha) {
+        final String sql = "UPDATE notas SET titulo=?, textoNota=?, fechaNota=? WHERE idNotas=?";
+        try (Connection c = DBUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, titulo);
+            ps.setString(2, textoNota);
+            if (fecha != null) ps.setDate(3, java.sql.Date.valueOf(fecha));
+            else ps.setNull(3, Types.DATE);
+            ps.setInt(4, idNotas);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
+    public boolean eliminarNota(int idNotas) {
+        final String sql = "DELETE FROM notas WHERE idNotas=?";
+        try (Connection c = DBUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, idNotas);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
+    public List<Nota> getNotasPorCita(int idCitasRef) {
+        final String sql = """
+            SELECT idNotas, idCitasRef, titulo, textoNota, fechaNota
+            FROM notas
+            WHERE idCitasRef=?
+            ORDER BY COALESCE(fechaNota, CURDATE()) DESC, idNotas DESC
+        """;
+        List<Nota> list = new ArrayList<>();
+        try (Connection c = DBUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, idCitasRef);
-            ps.setString(2, titulo);
-            ps.setString(3, texto);
-            if (ps.executeUpdate() > 0) {
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) return rs.getInt(1);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Nota n = new Nota();
+                    n.setIdNotas(rs.getInt("idNotas"));
+                    n.setIdCitasRef(rs.getInt("idCitasRef"));
+                    n.setTitulo(rs.getString("titulo"));
+                    n.setTextoNota(rs.getString("textoNota"));
+                    Date d = rs.getDate("fechaNota");
+                    n.setFechaNota(d != null ? d.toLocalDate() : null);
+                    list.add(n);
                 }
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
+    }
+
+    // En consultorio.DAO
+    public Integer getUltimaCitaIdPorPaciente(int idPaciente) {
+        final String sql = "SELECT idCitas FROM citas WHERE idPacienteRef=? AND activo=1 ORDER BY fechaHora DESC LIMIT 1";
+        try (Connection c = DBUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, idPaciente);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt("idCitas");
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return null;
     }
 
 
-    public boolean actualizarNota(int idNotas, String titulo, String texto) {
-        String sql = "UPDATE notas SET titulo=?, textoNota=? WHERE idNotas=?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, titulo);
-            ps.setString(2, texto);
-            ps.setInt(3, idNotas);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) { e.printStackTrace(); return false; }
-    }
-
-    public boolean eliminarNota(int idNotas) {
-        String sql = "DELETE FROM notas WHERE idNotas=?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, idNotas);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) { e.printStackTrace(); return false; }
-    }
 
 
 
-
-
-
-
-
-
-
-}
+}//DAO
