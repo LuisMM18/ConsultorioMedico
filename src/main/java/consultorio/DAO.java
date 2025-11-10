@@ -224,7 +224,51 @@ public Integer crearNota(int idCitasRef, String titulo, String textoNota, LocalD
         return null;
     }
 
+    public List<CitaCalendario> getCitasCalendarioForDate(LocalDate fecha) {
+        String sql = """
+        SELECT 
+            c.idCitas, 
+            c.idUsuarioRef, 
+            c.idPacienteRef, 
+            c.fechaHora, 
+            c.tipoConsulta, 
+            c.activo,
+            CONCAT(p.nombre, ' ', p.apellidoUNO, ' ', p.apellidoDOS) AS pacienteNombre,
+            CONCAT(u.nombre, ' ', u.apellidoUNO) AS usuarioNombre
+        FROM citas c
+        LEFT JOIN pacientes p ON c.idPacienteRef = p.idPaciente
+        LEFT JOIN usuarios u ON c.idUsuarioRef = u.idUsuario
+        WHERE c.fechaHora >= ? AND c.fechaHora < ? 
+        ORDER BY c.fechaHora
+    """;
 
+        List<CitaCalendario> citas = new ArrayList<>();
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setObject(1, fecha.atStartOfDay());
+            ps.setObject(2, fecha.plusDays(1).atStartOfDay());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CitaCalendario cita = new CitaCalendario();
+                    cita.setIdCitas(rs.getInt("idCitas"));
+                    cita.setIdUsuarioRef(rs.getInt("idUsuarioRef"));
+                    cita.setIdPacienteRef(rs.getInt("idPacienteRef"));
+                    cita.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
+                    cita.setTipoConsulta(rs.getString("tipoConsulta"));
+                    cita.setActivo(rs.getBoolean("activo"));
+                    cita.setPacienteNombre(rs.getString("pacienteNombre"));
+                    cita.setUsuarioNombre(rs.getString("usuarioNombre"));
+                    citas.add(cita);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return citas;
+    }
 
 
 
