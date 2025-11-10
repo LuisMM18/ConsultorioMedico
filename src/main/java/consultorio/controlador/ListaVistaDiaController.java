@@ -31,7 +31,6 @@ public class ListaVistaDiaController {
     @FXML
     private Button btnNuevo, btnGuardar;
 
-    //-----------------------------------------------------------------------------------------------------------------------------------
     private final DateTimeFormatter horaFmt = DateTimeFormatter.ofPattern("HH:mm");
     @FXML
     private Label fechaLabel;

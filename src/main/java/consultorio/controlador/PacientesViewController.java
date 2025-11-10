@@ -97,9 +97,6 @@ public class PacientesViewController {
     }
 
 
-    // ELIMINADO: Ya no necesitamos este método de ejemplo
-    // private void cargarDatosEjemplo() { ... }
-
     private void agregarPacienteNuevo() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/AgendarNuevaCitaView.fxml"));
@@ -145,17 +142,12 @@ public class PacientesViewController {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/EditarPacienteView.fxml"));
                         Parent root = loader.load();
 
-                        // Aquí necesitarías un controlador para EditarPacienteView para pasarle el paciente
-                        // EditarPacienteController controller = loader.getController();
-                        // controller.initData(pacienteSeleccionado);
-
                         Stage stage = new Stage();
                         stage.setTitle("Editar Paciente");
                         stage.initModality(Modality.APPLICATION_MODAL);
                         stage.setScene(new Scene(root));
                         stage.showAndWait();
 
-                        // Al cerrar, refrescar la tabla por si hubo cambios
                         refrescarTablaPacientes();
 
                     } catch (IOException exception) {

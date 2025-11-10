@@ -18,11 +18,10 @@ public class AgendarNuevaCitaController {
     @FXML private Button guardarButton;
     @FXML private Button cancelarButton;
 
-
     @Getter
     private boolean guardado = false;
 
-    private DAO dao;
+    private DAO dao; // AÑADIDO: Instancia del DAO
 
     @FXML
     public void initialize() {

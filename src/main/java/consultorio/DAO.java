@@ -1,11 +1,14 @@
 package consultorio;
 
+import consultorio.controlador.PacientesViewController;
 import consultorio.model.CitaCalendario;
 import consultorio.model.Nota;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +28,46 @@ public class DAO {
             e.printStackTrace(); // use a logger in real projects
             return false;
         }
+    }
+
+    public List<CitaCalendario> getCitasForDate(LocalDate fecha) {
+        String sql = "SELECT c.idCitas, c.idUsuarioRef, c.idPacienteRef, c.fechaHora, c.tipoConsulta, c.activo, " +
+                "p.nombre AS pnombre, p.apellidoUNO AS pap1, p.apellidoDOS AS pap2, " +
+                "u.nombre AS unombre, u.apellidoUNO AS uap1 " +
+                "FROM citas c " +
+                "LEFT JOIN pacientes p ON c.idPacienteRef = p.idPaciente " +
+                "LEFT JOIN usuarios u ON c.idUsuarioRef = u.idUsuario " +
+                "WHERE c.fechaHora >= ? AND c.fechaHora < ? AND c.activo = 1 " +
+                "ORDER BY c.fechaHora";
+
+        List<CitaCalendario> lista = new ArrayList<>();
+        ZoneId zone = ZoneId.of("America/Hermosillo"); // usa tu zona
+        ZonedDateTime zInicio = fecha.atStartOfDay(zone);
+        ZonedDateTime zFin = fecha.plusDays(1).atStartOfDay(zone);
+        Timestamp tsInicio = Timestamp.from(zInicio.toInstant());
+        Timestamp tsFin = Timestamp.from(zFin.toInstant());
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setTimestamp(1, tsInicio);
+            ps.setTimestamp(2, tsFin);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CitaCalendario c = new CitaCalendario();
+                    c.setIdCitas(rs.getInt("idCitas"));
+                    c.setIdUsuarioRef(rs.getInt("idUsuarioRef"));
+                    c.setIdPacienteRef(rs.getInt("idPacienteRef"));
+                    Timestamp ts = rs.getTimestamp("fechaHora");
+                    if (ts != null) c.setFechaHora(ts.toLocalDateTime());
+                    c.setActivo(rs.getBoolean("activo"));
+
+                    lista.add(c);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
     }
 
     public List<CitaCalendario> getCitasForMonth(int year, int month) {
@@ -270,6 +313,84 @@ public Integer crearNota(int idCitasRef, String titulo, String textoNota, LocalD
         return citas;
     }
 
+    //Pacientes
+
+    public List<PacientesViewController.Paciente> getAllPacientes() {
+        List<PacientesViewController.Paciente> lista = new ArrayList<>();
+        // Asumo que tu tabla se llama 'pacientes' y tiene estas columnas. AJÚSTALAS SI ES NECESARIO.
+        String sql = "SELECT idPaciente, nombre, apellidoUNO, apellidoDOS, fechaNacimiento, telefono, correo FROM pacientes WHERE activo = 1";
+
+        try (Connection conn = DBUtil.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                int id = rs.getInt("idPaciente");
+                String nombre = rs.getString("nombre");
+                String ap1 = rs.getString("apellidoUNO");
+                String ap2 = rs.getString("apellidoDOS");
+                String nombreCompleto = buildFullName(nombre, ap1, ap2); // Reutilizamos tu método
+
+                // Para calcular la edad, necesitamos la fecha de nacimiento
+                Date fechaNacimientoSql = rs.getDate("fechaNacimiento");
+                LocalDate fechaNacimiento = (fechaNacimientoSql != null) ? fechaNacimientoSql.toLocalDate() : null;
+
+                String telefono = rs.getString("telefono");
+                String correo = rs.getString("correo");
+
+                lista.add(new PacientesViewController.Paciente(id, nombreCompleto, fechaNacimiento, telefono, correo));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public boolean eliminarPaciente(int idPaciente) {
+        String sql = "UPDATE pacientes SET activo = 0 WHERE idPaciente = ?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idPaciente);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean crearPaciente (String nombreCompleto, LocalDate fechaNacimiento, String telefono, String correo) {
+        String[] partesNombre = (nombreCompleto != null && !nombreCompleto.isEmpty()) ? nombreCompleto.split(" ") : new String[0];
+        String nombre = (partesNombre.length > 0) ? partesNombre[0] : "";
+        String ap1 = (partesNombre.length > 1) ? partesNombre[1] : null;
+        String ap2 = null;
+        if (partesNombre.length > 2) {
+            ap2 = String.join(" ", java.util.Arrays.copyOfRange(partesNombre, 2, partesNombre.length));
+        }
+        String sql = "INSERT INTO pacientes (nombre, apellidoUNO, apellidoDOS, fechaNacimiento, telefono, correo, activo) VALUES (?, ?, ?, ?, ?, ?, 1)";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)){
+
+            ps.setString(1, nombre);
+            ps.setString(2, ap1);
+            ps.setString(3, ap2);
+
+            if(fechaNacimiento != null) {
+                ps.setDate(4, java.sql.Date.valueOf(fechaNacimiento));
+            } else {
+                ps.setNull(4, Types.DATE);
+            }
+
+            ps.setString(5, telefono);
+            ps.setString(6, correo);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 
 }//DAO
