@@ -6,6 +6,8 @@ import consultorio.model.Nota;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,52 @@ public class DAO {
             return false;
         }
     }
+    //----------------------------------
+    public List<CitaCalendario> getCitasForDate(LocalDate fecha) {
+        String sql = "SELECT c.idCitas, c.idUsuarioRef, c.idPacienteRef, c.fechaHora, c.tipoConsulta, c.activo, " +
+                "p.nombre AS pnombre, p.apellidoUNO AS pap1, p.apellidoDOS AS pap2, " +
+                "u.nombre AS unombre, u.apellidoUNO AS uap1 " +
+                "FROM citas c " +
+                "LEFT JOIN pacientes p ON c.idPacienteRef = p.idPaciente " +
+                "LEFT JOIN usuarios u ON c.idUsuarioRef = u.idUsuario " +
+                "WHERE c.fechaHora >= ? AND c.fechaHora < ? AND c.activo = 1 " +
+                "ORDER BY c.fechaHora";
 
+        List<CitaCalendario> lista = new ArrayList<>();
+        ZoneId zone = ZoneId.of("America/Hermosillo"); // usa tu zona
+        ZonedDateTime zInicio = fecha.atStartOfDay(zone);
+        ZonedDateTime zFin = fecha.plusDays(1).atStartOfDay(zone);
+        Timestamp tsInicio = Timestamp.from(zInicio.toInstant());
+        Timestamp tsFin = Timestamp.from(zFin.toInstant());
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setTimestamp(1, tsInicio);
+            ps.setTimestamp(2, tsFin);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CitaCalendario c = new CitaCalendario();
+                    c.setIdCitas(rs.getInt("idCitas"));
+                    c.setIdUsuarioRef(rs.getInt("idUsuarioRef"));
+                    c.setIdPacienteRef(rs.getInt("idPacienteRef"));
+                    Timestamp ts = rs.getTimestamp("fechaHora");
+                    if (ts != null) c.setFechaHora(ts.toLocalDateTime());
+                    c.setActivo(rs.getBoolean("activo"));
+
+                    // Si quieres setear nombre paciente/usuario, descomenta y adapta:
+                    // String pnombre = rs.getString("pnombre");
+                    // String pap1 = rs.getString("pap1");
+                    // String pap2 = rs.getString("pap2");
+                    // c.setPacienteNombre(buildFullName(pnombre, pap1, pap2));
+                    lista.add(c);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+//---------------------------------
     public List<CitaCalendario> getCitasForMonth(int year, int month) {
         String sql = "SELECT c.idCitas, c.idUsuarioRef, c.idPacienteRef, c.fechaHora, c.tipoConsulta, c.activo, " +
                 "p.nombre AS pnombre, p.apellidoUNO AS pap1, p.apellidoDOS AS pap2, " +
@@ -49,9 +96,10 @@ public class DAO {
                     c.setIdPacienteRef(rs.getInt("idPacienteRef"));
                     Timestamp ts = rs.getTimestamp("fechaHora");
                     if (ts != null) c.setFechaHora(ts.toLocalDateTime());
-                    c.setTipoConsulta(rs.getString("tipoConsulta"));
+                    //c.setTipoConsulta(rs.getString("tipoConsulta"));
                     c.setActivo(rs.getBoolean("activo"));
 
+                    /*
                     String pnombre = rs.getString("pnombre");
                     String pap1 = rs.getString("pap1");
                     String pap2 = rs.getString("pap2");
@@ -60,7 +108,7 @@ public class DAO {
                     String unombre = rs.getString("unombre");
                     String uap1 = rs.getString("uap1");
                     c.setUsuarioNombre(buildFullName(unombre, uap1, null));
-
+    */
                     lista.add(c);
                 }
             }

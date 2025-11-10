@@ -12,12 +12,11 @@
         style="-fx-background-color: #f0f0f0;">
 
     <!-- CABECERA -->
-    <top>
+    <top xmlns:fx="http://javafx.com/fxml/1">
         <HBox alignment="CENTER_LEFT" style="-fx-background-color: #d3d3d3;" BorderPane.alignment="CENTER">
             <children>
-                <Label maxWidth="Infinity"
+                <Label fx:id="fechaLabel" maxWidth="Infinity"
                        style="-fx-font-size: 24px; -fx-font-weight: bold;"
-                       text="Lunes 1 / Abril / 2026"
                        HBox.hgrow="ALWAYS">
                     <padding>
                         <Insets left="20.0" />
