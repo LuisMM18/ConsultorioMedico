@@ -1,5 +1,9 @@
 package consultorio.controlador;
 
+import consultorio.DAO;
+import consultorio.model.CitaCalendario;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +15,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
 
 public class ListaVistaDiaController {
 
@@ -19,6 +30,129 @@ public class ListaVistaDiaController {
 
     @FXML
     private Button btnNuevo, btnGuardar;
+
+    //-----------------------------------------------------------------------------------------------------------------------------------
+    private final DateTimeFormatter horaFmt = DateTimeFormatter.ofPattern("HH:mm");
+    @FXML
+    private Label fechaLabel;
+    private LocalDate fechaHoy;
+
+    private final DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("EEEE d ' / ' MMMM ' / ' yyyy", new Locale("es", "MX"));
+
+    @FXML
+    private void initialize() {
+        fechaHoy = LocalDate.now(ZoneId.of("America/Hermosillo"));
+        String raw = fechaHoy.format(formatter);
+        fechaLabel.setText(titleCaseSegments(raw));
+
+        // carga las citas en background
+        cargarCitasDeHoyAsync();
+    }
+
+    private void cargarCitasDeHoyAsync() {
+        Task<List<CitaCalendario>> task = new Task<>() {
+            @Override
+            protected List<CitaCalendario> call() throws Exception {
+                DAO dao = new DAO();
+                return dao.getCitasForDate(fechaHoy); // método agregado en DAO
+            }
+        };
+
+        task.setOnSucceeded(evt -> {
+            List<CitaCalendario> citas = task.getValue();
+            appointmentContainer.getChildren().clear();
+            if (citas != null && !citas.isEmpty()) {
+                for (CitaCalendario c : citas) {
+                    // c.getFechaHora() es LocalDateTime
+                    String horaStr = c.getFechaHora() != null ? c.getFechaHora().format(horaFmt) : "";
+                    String descripcion = ""; // reemplaza si tu modelo tiene descripción o paciente
+                    // si tu modelo tiene paciente, p.ej. c.getPacienteNombre() -> descripción
+                    VBox nodo = crearCita(horaStr, descripcion);
+                    appointmentContainer.getChildren().add(nodo);
+                }
+            } else {
+                // opcional: mostrar mensaje de "no hay citas"
+                Label nada = new Label("No hay citas para este día");
+                appointmentContainer.getChildren().add(nada);
+            }
+        });
+
+        task.setOnFailed(evt -> {
+            Throwable ex = task.getException();
+            ex.printStackTrace();
+            // opcional: mostrar alert en UI
+            Platform.runLater(() -> {
+                Alert a = new Alert(Alert.AlertType.ERROR, "Error cargando citas: " + ex.getMessage(), ButtonType.OK);
+                a.showAndWait();
+            });
+        });
+
+        new Thread(task, "carga-citas-hoy").start();
+    }
+
+    private String titleCaseSegments(String s) {
+        String[] partes = s.split(" / ");
+        for (int i = 0; i < partes.length; i++) {
+            String seg = partes[i].trim();
+            if (seg.isEmpty()) continue;
+            int firstSpace = seg.indexOf(' ');
+            if (firstSpace == -1) {
+                partes[i] = capitalizeFirst(seg);
+            } else {
+                String first = seg.substring(0, firstSpace);
+                String rest  = seg.substring(firstSpace);
+                partes[i] = capitalizeFirst(first) + rest;
+            }
+        }
+        return String.join(" / ", partes);
+    }
+
+    private String capitalizeFirst(String s) {
+        if (s == null || s.isEmpty()) return s;
+        return s.substring(0,1).toUpperCase() + s.substring(1);
+    }
+    public void cargarDatosDeHoy(Connection conn) throws SQLException {
+        // SQL que usa rango [inicio, inicioDelSiguienteDia)
+        String sql = "SELECT * FROM citas WHERE fechaHora >= ? AND fechaHora < ? ORDER BY fechaHora";
+
+        // Si usas ZoneId especifico (lo definiste antes)
+        ZoneId zone = ZoneId.of("America/Hermosillo");
+
+        // Inicio del día en la zona y el inicio del siguiente día
+        ZonedDateTime zInicio = fechaHoy.atStartOfDay(zone);
+        ZonedDateTime zFin = fechaHoy.plusDays(1).atStartOfDay(zone);
+
+        Timestamp tsInicio = Timestamp.from(zInicio.toInstant());
+        Timestamp tsFin = Timestamp.from(zFin.toInstant());
+
+        DateTimeFormatter horaFmt = DateTimeFormatter.ofPattern("HH:mm");
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setTimestamp(1, tsInicio);
+            ps.setTimestamp(2, tsFin);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                // Limpiar contenedor antes de poblar
+                if (appointmentContainer != null) appointmentContainer.getChildren().clear();
+
+                while (rs.next()) {
+                    Timestamp ts = rs.getTimestamp("fechaHora");
+                    String descripcion = rs.getString("descripcion"); // ajusta nombre de columna
+                    // Convertir timestamp a LocalDateTime y formatear sólo la hora
+                    String horaStr = ts.toLocalDateTime().format(horaFmt);
+
+                    // Crear y añadir la cita a la UI
+                    VBox cita = crearCita(horaStr, descripcion != null ? descripcion : "");
+                    appointmentContainer.getChildren().add(cita);
+                }
+            }
+        }
+    }
+    public LocalDate getFechaHoy() {
+        return fechaHoy;
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------
 
     @FXML
     private void onNuevo() {

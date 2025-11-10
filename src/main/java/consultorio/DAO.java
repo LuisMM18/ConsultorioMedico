@@ -1,16 +1,15 @@
 package consultorio;
 
-import consultorio.controlador.PacientesViewController; // IMPORTANTE: Importar la clase Paciente
 import consultorio.model.CitaCalendario;
 import consultorio.model.Nota;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period; // Para calcular la edad
 import java.util.ArrayList;
 import java.util.List;
 
+//documento para agregar funciones sql
 public class DAO {
     public boolean DAOautenticarUsuario(String usuario, String contrasena) {
         String sql = "SELECT 1 FROM usuarios WHERE email = ? AND contrasena = ? AND activo = 1";
@@ -138,28 +137,28 @@ public class DAO {
         }
     }
 
-    //Notas-pendiente en BD
+//Notas-pendiente en BD
     //Crear Nota
-    public Integer crearNota(int idCitasRef, String titulo, String textoNota, LocalDate fecha) {
-        final String sql = "INSERT INTO notas (idCitasRef, titulo, textoNota, fechaNota) VALUES (?,?,?,?)";
-        try (Connection c = DBUtil.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, idCitasRef);
-            ps.setString(2, titulo);
-            ps.setString(3, textoNota);
-            if (fecha != null) ps.setDate(4, java.sql.Date.valueOf(fecha));
-            else ps.setNull(4, Types.DATE);
+public Integer crearNota(int idCitasRef, String titulo, String textoNota, LocalDate fecha) {
+    final String sql = "INSERT INTO notas (idCitasRef, titulo, textoNota, fechaNota) VALUES (?,?,?,?)";
+    try (Connection c = DBUtil.getConnection();
+         PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        ps.setInt(1, idCitasRef);
+        ps.setString(2, titulo);
+        ps.setString(3, textoNota);
+        if (fecha != null) ps.setDate(4, java.sql.Date.valueOf(fecha));
+        else ps.setNull(4, Types.DATE);
 
-            if (ps.executeUpdate() > 0) {
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) return rs.getInt(1);
-                }
+        if (ps.executeUpdate() > 0) {
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) return rs.getInt(1);
             }
-        } catch (SQLException e) { e.printStackTrace(); }
-        return null;
-    }
+        }
+    } catch (SQLException e) { e.printStackTrace(); }
+    return null;
+}
 
-    //act nota
+//act nota
     public boolean actualizarNota(int idNotas, String titulo, String textoNota, LocalDate fecha) {
         final String sql = "UPDATE notas SET titulo=?, textoNota=?, fechaNota=? WHERE idNotas=?";
         try (Connection c = DBUtil.getConnection();
@@ -184,7 +183,7 @@ public class DAO {
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
     }
-    //obtener Notas por cita ID
+//obtener Notas por cita ID
     public List<Nota> getNotasPorCita(int idCitasRef) {
         final String sql = """
             SELECT idNotas, idCitasRef, titulo, textoNota, fechaNota
@@ -225,82 +224,8 @@ public class DAO {
         return null;
     }
 
-    //Pacientes
 
-    public List<PacientesViewController.Paciente> getAllPacientes() {
-        List<PacientesViewController.Paciente> lista = new ArrayList<>();
-        // Asumo que tu tabla se llama 'pacientes' y tiene estas columnas. AJÚSTALAS SI ES NECESARIO.
-        String sql = "SELECT idPaciente, nombre, apellidoUNO, apellidoDOS, fechaNacimiento, telefono, correo FROM pacientes WHERE activo = 1";
 
-        try (Connection conn = DBUtil.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
 
-            while (rs.next()) {
-                int id = rs.getInt("idPaciente");
-                String nombre = rs.getString("nombre");
-                String ap1 = rs.getString("apellidoUNO");
-                String ap2 = rs.getString("apellidoDOS");
-                String nombreCompleto = buildFullName(nombre, ap1, ap2); // Reutilizamos tu método
 
-                // Para calcular la edad, necesitamos la fecha de nacimiento
-                Date fechaNacimientoSql = rs.getDate("fechaNacimiento");
-                LocalDate fechaNacimiento = (fechaNacimientoSql != null) ? fechaNacimientoSql.toLocalDate() : null;
-
-                String telefono = rs.getString("telefono");
-                String correo = rs.getString("correo");
-
-                lista.add(new PacientesViewController.Paciente(id, nombreCompleto, fechaNacimiento, telefono, correo));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return lista;
-    }
-
-    public boolean eliminarPaciente(int idPaciente) {
-        String sql = "UPDATE pacientes SET activo = 0 WHERE idPaciente = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, idPaciente);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean crearPaciente (String nombreCompleto, LocalDate fechaNacimiento, String telefono, String correo) {
-        String[] partesNombre = (nombreCompleto != null && !nombreCompleto.isEmpty()) ? nombreCompleto.split(" ") : new String[0];
-        String nombre = (partesNombre.length > 0) ? partesNombre[0] : "";
-        String ap1 = (partesNombre.length > 1) ? partesNombre[1] : null;
-        String ap2 = null;
-        if (partesNombre.length > 2) {
-            ap2 = String.join(" ", java.util.Arrays.copyOfRange(partesNombre, 2, partesNombre.length));
-    }
-        String sql = "INSERT INTO pacientes (nombre, apellidoUNO, apellidoDOS, fechaNacimiento, telefono, correo, activo) VALUES (?, ?, ?, ?, ?, ?, 1)";
-
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)){
-
-            ps.setString(1, nombre);
-            ps.setString(2, ap1);
-            ps.setString(3, ap2);
-
-            if(fechaNacimiento != null) {
-                ps.setDate(4, java.sql.Date.valueOf(fechaNacimiento));
-            } else {
-                ps.setNull(4, Types.DATE);
-            }
-
-            ps.setString(5, telefono);
-            ps.setString(6, correo);
-
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-}
+}//DAO
