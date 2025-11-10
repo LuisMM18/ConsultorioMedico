@@ -1,5 +1,6 @@
 package consultorio.controlador;
 
+import consultorio.DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -13,11 +14,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.List;
 
 public class PacientesViewController {
 
     @FXML private TextField buscarField;
-    @FXML private Button buscarButton;
     @FXML private Button nuevoButton;
 
     @FXML private Label totalPacientesLabel;
@@ -33,9 +36,12 @@ public class PacientesViewController {
     @FXML private TableColumn<Paciente, Void> colAcciones;
 
     private ObservableList<Paciente> listaPacientes = FXCollections.observableArrayList();
+    private DAO pacienteDAO; // AÑADIDO: Instancia del DAO
 
     @FXML
     public void initialize() {
+        pacienteDAO = new DAO(); // AÑADIDO: Inicializar el DAO
+
         // Configurar columnas
         colID.setCellValueFactory(data -> data.getValue().idProperty().asObject());
         colNombre.setCellValueFactory(data -> data.getValue().nombreProperty());
@@ -43,8 +49,8 @@ public class PacientesViewController {
         colTelefono.setCellValueFactory(data -> data.getValue().telefonoProperty());
         colCorreo.setCellValueFactory(data -> data.getValue().correoProperty());
 
-        // Cargar datos
-        cargarDatosEjemplo();
+        // MODIFICADO: Cargar datos desde la base de datos en lugar de ejemplos
+        refrescarTablaPacientes();
 
         // Crear lista filtrada que se basa en la lista original
         FilteredList<Paciente> filtrada = new FilteredList<>(listaPacientes, p -> true);
@@ -52,14 +58,14 @@ public class PacientesViewController {
         // Vincular el TableView a la lista filtrada
         tablaPacientes.setItems(filtrada);
 
-        // Configurar la columna de acciones (solo se hace una vez)
+        // Configurar la columna de acciones
         agregarColumnaAcciones();
 
         // Evento de búsqueda
         buscarField.textProperty().addListener((obs, oldValue, newValue) -> {
             filtrada.setPredicate(paciente -> {
                 if (newValue == null || newValue.isEmpty()) {
-                    return true; // muestra todos
+                    return true;
                 }
                 String filtro = newValue.toLowerCase();
                 return paciente.getNombre().toLowerCase().contains(filtro)
@@ -71,18 +77,28 @@ public class PacientesViewController {
         nuevoButton.setOnAction(e -> agregarPacienteNuevo());
     }
 
-    private void cargarDatosEjemplo() {
-        listaPacientes.addAll(
-                new Paciente(1, "Ana López", 25, "555-1234", "ana@example.com"),
-                new Paciente(2, "Carlos Pérez", 42, "555-5678", "carlos@example.com"),
-                new Paciente(3, "Marta García", 31, "555-8765", "marta@example.com"),
-                new Paciente(4, "José Torres", 60, "555-2222", "jose@example.com")
-        );
+    // MÉTODO NUEVO: Carga o actualiza los pacientes desde la base de datos
+    private void refrescarTablaPacientes() {
+        try {
+            listaPacientes.clear(); // Limpiar la lista actual
+            List<Paciente> pacientesDesdeDB = pacienteDAO.getAllPacientes(); // Obtener la lista actualizada
+            listaPacientes.addAll(pacientesDesdeDB); // Añadirla a la lista observable
 
-        totalPacientesLabel.setText(String.valueOf(listaPacientes.size()));
-        nuevosMesLabel.setText("3");
-        citasActivasLabel.setText("9");
+            // Actualizar etiquetas
+            totalPacientesLabel.setText(String.valueOf(listaPacientes.size()));
+            // Aquí puedes agregar lógica para calcular "nuevos este mes" y "citas activas"
+            // nuevosMesLabel.setText("...");
+            // citasActivasLabel.setText("...");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarAlerta("Error de Base de Datos", "No se pudieron cargar los pacientes.");
+        }
     }
+
+
+    // ELIMINADO: Ya no necesitamos este método de ejemplo
+    // private void cargarDatosEjemplo() { ... }
 
     private void agregarPacienteNuevo() {
         try {
@@ -98,9 +114,9 @@ public class PacientesViewController {
             stage.initOwner(tablaPacientes.getScene().getWindow());
             stage.showAndWait();
 
+            // MODIFICADO: Si se guardó un paciente, refrescamos toda la tabla desde la BD
             if (controller.isGuardado()) {
-                listaPacientes.add(controller.getNuevoPaciente());
-                totalPacientesLabel.setText(String.valueOf(listaPacientes.size()));
+                refrescarTablaPacientes();
             }
 
         } catch (Exception e) {
@@ -122,17 +138,25 @@ public class PacientesViewController {
                 notasBtn.setStyle("-fx-background-color: #grey; -fx-text-fill: black; -fx-background-radius: 6;");
 
                 editarBtn.setOnAction(e -> {
-                    // paciente = getTableView().getItems().get(getIndex());
-                    // mostrarAlerta("Editar paciente", "Editar datos de: " + paciente.getNombre());
+                    // Lógica para editar (requiere pasar el paciente a la nueva ventana)
                     try {
+                        Paciente pacienteSeleccionado = getTableView().getItems().get(getIndex());
+
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/EditarPacienteView.fxml"));
                         Parent root = loader.load();
 
+                        // Aquí necesitarías un controlador para EditarPacienteView para pasarle el paciente
+                        // EditarPacienteController controller = loader.getController();
+                        // controller.initData(pacienteSeleccionado);
+
                         Stage stage = new Stage();
                         stage.setTitle("Editar Paciente");
-                        stage.initModality(Modality.APPLICATION_MODAL); // Bloquea la principal hasta cerrar
+                        stage.initModality(Modality.APPLICATION_MODAL);
                         stage.setScene(new Scene(root));
                         stage.showAndWait();
+
+                        // Al cerrar, refrescar la tabla por si hubo cambios
+                        refrescarTablaPacientes();
 
                     } catch (IOException exception) {
                         exception.printStackTrace();
@@ -144,13 +168,18 @@ public class PacientesViewController {
 
                     Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
                     alerta.setTitle("Confirmar Eliminación");
-                    alerta.setHeaderText("¿Estás seguro de que deseas eliminar a este paciente?");
+                    alerta.setHeaderText("¿Seguro que deseas eliminar a este paciente?");
                     alerta.setContentText(paciente.getNombre());
 
                     alerta.showAndWait().ifPresent(respuesta -> {
                         if (respuesta == ButtonType.OK) {
-                            listaPacientes.remove(paciente);
-                            totalPacientesLabel.setText(String.valueOf(listaPacientes.size()));
+                            // MODIFICADO: Llamar al DAO para eliminar y luego refrescar
+                            boolean eliminado = pacienteDAO.eliminarPaciente(paciente.getId());
+                            if (eliminado) {
+                                refrescarTablaPacientes();
+                            } else {
+                                mostrarAlerta("Error", "No se pudo eliminar el paciente de la base de datos.");
+                            }
                         }
                     });
                 });
@@ -161,7 +190,7 @@ public class PacientesViewController {
 
                         Stage stage = new Stage();
                         stage.setTitle("Notas");
-                        stage.initModality(Modality.APPLICATION_MODAL); // Bloquea la principal hasta cerrar
+                        stage.initModality(Modality.APPLICATION_MODAL);
                         stage.setScene(new Scene(root));
                         stage.showAndWait();
 
@@ -188,7 +217,7 @@ public class PacientesViewController {
         alerta.showAndWait();
     }
 
-    // Clase modelo interna (puedes moverla a un archivo aparte si prefieres)
+    // Clase modelo interna
     public static class Paciente {
         private final javafx.beans.property.IntegerProperty id;
         private final javafx.beans.property.StringProperty nombre;
@@ -196,10 +225,17 @@ public class PacientesViewController {
         private final javafx.beans.property.StringProperty telefono;
         private final javafx.beans.property.StringProperty correo;
 
-        public Paciente(int id, String nombre, int edad, String telefono, String correo) {
+        // MODIFICADO: El constructor ahora acepta LocalDate para la fecha de nacimiento
+        public Paciente(int id, String nombre, LocalDate fechaNacimiento, String telefono, String correo) {
             this.id = new javafx.beans.property.SimpleIntegerProperty(id);
             this.nombre = new javafx.beans.property.SimpleStringProperty(nombre);
-            this.edad = new javafx.beans.property.SimpleIntegerProperty(edad);
+
+            int edadCalculada = 0;
+            if (fechaNacimiento != null) {
+                edadCalculada = Period.between(fechaNacimiento, LocalDate.now()).getYears();
+            }
+            this.edad = new javafx.beans.property.SimpleIntegerProperty(edadCalculada);
+
             this.telefono = new javafx.beans.property.SimpleStringProperty(telefono);
             this.correo = new javafx.beans.property.SimpleStringProperty(correo);
         }

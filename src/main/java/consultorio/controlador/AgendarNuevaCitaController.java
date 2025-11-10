@@ -1,11 +1,11 @@
 package consultorio.controlador;
 
+import consultorio.DAO; // IMPORTANTE: Importar el DAO
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import lombok.Getter;
 import java.time.LocalDate;
-import java.time.Period;
 
 public class AgendarNuevaCitaController {
 
@@ -13,50 +13,49 @@ public class AgendarNuevaCitaController {
     @FXML private DatePicker fechaNacimientoPicker;
     @FXML private TextField telefonoField;
     @FXML private TextField correoField;
-    @FXML private TextField notasField;
+    @FXML private TextField notasField; // Este campo no se usa en la lógica de 'guardarPaciente'
 
     @FXML private Button guardarButton;
     @FXML private Button cancelarButton;
 
-    @Getter
-    private PacientesViewController.Paciente nuevoPaciente;
+
     @Getter
     private boolean guardado = false;
 
+    private DAO dao;
+
     @FXML
     public void initialize() {
-        // Usando los nombres corregidos
+        dao = new DAO(); // AÑADIDO: Inicializar el DAO
         guardarButton.setOnAction(e -> guardarPaciente());
         cancelarButton.setOnAction(e -> cerrarVentana());
     }
 
     private void guardarPaciente() {
-        // Usando los nombres corregidos
-        if (nombreField.getText().isEmpty() || telefonoField.getText().isEmpty()) {
+        String nombre = nombreField.getText();
+        String telefono = telefonoField.getText();
+
+        if (nombre.isEmpty() || telefono.isEmpty()) {
             mostrarAlerta("Faltan datos", "Por favor completa al menos el nombre y el teléfono.");
             return;
         }
 
-        // --- Lógica mejorada para la edad ---
-        int edad = 0;
-        if (fechaNacimientoPicker.getValue() != null) {
-            edad = Period.between(fechaNacimientoPicker.getValue(), LocalDate.now()).getYears();
+        // Obtener los valores
+        String correo = correoField.getText();
+        LocalDate fechaNac = fechaNacimientoPicker.getValue();
+
+        // MODIFICADO: Llamar al DAO para guardar en la base de datos
+        boolean exito = dao.crearPaciente(nombre, fechaNac, telefono, correo);
+
+        if (exito) {
+            guardado = true; // Si el DAO lo guardó, marcamos como guardado
+            cerrarVentana();
+        } else {
+            mostrarAlerta("Error de Base de Datos", "No se pudo guardar el nuevo paciente.");
         }
-
-        nuevoPaciente = new PacientesViewController.Paciente(
-                (int) (Math.random() * 10000), // ID aleatorio temporal
-                nombreField.getText(),
-                edad,
-                telefonoField.getText(),
-                correoField.getText()
-        );
-
-        guardado = true;
-        cerrarVentana();
     }
 
     private void cerrarVentana() {
-        // Usando el nombre corregido
         Stage stage = (Stage) cancelarButton.getScene().getWindow();
         stage.close();
     }
