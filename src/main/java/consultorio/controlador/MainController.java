@@ -1,5 +1,6 @@
 package consultorio.controlador;
 
+import consultorio.Rol;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,10 +27,22 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        System.out.println("MainController inicializado");
+        actualizarBienvenida();
 
         // Solo cargar la vista de inicio por ahora
         cambiarVistaInicio();
+    }
+
+    public void actualizarBienvenida() {
+        int rol = Rol.getInstance().getRol();
+        String mensaje = switch (rol) {
+            case 1 -> "Bienvenido Administrador";
+            case 2 -> "Bienvenido Doctor";
+            case 3 -> "Bienvenido Recepcionista";
+            default -> "Bienvenido Usuario";
+        };
+
+        lblUsuario.setText(mensaje);
     }
 
     @FXML
@@ -166,6 +179,10 @@ public class MainController {
         if (botonActivo != null) {
             botonActivo.getStyleClass().add("nav-button-active");
         }
+    }
+
+    private void checarRol(){
+
     }
 
     @FXML

@@ -23,7 +23,6 @@ public class LoginController {
     private void initialize() {
         // Inicialización si es necesaria
     }
-
     @FXML
     private void handleLogin() {
         String usuario = userField.getText();
@@ -41,6 +40,7 @@ public class LoginController {
         // en caso de no poder iniciar sesión establecer código como comentario
         //return !usuario.isEmpty() && !contraseña.isEmpty();
         DAO dao = new DAO();
+
         return dao.DAOautenticarUsuario(usuario, contrasena);
     }
 

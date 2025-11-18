@@ -5,7 +5,7 @@
 
 <VBox spacing="20" style="-fx-padding: 30;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="consultorio.controlador.InicioController">
 
-    <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Bienvenida/o Recepcionista" />
+    <Label fx:id="lblBienvenida" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Bienvenida/o Recepcionista" />
 
     <HBox alignment="CENTER_LEFT" spacing="20">
         <!-- Tarjetas de estadísticas -->

@@ -1,6 +1,7 @@
 package consultorio.controlador;
 
 import consultorio.DAO;
+import consultorio.Rol;
 import consultorio.model.CitaCalendario;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -30,6 +31,9 @@ public class InicioController {
     private VBox pendientesHoyBox;
     @FXML
     private TableView<CitaData> tablaCitasHoy;
+    @FXML
+    private Label lblBienvenida;
+
 
     private final DAO dao = new DAO();
 
@@ -37,7 +41,21 @@ public class InicioController {
     public void initialize() {
         configurarTabla();
         cargarDatos();
+        actualizarBienvenida();
     }
+    public void actualizarBienvenida() {
+        int rol = Rol.getInstance().getRol();
+        String mensaje = switch (rol) {
+            case 1 -> "Bienvenido Administrador";
+            case 2 -> "Bienvenido Doctor";
+            case 3 -> "Bienvenido Recepcionista";
+            default -> "Bienvenido Usuario";
+        };
+
+        lblBienvenida.setText(mensaje);
+    }
+
+
 
     private void configurarTabla() {
         TableColumn<CitaData, String> horaCol = new TableColumn<>("Hora");

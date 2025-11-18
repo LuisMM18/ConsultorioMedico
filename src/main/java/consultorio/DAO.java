@@ -3,6 +3,7 @@ package consultorio;
 import consultorio.controlador.PacientesViewController;
 import consultorio.model.CitaCalendario;
 import consultorio.model.Nota;
+import lombok.Getter;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -18,10 +19,12 @@ public class DAO {
         String sql = "SELECT 1 FROM usuarios WHERE email = ? AND contrasena = ? AND activo = 1";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setString(1, usuario);
             ps.setString(2, contrasena);
             try (ResultSet rs = ps.executeQuery()) {
+
+                rolUsuario(usuario);
+
                 return rs.next();
             }
         } catch (SQLException e) {
@@ -29,6 +32,33 @@ public class DAO {
             return false;
         }
     }
+    public void rolUsuario(String usuarioLogeado) {
+        String sql = "SELECT rol FROM usuarios WHERE email = ?";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, usuarioLogeado);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int rol = rs.getInt("rol");
+
+                    // Guardar en el Singleton
+                    Rol.getInstance().setRol(rol);
+
+                    System.out.println("Rol del usuario guardado en Singleton: " + rol);
+                } else {
+                    System.out.println("No se encontró el usuario: " + usuarioLogeado);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     public List<CitaCalendario> getCitasForDate(LocalDate fecha) {
         String sql = "SELECT c.idCitas, c.idUsuarioRef, c.idPacienteRef, c.fechaHora, c.tipoConsulta, c.activo, " +
@@ -180,28 +210,28 @@ public class DAO {
         }
     }
 
-//Notas-pendiente en BD
+    //Notas-pendiente en BD
     //Crear Nota
-public Integer crearNota(int idCitasRef, String titulo, String textoNota, LocalDate fecha) {
-    final String sql = "INSERT INTO notas (idCitasRef, titulo, textoNota, fechaNota) VALUES (?,?,?,?)";
-    try (Connection c = DBUtil.getConnection();
-         PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-        ps.setInt(1, idCitasRef);
-        ps.setString(2, titulo);
-        ps.setString(3, textoNota);
-        if (fecha != null) ps.setDate(4, java.sql.Date.valueOf(fecha));
-        else ps.setNull(4, Types.DATE);
+    public Integer crearNota(int idCitasRef, String titulo, String textoNota, LocalDate fecha) {
+        final String sql = "INSERT INTO notas (idCitasRef, titulo, textoNota, fechaNota) VALUES (?,?,?,?)";
+        try (Connection c = DBUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, idCitasRef);
+            ps.setString(2, titulo);
+            ps.setString(3, textoNota);
+            if (fecha != null) ps.setDate(4, java.sql.Date.valueOf(fecha));
+            else ps.setNull(4, Types.DATE);
 
-        if (ps.executeUpdate() > 0) {
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) return rs.getInt(1);
+            if (ps.executeUpdate() > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) return rs.getInt(1);
+                }
             }
-        }
-    } catch (SQLException e) { e.printStackTrace(); }
-    return null;
-}
+        } catch (SQLException e) { e.printStackTrace(); }
+        return null;
+    }
 
-//act nota
+    //act nota
     public boolean actualizarNota(int idNotas, String titulo, String textoNota, LocalDate fecha) {
         final String sql = "UPDATE notas SET titulo=?, textoNota=?, fechaNota=? WHERE idNotas=?";
         try (Connection c = DBUtil.getConnection();
@@ -226,7 +256,7 @@ public Integer crearNota(int idCitasRef, String titulo, String textoNota, LocalD
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
     }
-//obtener Notas por cita ID
+    //obtener Notas por cita ID
     public List<Nota> getNotasPorCita(int idCitasRef) {
         final String sql = """
             SELECT idNotas, idCitasRef, titulo, textoNota, fechaNota
