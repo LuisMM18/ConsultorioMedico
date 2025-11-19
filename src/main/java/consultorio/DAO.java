@@ -122,9 +122,9 @@ public class DAO {
                     c.setIdPacienteRef(rs.getInt("idPacienteRef"));
                     Timestamp ts = rs.getTimestamp("fechaHora");
                     if (ts != null) c.setFechaHora(ts.toLocalDateTime());
-                    c.setTipoConsulta(rs.getString("tipoConsulta"));
+                    //c.setTipoConsulta(rs.getString("tipoConsulta"));
                     c.setActivo(rs.getBoolean("activo"));
-
+    /*
                     String pnombre = rs.getString("pnombre");
                     String pap1 = rs.getString("pap1");
                     String pap2 = rs.getString("pap2");
@@ -133,7 +133,7 @@ public class DAO {
                     String unombre = rs.getString("unombre");
                     String uap1 = rs.getString("uap1");
                     c.setUsuarioNombre(buildFullName(unombre, uap1, null));
-
+*/
                     lista.add(c);
                 }
             }
