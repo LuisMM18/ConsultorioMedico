@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 public class MainController {
 
@@ -82,21 +83,74 @@ public class MainController {
         }
     }
 
+    public void cambiarVistaCitasFecha(LocalDate fecha){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/ListaVistaDia.fxml"));
+            Parent VistaCitas = loader.load();
+
+            // Obtener el controller de la vista cargada y pasarle la fecha
+            ListaVistaDiaController controller = loader.getController();
+            if (controller != null) {
+                controller.setFecha(fecha);
+            }
+
+            // reemplaza el area de contenido
+            contentArea.getChildren().setAll(VistaCitas);
+
+            actualizarBotonActivo(btnCitas);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     public void cambiarVistaCalendario(){
         try {
+
             // Cargar el archivo FXML de la vista de citas
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/CalendarioView.fxml"));
-            Parent vistaCitas = loader.load();
+            //FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/CalendarioView.fxml"));
+            //Parent vistaCitas = loader.load();
 
             // Reemplazar el contenido actual con la nueva vista
-            contentArea.getChildren().setAll(vistaCitas);
+            //contentArea.getChildren().setAll(vistaCitas);
 
             // Mantener el botón activo
+            //actualizarBotonActivo(btnCalendario);
+
+
+            if (calendarioRoot == null) {
+                calendarioLoader = new FXMLLoader(getClass().getResource("/vista/CalendarioView.fxml"));
+                calendarioRoot = calendarioLoader.load();
+
+                // Pasar el MainController al controller del calendario
+                Object ctrl = calendarioLoader.getController();
+                if (ctrl instanceof consultorio.controlador.CalendarController) {
+                    ((consultorio.controlador.CalendarController) ctrl).setMainController(this);
+                }
+
+                // Hacer que la vista ocupe todo el contentArea
+                if (calendarioRoot instanceof javafx.scene.layout.Region) {
+                    javafx.scene.layout.Region region = (javafx.scene.layout.Region) calendarioRoot;
+                    region.prefWidthProperty().bind(contentArea.widthProperty());
+                    region.prefHeightProperty().bind(contentArea.heightProperty());
+                } else {
+                    javafx.scene.layout.AnchorPane.setTopAnchor(calendarioRoot, 0.0);
+                    javafx.scene.layout.AnchorPane.setBottomAnchor(calendarioRoot, 0.0);
+                    javafx.scene.layout.AnchorPane.setLeftAnchor(calendarioRoot, 0.0);
+                    javafx.scene.layout.AnchorPane.setRightAnchor(calendarioRoot, 0.0);
+                }
+            }
+            // Mostrar la vista (cached)
+            contentArea.getChildren().setAll(calendarioRoot);
             actualizarBotonActivo(btnCalendario);
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (NullPointerException npe) {
+            npe.printStackTrace();
+            System.err.println("Ruta FXML nula — revisa la ubicación de /vista/CalendarioView.fxml");
+            mostrarVistaDeError("Calendario no encontrado (ruta FXML incorrecta)");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            mostrarVistaDeError("Error inesperado al cargar calendario");
         }
     }
 

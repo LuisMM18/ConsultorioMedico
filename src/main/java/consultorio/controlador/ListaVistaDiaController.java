@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -31,7 +32,8 @@ public class ListaVistaDiaController {
     @FXML
     private Button btnNuevo, btnGuardar;
 
-    private final DateTimeFormatter horaFmt = DateTimeFormatter.ofPattern("HH:mm");
+    private final DateTimeFormatter horaFmt =
+            DateTimeFormatter.ofPattern("h:mm a", new Locale("es", "MX"));
     @FXML
     private Label fechaLabel;
     private LocalDate fechaHoy;
@@ -41,20 +43,34 @@ public class ListaVistaDiaController {
 
     @FXML
     private void initialize() {
+        // valor por defecto si nadie setea la fecha (se carga "hoy")
         fechaHoy = LocalDate.now(ZoneId.of("America/Hermosillo"));
-        String raw = fechaHoy.format(formatter);
-        fechaLabel.setText(titleCaseSegments(raw));
-
-        // carga las citas en background
-        cargarCitasDeHoyAsync();
+        actualizarLabelFecha();
+        // carga las citas de la fecha actual (puede re-ejecutarse si MainController llama setFecha después)
+        cargarCitasParaFechaAsync();
     }
 
-    private void cargarCitasDeHoyAsync() {
+    public void setFecha(LocalDate fecha) {
+        this.fechaHoy = fecha != null ? fecha : LocalDate.now(ZoneId.of("America/Hermosillo"));
+        // actualizar label y recargar citas de la nueva fecha
+        Platform.runLater(() -> {
+            actualizarLabelFecha();
+            cargarCitasParaFechaAsync();
+        });
+    }
+
+    private void actualizarLabelFecha() {
+        if (fechaLabel == null) return;
+        String raw = fechaHoy.format(formatter);
+        fechaLabel.setText(titleCaseSegments(raw));
+    }
+
+    private void cargarCitasParaFechaAsync() {
         Task<List<CitaCalendario>> task = new Task<>() {
             @Override
             protected List<CitaCalendario> call() throws Exception {
                 DAO dao = new DAO();
-                return dao.getCitasForDate(fechaHoy); // método agregado en DAO
+                return dao.getCitasCalendarioForDate(fechaHoy); // método agregado en DAO
             }
         };
 
@@ -65,7 +81,16 @@ public class ListaVistaDiaController {
                 for (CitaCalendario c : citas) {
                     // c.getFechaHora() es LocalDateTime
                     String horaStr = c.getFechaHora() != null ? c.getFechaHora().format(horaFmt) : "";
-                    String descripcion = ""; // reemplaza si tu modelo tiene descripción o paciente
+                    String descripcion = c.getPacienteNombre() != null ? c.getPacienteNombre() : "(sin paciente)";
+                    /*
+                    try{
+                        descripcion = c.getPacienteNombre();
+                    } catch (Exception ex) {
+                        descripcion = c.getTipoConsulta() != null ? c.getTipoConsulta() : "(sin descripción)";
+                    }
+                    */
+                    //String descripcion = c.getPacienteNombre();
+                    //String descripcion = "prueba"; // reemplaza si tu modelo tiene descripción o paciente
                     // si tu modelo tiene paciente, p.ej. c.getPacienteNombre() -> descripción
                     VBox nodo = crearCita(horaStr, descripcion);
                     appointmentContainer.getChildren().add(nodo);
@@ -254,17 +279,22 @@ public class ListaVistaDiaController {
 
         HBox header = new HBox();
         header.setSpacing(5);
-        header.setAlignment(javafx.geometry.Pos.TOP_RIGHT);
+        header.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
         Label lblHora = new Label(hora);
         lblHora.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        lblHora.setMaxWidth(Double.MAX_VALUE);
+        lblHora.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         HBox.setHgrow(lblHora, javafx.scene.layout.Priority.ALWAYS);
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
 
         Button btnEliminar = new Button("X");
         btnEliminar.setStyle("-fx-background-color: transparent; -fx-font-size: 20px; -fx-font-weight: bold;");
         btnEliminar.setOnAction(this::onEliminar);
 
-        header.getChildren().addAll(lblHora, btnEliminar);
+        header.getChildren().addAll(lblHora, spacer, btnEliminar);
 
         Label descripcion = new Label(descripcionTexto);
         descripcion.setStyle("-fx-font-size: 20px;");
@@ -279,5 +309,4 @@ public class ListaVistaDiaController {
 
         cita.getChildren().addAll(header, descripcion, pie);
         return cita;
-    }
-}
+    }}

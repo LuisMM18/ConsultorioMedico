@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
@@ -118,8 +119,12 @@ public class CalendarController  {
         int col = diaSemana;
 
         for (int dia = 1; dia <= diasEnMes; dia++) {
-            StackPane celda = crearCeldaDiaConEventos(dia);
-            gridDias.add(celda, col, row);
+            //StackPane celda = crearCeldaDiaConEventos(dia);
+            Button celdaBoton = crearCeldaDiaConEventos(dia);
+            gridDias.add(celdaBoton, col, row);
+
+            GridPane.setHgrow(celdaBoton, Priority.ALWAYS);
+            GridPane.setVgrow(celdaBoton, Priority.ALWAYS);
 
             col++;
             if (col > 6) {
@@ -130,7 +135,7 @@ public class CalendarController  {
     }
 
     // Crea la celda y agrega eventos (si los hay) usando eventosPorDia
-    private StackPane crearCeldaDiaConEventos(int dia) {
+    private Button crearCeldaDiaConEventos(int dia) {
         StackPane celda = new StackPane();
         celda.setStyle("-fx-border-color: #DDE3EA; -fx-border-width: 1 1 1 1;");
 
@@ -169,8 +174,46 @@ public class CalendarController  {
             }
         }
 
+        //creación de boton
+        Button botonCelda = new Button();
+        botonCelda.setGraphic(vbox);
+        botonCelda.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        botonCelda.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        botonCelda.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        botonCelda.setMinSize(0, 0);
+        botonCelda.setFocusTraversable(true);
+
+        botonCelda.setStyle(
+                "-fx-background-color: transparent; " +
+                        "-fx-border-color: #DDE3EA; -fx-border-width: 1; " +
+                        "-fx-padding: 0;"
+        );
+
+        LocalDate fechaCelda = fechaActual.withDayOfMonth(dia);
+
+        botonCelda.setOnAction(e -> {
+            if (mainController != null){
+                mainController.cambiarVistaCitasFecha(fechaCelda);
+            } else {
+                System.err.println("mainController es null — asigna setMainController(...) al inicializar.");
+            }
+
+            // ejemplo: abrir un diálogo con las citas del día
+            //mostrarDetallesDia(dia);
+            //System.out.println("WELL WELL WELL, LOOK WHAT WE GOT HERE");
+            // o si tienes un método en mainController: mainController.mostrarDia(fechaActual.withDayOfMonth(dia));
+        });
+
+        botonCelda.setOnMouseEntered(e -> botonCelda.setStyle(
+                "-fx-background-color: rgba(200,200,200,0.08); -fx-border-color: #DDE3EA; -fx-border-width: 1; -fx-padding: 0;"
+        ));
+        botonCelda.setOnMouseExited(e -> botonCelda.setStyle(
+                "-fx-background-color: transparent; -fx-border-color: #DDE3EA; -fx-border-width: 1; -fx-padding: 0;"
+        ));
+
+
         celda.getChildren().add(vbox);
-        return celda;
+        return botonCelda;
     }
 
     // Construye visualmente la línea de evento (punto + hora + paciente/tipo)
