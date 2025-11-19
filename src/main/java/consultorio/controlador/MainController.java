@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -119,45 +120,50 @@ public class MainController {
         }
     }
 
+
     @FXML
     public void cambiarVistaAjustes(){
-        try {
-            // Cargar solo la primera vez (cache)
-            if (ajustesRoot == null) {
-                // Ajusta la ruta según tu estructura de resources
-                ajustesLoader = new FXMLLoader(getClass().getResource("/vista/Ajustes.fxml"));
-                ajustesRoot = ajustesLoader.load();
+        if(Rol.getInstance().getRol() == 3){
+            mostrarError("No cuanta con el rol necesario para acceder a esta ");
+        }else {
+            try {
+                // Cargar solo la primera vez (cache)
+                if (ajustesRoot == null) {
+                    // Ajusta la ruta según tu estructura de resources
+                    ajustesLoader = new FXMLLoader(getClass().getResource("/vista/Ajustes.fxml"));
+                    ajustesRoot = ajustesLoader.load();
 
-                // Si quieres pasar la referencia del MainController al controlador de ajustes:
-                Object ctrl = ajustesLoader.getController();
-                if (ctrl instanceof consultorio.controlador.AjustesController) {
-                    ((consultorio.controlador.AjustesController) ctrl).setMainController(this);
+                    // Si quieres pasar la referencia del MainController al controlador de ajustes:
+                    Object ctrl = ajustesLoader.getController();
+                    if (ctrl instanceof consultorio.controlador.AjustesController) {
+                        ((consultorio.controlador.AjustesController) ctrl).setMainController(this);
+                    }
+
+                    /* Hacer que la vista ocupe dtodo el contentArea */
+                    if (ajustesRoot instanceof javafx.scene.layout.Region) {
+                        javafx.scene.layout.Region region = (javafx.scene.layout.Region) ajustesRoot;
+                        region.prefWidthProperty().bind(contentArea.widthProperty());
+                        region.prefHeightProperty().bind(contentArea.heightProperty());
+                    } else {
+                        javafx.scene.layout.AnchorPane.setTopAnchor(ajustesRoot, 0.0);
+                        javafx.scene.layout.AnchorPane.setBottomAnchor(ajustesRoot, 0.0);
+                        javafx.scene.layout.AnchorPane.setLeftAnchor(ajustesRoot, 0.0);
+                        javafx.scene.layout.AnchorPane.setRightAnchor(ajustesRoot, 0.0);
+                    }
                 }
 
-                /* Hacer que la vista ocupe dtodo el contentArea */
-                if (ajustesRoot instanceof javafx.scene.layout.Region) {
-                    javafx.scene.layout.Region region = (javafx.scene.layout.Region) ajustesRoot;
-                    region.prefWidthProperty().bind(contentArea.widthProperty());
-                    region.prefHeightProperty().bind(contentArea.heightProperty());
-                } else {
-                    javafx.scene.layout.AnchorPane.setTopAnchor(ajustesRoot, 0.0);
-                    javafx.scene.layout.AnchorPane.setBottomAnchor(ajustesRoot, 0.0);
-                    javafx.scene.layout.AnchorPane.setLeftAnchor(ajustesRoot, 0.0);
-                    javafx.scene.layout.AnchorPane.setRightAnchor(ajustesRoot, 0.0);
-                }
+                // Reemplazar el contenido del contentArea por la vista de ajustes
+                contentArea.getChildren().setAll(ajustesRoot);
+                actualizarBotonActivo(btnAjustes); // o el botón que corresponda para Ajustes
+
+            } catch (NullPointerException npe) {
+                npe.printStackTrace();
+                System.err.println("Ruta FXML nula — revisa la ubicación de /vista/Ajustes.fxml");
+                mostrarVistaDeError("Ajustes no encontrado (ruta FXML incorrecta)");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                mostrarVistaDeError("Error inesperado al cargar ajustes");
             }
-
-            // Reemplazar el contenido del contentArea por la vista de ajustes
-            contentArea.getChildren().setAll(ajustesRoot);
-            actualizarBotonActivo(btnAjustes); // o el botón que corresponda para Ajustes
-
-        } catch (NullPointerException npe) {
-            npe.printStackTrace();
-            System.err.println("Ruta FXML nula — revisa la ubicación de /vista/Ajustes.fxml");
-            mostrarVistaDeError("Ajustes no encontrado (ruta FXML incorrecta)");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            mostrarVistaDeError("Error inesperado al cargar ajustes");
         }
     }
 
@@ -205,5 +211,12 @@ public class MainController {
         } catch (Exception e) {
             System.err.println("Error al cerrar sesión: " + e.getMessage());
         }
+    }
+    void mostrarError(String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
 }
