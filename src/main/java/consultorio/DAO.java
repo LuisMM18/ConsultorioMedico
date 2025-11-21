@@ -28,12 +28,13 @@ public class DAO {
                 return rs.next();
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // use a logger in real projects
+            e.printStackTrace();
             return false;
         }
     }
+
     public void rolUsuario(String usuarioLogeado) {
-        String sql = "SELECT rol FROM usuarios WHERE email = ?";
+        String sql = "SELECT idUsuario, rol FROM usuarios WHERE email = ?";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -43,23 +44,111 @@ public class DAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     int rol = rs.getInt("rol");
+                    int id = rs.getInt("idUsuario");
 
-                    // Guardar en el Singleton
                     Rol.getInstance().setRol(rol);
+                    Rol.getInstance().setIdUsuario(id);
 
-                    System.out.println("Rol del usuario guardado en Singleton: " + rol);
+                    System.out.println("Usuario ID: " + id + " Rol: " + rol);
                 } else {
                     System.out.println("No se encontró el usuario: " + usuarioLogeado);
                 }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    public consultorio.model.Usuario getUsuarioPorId(int idUsuario) {
+        String sql = "SELECT idUsuario, nombre, apellidoUNO, apellidoDOS, email, telefono, contrasena FROM usuarios WHERE idUsuario = ?";
 
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
+            ps.setInt(1, idUsuario);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    consultorio.model.Usuario u = new consultorio.model.Usuario();
+                    u.setIdUsuario(rs.getInt("idUsuario"));
+                    u.setNombre(rs.getString("nombre"));
+                    u.setApellidoUNO(rs.getString("apellidoUNO"));
+                    u.setApellidoDOS(rs.getString("apellidoDOS"));
+                    u.setCorreo(rs.getString("email"));
+                    u.setTelefono(rs.getString("telefono"));
+                    u.setContrasena(rs.getString("contrasena"));
+                    return u;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean actualizarUsuario(int idUsuario, String nombreCompleto, String correo, String telefono, String nuevaContrasena) {
+        boolean cambiarPass = (nuevaContrasena != null && !nuevaContrasena.isEmpty());
+
+        String[] partes = (nombreCompleto != null) ? nombreCompleto.split(" ") : new String[0];
+        String nombre = (partes.length > 0) ? partes[0] : "";
+        String ap1 = (partes.length > 1) ? partes[1] : "";
+        String ap2 = (partes.length > 2) ? String.join(" ", java.util.Arrays.copyOfRange(partes, 2, partes.length)) : "";
+
+        String sql;
+        if (cambiarPass) {
+            sql = "UPDATE usuarios SET nombre=?, apellidoUNO=?, apellidoDOS=?, email=?, telefono=?, contrasena=? WHERE idUsuario=?";
+        } else {
+            sql = "UPDATE usuarios SET nombre=?, apellidoUNO=?, apellidoDOS=?, email=?, telefono=? WHERE idUsuario=?";
+        }
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, nombre);
+            ps.setString(2, ap1);
+            ps.setString(3, ap2);
+            ps.setString(4, correo);
+            ps.setString(5, telefono);
+
+            if (cambiarPass) {
+                ps.setString(6, nuevaContrasena);
+                ps.setInt(7, idUsuario);
+            } else {
+                ps.setInt(6, idUsuario);
+            }
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public java.util.List<consultorio.model.Usuario> getAllUsuarios() {
+        java.util.List<consultorio.model.Usuario> lista = new java.util.ArrayList<>();
+        String sql = "SELECT idUsuario, nombre, apellidoUNO, apellidoDOS, email FROM usuarios WHERE activo = 1";
+
+        try (java.sql.Connection conn = DBUtil.getConnection();
+             java.sql.PreparedStatement ps = conn.prepareStatement(sql);
+             java.sql.ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                consultorio.model.Usuario u = new consultorio.model.Usuario();
+                u.setIdUsuario(rs.getInt("idUsuario"));
+                u.setNombre(rs.getString("nombre"));
+                u.setApellidoUNO(rs.getString("apellidoUNO"));
+                u.setApellidoDOS(rs.getString("apellidoDOS"));
+                u.setCorreo(rs.getString("email"));
+                lista.add(u);
+            }
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    // Codigo de Calendario?
     public List<CitaCalendario> getCitasForDate(LocalDate fecha) {
         String sql = "SELECT c.idCitas, c.idUsuarioRef, c.idPacienteRef, c.fechaHora, c.tipoConsulta, c.activo, " +
                 "p.nombre AS pnombre, p.apellidoUNO AS pap1, p.apellidoDOS AS pap2, " +
@@ -122,18 +211,7 @@ public class DAO {
                     c.setIdPacienteRef(rs.getInt("idPacienteRef"));
                     Timestamp ts = rs.getTimestamp("fechaHora");
                     if (ts != null) c.setFechaHora(ts.toLocalDateTime());
-                    //c.setTipoConsulta(rs.getString("tipoConsulta"));
                     c.setActivo(rs.getBoolean("activo"));
-    /*
-                    String pnombre = rs.getString("pnombre");
-                    String pap1 = rs.getString("pap1");
-                    String pap2 = rs.getString("pap2");
-                    c.setPacienteNombre(buildFullName(pnombre, pap1, pap2));
-
-                    String unombre = rs.getString("unombre");
-                    String uap1 = rs.getString("uap1");
-                    c.setUsuarioNombre(buildFullName(unombre, uap1, null));
-*/
                     lista.add(c);
                 }
             }
@@ -421,8 +499,5 @@ public class DAO {
             return false;
         }
     }
-
-
-
 
 }//DAO

@@ -1,38 +1,154 @@
 package consultorio.controlador;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
+import consultorio.DAO;
+import consultorio.Rol;
+import consultorio.model.Usuario;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import lombok.Setter;
+
+import java.util.List;
 
 public class AjustesController {
 
     @Setter
     private MainController mainController;
+    private final DAO dao = new DAO();
 
-    // Inyecta nodos del FXML (asegúrate que fx:id en FXML coincida)
+    private int idUsuarioEnEdicion;
+
+    // FXML Elements
+    @FXML private VBox adminPanel;          // El panel amarillo nuevo
+    @FXML private ComboBox<Usuario> usuarioCombo; // El selector
+
     @FXML private TextField nombreField;
-    @FXML private TextField contrasenaActualField;
-    @FXML private TextField nuevaContrasenaField;
-    @FXML private TextField repetirContrasenaField;
+    @FXML private TextField correoField;
+    @FXML private TextField telefonoField;
+
+    @FXML private PasswordField actualField;
+    @FXML private PasswordField nuevaField;
+    @FXML private PasswordField confirmarField;
 
     @FXML
     private void initialize() {
-        System.out.println("AjustesController inicializado");
-        // inicializaciones, validaciones, etc.
+        int miId = Rol.getInstance().getIdUsuario();
+        int miRol = Rol.getInstance().getRol();
+
+        this.idUsuarioEnEdicion = miId;
+
+        if (miRol == 1) {
+            configurarModoAdmin(miId);
+        } else {
+            adminPanel.setVisible(false);
+            adminPanel.setManaged(false);
+            cargarDatosEnFormulario(miId);
+        }
+    }
+
+    private void configurarModoAdmin(int miId) {
+        adminPanel.setVisible(true);
+        adminPanel.setManaged(true);
+
+        List<Usuario> usuarios = dao.getAllUsuarios();
+        usuarioCombo.getItems().addAll(usuarios);
+
+        for (Usuario u : usuarios) {
+            if (u.getIdUsuario() == miId) {
+                usuarioCombo.getSelectionModel().select(u);
+                break;
+            }
+        }
+
+        cargarDatosEnFormulario(miId);
+
+        usuarioCombo.setOnAction(e -> {
+            Usuario seleccionado = usuarioCombo.getSelectionModel().getSelectedItem();
+            if (seleccionado != null) {
+                this.idUsuarioEnEdicion = seleccionado.getIdUsuario(); // ¡CAMBIO DE OBJETIVO!
+                cargarDatosEnFormulario(this.idUsuarioEnEdicion);
+                limpiarCamposPass(); // Limpiar passwords por seguridad al cambiar de usuario
+            }
+        });
+    }
+
+    private void cargarDatosEnFormulario(int idTarget) {
+        Usuario u = dao.getUsuarioPorId(idTarget);
+        if (u != null) {
+            nombreField.setText(u.getNombreCompleto());
+            correoField.setText(u.getCorreo());
+            String tel = u.getTelefono();
+            telefonoField.setText(tel != null ? tel : "");
+        } else {
+            mostrarAlerta("Error", "No se pudo cargar el usuario ID: " + idTarget);
+        }
     }
 
     @FXML
     private void guardar(ActionEvent event) {
-        // valida y guarda los datos
-        System.out.println("Guardar ajustes");
+        if (nombreField.getText().trim().isEmpty() || correoField.getText().trim().isEmpty()) {
+            mostrarAlerta("Faltan Datos", "Nombre y correo son obligatorios.");
+            return;
+        }
+
+        String passNueva = nuevaField.getText();
+        String passConfirmar = confirmarField.getText();
+        String passParaEnviar = null;
+
+        if (!passNueva.isEmpty()) {
+            if (!passNueva.equals(passConfirmar)) {
+                mostrarAlerta("Error", "Las contraseñas nuevas no coinciden.");
+                return;
+            }
+
+            passParaEnviar = passNueva;
+        }
+
+        boolean exito = dao.actualizarUsuario(
+                this.idUsuarioEnEdicion, // <--- AQUÍ ESTÁ LA CLAVE
+                nombreField.getText(),
+                correoField.getText(),
+                telefonoField.getText(),
+                passParaEnviar
+        );
+
+        if (exito) {
+            mostrarAlerta("Guardado", "Información actualizada correctamente.");
+            limpiarCamposPass();
+
+            if (adminPanel.isVisible()) {
+                Usuario uSel = usuarioCombo.getSelectionModel().getSelectedItem();
+                if (uSel != null) {
+                    uSel.setNombre(nombreField.getText());
+                }
+            }
+        } else {
+            mostrarAlerta("Error", "No se pudo guardar en la base de datos.");
+        }
     }
 
     @FXML
     private void cancelar(ActionEvent event) {
-        // ejemplo: volver a inicio
         if (mainController != null) {
             mainController.cambiarVistaInicio();
         }
+    }
+
+    private void limpiarCamposPass() {
+        actualField.clear();
+        nuevaField.clear();
+        confirmarField.clear();
+    }
+
+    private void mostrarAlerta(String titulo, String contenido) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(contenido);
+        alert.showAndWait();
     }
 }

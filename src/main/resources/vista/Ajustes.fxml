@@ -1,84 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="consultorio.controlador.AjustesController"
-            style="-fx-background-color: #f8f9fa;"
-            stylesheets="@../styles.css">
+<ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background-color: transparent;"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="consultorio.controlador.AjustesController">
 
-    <!-- Encabezado -->
-    <top>
-        <VBox alignment="CENTER_LEFT" spacing="5" style="-fx-padding: 20;">
-            <Label text="Configuración de Perfil" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
-            <Label text="Actualiza tus datos personales o cambia tu contraseña" style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" />
-            <Separator />
-        </VBox>
-    </top>
+    <content>
+        <VBox alignment="TOP_CENTER" maxWidth="Infinity" spacing="20" style="-fx-padding: 30;">
 
-    <!-- Contenido principal -->
-    <center>
-        <VBox alignment="CENTER" spacing="25" style="-fx-padding: 30;">
+            <Label alignment="CENTER" maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;"
+                   text="Configuración de Perfil" />
 
-            <!-- Tarjeta de información personal -->
-            <VBox spacing="15" prefWidth="500"
-                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);">
 
-                <Label text="Datos Personales" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+            <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"
+                   text="Actualiza tus datos personales o seguridad" />
 
-                <GridPane hgap="15" vgap="12">
-                    <columnConstraints>
-                        <ColumnConstraints halignment="RIGHT" minWidth="120" />
-                        <ColumnConstraints halignment="LEFT" />
-                    </columnConstraints>
-
-                    <Label text="Nombre:" GridPane.rowIndex="0" />
-                    <TextField fx:id="nombreField" promptText="Ingresa tu nombre completo" GridPane.columnIndex="1" />
-
-                    <Label text="Correo:" GridPane.rowIndex="1" />
-                    <TextField fx:id="correoField" promptText="correo@ejemplo.com" GridPane.columnIndex="1" />
-
-                    <Label text="Teléfono:" GridPane.rowIndex="2" />
-                    <TextField fx:id="telefonoField" promptText="Ej. 662-123-4567" GridPane.columnIndex="1" />
-                </GridPane>
+            <VBox fx:id="adminPanel" alignment="CENTER_LEFT" spacing="5" visible="false" managed="false"
+                  style="-fx-background-color: #fff3cd; -fx-border-color: #ffeeba; -fx-padding: 15; -fx-background-radius: 5;">
+                <Label text="MODO ADMINISTRADOR: Editar otro usuario" style="-fx-font-weight: bold; -fx-text-fill: #856404;" />
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Seleccionar Usuario:" />
+                    <ComboBox fx:id="usuarioCombo" prefWidth="250.0" promptText="-- Selecciona un usuario --" />
+                </HBox>
             </VBox>
 
-            <!-- Tarjeta de cambio de contraseña -->
-            <VBox spacing="15" prefWidth="500"
-                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);">
+            <GridPane hgap="10" maxWidth="Infinity" vgap="10" VBox.vgrow="ALWAYS">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS" />
+                </columnConstraints>
 
-                <Label text="Cambio de Contraseña" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+                <rowConstraints>
+                    <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints minHeight="30"/> <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints /> </rowConstraints>
 
-                <GridPane hgap="15" vgap="12">
-                    <columnConstraints>
-                        <ColumnConstraints halignment="RIGHT" minWidth="150" />
-                        <ColumnConstraints halignment="LEFT" />
-                    </columnConstraints>
+                <children>
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"
+                           text="Datos Personales" GridPane.rowIndex="0">
+                        <font><Font name="System Bold" size="18.0" /></font>
+                    </Label>
 
-                    <Label text="Contraseña actual:" GridPane.rowIndex="0" />
-                    <PasswordField fx:id="actualField" promptText="Contraseña actual" GridPane.columnIndex="1" />
+                    <Label style="-fx-font-size: 16px;" text="Nombre Completo:" GridPane.rowIndex="1" />
+                    <TextField fx:id="nombreField" promptText="Ingresa tu nombre completo" GridPane.rowIndex="2" />
 
-                    <Label text="Nueva contraseña:" GridPane.rowIndex="1" />
-                    <PasswordField fx:id="nuevaField" promptText="Nueva contraseña" GridPane.columnIndex="1" />
+                    <Label style="-fx-font-size: 16px;" text="Correo Electrónico:" GridPane.rowIndex="3" />
+                    <TextField fx:id="correoField" promptText="correo@ejemplo.com" GridPane.rowIndex="4" />
 
-                    <Label text="Confirmar contraseña:" GridPane.rowIndex="2" />
-                    <PasswordField fx:id="confirmarField" promptText="Repite la nueva contraseña" GridPane.columnIndex="1" />
-                </GridPane>
-            </VBox>
+                    <Label style="-fx-font-size: 16px;" text="Teléfono:" GridPane.rowIndex="5" />
+                    <TextField fx:id="telefonoField" promptText="Ej. 662-123-4567" GridPane.rowIndex="6" />
 
-            <!-- Botones de acción -->
-            <HBox alignment="CENTER" spacing="20">
-                <Button fx:id="guardarButton" text="Guardar Cambios"
-                        style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-width: 160;" />
-                <Button fx:id="cancelarButton" text="Cancelar"
-                        style="-fx-background-color: #A9A9A9; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-width: 160;" />
+
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"
+                           text="Cambio de Contraseña" GridPane.rowIndex="8">
+                        <font><Font name="System Bold" size="18.0" /></font>
+                    </Label>
+
+                    <Label style="-fx-font-size: 16px;" text="Contraseña Actual:" GridPane.rowIndex="9" />
+                    <PasswordField fx:id="actualField" promptText="Ingresa tu contraseña actual" GridPane.rowIndex="10" />
+
+                    <Label style="-fx-font-size: 16px;" text="Nueva Contraseña:" GridPane.rowIndex="11" />
+                    <PasswordField fx:id="nuevaField" promptText="Ingresa la nueva contraseña" GridPane.rowIndex="12" />
+
+                    <Label style="-fx-font-size: 16px;" text="Confirmar Contraseña:" GridPane.rowIndex="13" />
+                    <PasswordField fx:id="confirmarField" promptText="Repite la nueva contraseña" GridPane.rowIndex="14" />
+                </children>
+            </GridPane>
+
+            <HBox alignment="CENTER" spacing="80">
+                <Button fx:id="guardarButton" onAction="#guardar" prefHeight="40" prefWidth="160"
+                        style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;"
+                        text="Guardar Cambios">
+                    <font><Font size="15.0" /></font>
+                </Button>
+
+                <Button fx:id="cancelarButton" onAction="#cancelar" prefHeight="40" prefWidth="130"
+                        style="-fx-background-color: #A9A9A9; -fx-text-fill: white; -fx-font-weight: bold;"
+                        text="Cancelar">
+                    <font><Font size="15.0" /></font>
+                </Button>
             </HBox>
 
         </VBox>
-    </center>
-
-</BorderPane>
+    </content>
+</ScrollPane>
