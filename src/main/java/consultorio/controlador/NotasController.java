@@ -1,5 +1,5 @@
 package consultorio.controlador;
-//
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -16,6 +16,11 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.time.LocalDate;
 
+import consultorio.DAO;
+import consultorio.model.Nota;
+import java.util.List;
+
+
 public class NotasController {
 
     @FXML private TableView<Notas> tablaNotas;
@@ -27,6 +32,10 @@ public class NotasController {
     @FXML private TextField buscarNotaField;
 
     private final ObservableList<Notas> listaNotas = FXCollections.observableArrayList();
+
+    private final DAO dao = new DAO();
+    private Integer idCitaRef; // id de la cita a la que pertenecen las notas
+
 
     @FXML
     public void initialize() {
@@ -59,6 +68,29 @@ public class NotasController {
 
         tablaNotas.setItems(filtrada);
     }
+
+    //CARGAR NOTASSS
+    // Lo llamaremos desde PacientesViewController
+    public void setCitaContext(int idCitaRef) {
+        this.idCitaRef = idCitaRef;
+        cargarNotasDesdeBD();
+    }
+
+    private void cargarNotasDesdeBD() {
+        listaNotas.clear();
+        if (idCitaRef == null) return;
+
+        List<Nota> notasBD = dao.getNotasPorCita(idCitaRef);
+        for (Nota nBD : notasBD) {
+            listaNotas.add(new Notas(
+                    nBD.getIdNotas(),        // este será el idNotas real de la BD
+                    nBD.getTitulo(),
+                    nBD.getTextoNota(),
+                    nBD.getFechaNota()
+            ));
+        }
+    }
+    //CARGAR NOTASSSS
 
     private void agregarBotonesAcciones() {
         Callback<TableColumn<Notas, Void>, TableCell<Notas, Void>> cellFactory = param -> new TableCell<>() {
@@ -98,6 +130,56 @@ public class NotasController {
         colAcciones.setCellFactory(cellFactory);
     }
 
+    //AGREGAR NOTA ACTUALIZADO
+    @FXML
+    private void AgregarNota() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/AgregarNotaView.fxml"));
+            Parent root = loader.load();
+            AgregarNotaController ctrl = loader.getController();
+
+            // Al guardar: primero BD, luego la lista
+            ctrl.setOnGuardar(nuevaNota -> {
+                if (idCitaRef == null) {
+                    mostrarAlerta("Error", "No se puede guardar la nota porque no se recibió el id de la cita.");
+                    return;
+                }
+
+                // Guardar en BD
+                Integer idGenerado = dao.crearNota(
+                        idCitaRef,
+                        nuevaNota.getTitulo(),
+                        nuevaNota.getContenido(),
+                        nuevaNota.getFecha()
+                );
+
+                if (idGenerado == null) {
+                    mostrarAlerta("Error", "No se pudo guardar la nota en la base de datos.");
+                    return;
+                }
+
+                // Actualizar el id de la nota en la tabla para que coincida con la BD
+                nuevaNota.idProperty().set(idGenerado);
+
+                listaNotas.add(nuevaNota);
+                tablaNotas.refresh();
+            }, this::nextId); // el nextId solo se usa para crear el objeto; luego lo sobreescribimos con el id real
+
+            Stage stage = new Stage();
+            stage.setTitle("Agregar Nota");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //AGREGAR NOTA ACTUALIZADO
+
+    /* VIEJO AGREGAR NOTA
     @FXML
     private void AgregarNota() {
         try {
@@ -121,7 +203,44 @@ public class NotasController {
             e.printStackTrace();
         }
     }
+ VIEJO AGREGAR NOTA */
 
+    //NUEVO ABRIR NOTA BD
+    private void abrirEditar(Notas nota) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/EditarNotaView.fxml"));
+            Parent root = loader.load();
+            EditarNotaController ctrl = loader.getController();
+
+            // Al guardar: actualizar en BD y luego refrescar tabla
+            ctrl.setNota(nota, n -> {
+                boolean ok = dao.actualizarNota(
+                        n.getId(),
+                        n.getTitulo(),
+                        n.getContenido(),
+                        n.getFecha()
+                );
+                if (!ok) {
+                    mostrarAlerta("Error", "No se pudo actualizar la nota en la base de datos.");
+                }
+                tablaNotas.refresh();
+            });
+
+            Stage stage = new Stage();
+            stage.setTitle("Editar Nota");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+//NUEVO ABRIR NOTA BD
+
+
+    /*  ABRIR NOTA ANTERIOR
     private void abrirEditar(Notas nota) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/EditarNotaView.fxml"));
@@ -141,14 +260,41 @@ public class NotasController {
             e.printStackTrace();
         }
     }
+     ABRIR NOTA ANTERIOR  */
 
+    //ELIMINAR NOTA BD
     private void eliminarNota(Notas nota) {
+        if (nota == null) return;
+
+        boolean ok = dao.eliminarNota(nota.getId());
+        if (!ok) {
+            mostrarAlerta("Error", "No se pudo eliminar la nota en la base de datos.");
+            return;
+        }
         listaNotas.remove(nota);
     }
+    // ELIMINAR NOTA BD
+
+    //ELIMINAR NOTA ANTERIOR
+    //private void eliminarNota(Notas nota) {
+    //    listaNotas.remove(nota);
+   // }
+
+
 
     // Genera un ID consecutivo simple
     private int nextId() {
         return listaNotas.stream().mapToInt(Notas::getId).max().orElse(0) + 1;
     }
+
+    private void mostrarAlerta(String titulo, String mensaje) {
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
+    }
+
+
+
 }
-//p

@@ -175,6 +175,44 @@ public class PacientesViewController {
                         }
                     });
                 });
+                //Nuevo
+                notasBtn.setOnAction(e -> {
+                    try {
+                        // 1. Paciente de esta fila
+                        Paciente pacienteSeleccionado = getTableView().getItems().get(getIndex());
+
+                        // 2. Buscar la última cita activa de ese paciente
+                        Integer idCita = pacienteDAO.getUltimaCitaIdPorPaciente(pacienteSeleccionado.getId());
+                        if (idCita == null) {
+                            Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+                            alerta.setTitle("Sin citas");
+                            alerta.setHeaderText("Este paciente no tiene citas activas.");
+                            alerta.setContentText("Primero registra una cita para poder agregar notas.");
+                            alerta.showAndWait();
+                            return;
+                        }
+
+                        // 3. Cargar Notas.fxml y pasarle el id de la cita
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Notas.fxml"));
+                        Parent root = loader.load();
+
+                        NotasController notasController = loader.getController();
+                        notasController.setCitaContext(idCita);
+
+                        Stage stage = new Stage();
+                        stage.setTitle("Notas");
+                        stage.initModality(Modality.APPLICATION_MODAL);
+                        stage.setScene(new Scene(root));
+                        stage.showAndWait();
+
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
+                });
+
+                //Nuevo
+
+                /*
                 notasBtn.setOnAction(e -> {
                     try {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Notas.fxml"));
@@ -189,7 +227,7 @@ public class PacientesViewController {
                     } catch (IOException exception) {
                         exception.printStackTrace();
                     }
-                });
+                });   */
 
             }
 
