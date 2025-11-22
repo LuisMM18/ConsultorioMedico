@@ -41,9 +41,9 @@ public class EditarNotaController {
 
         Node root = EditarNota.getScene().getRoot();
 
-        if (txtTitulo == null)   txtTitulo   = (TextField) root.lookup(".text-field");
-        if (dpFecha == null)     dpFecha     = (DatePicker) root.lookup(".date-picker");
-        if (txtContenido == null)txtContenido= (TextArea)  root.lookup(".text-area");
+        if (txtTitulo == null)    txtTitulo    = (TextField) root.lookup(".text-field");
+        if (dpFecha == null)      dpFecha      = (DatePicker) root.lookup(".date-picker");
+        if (txtContenido == null) txtContenido = (TextArea)  root.lookup(".text-area");
 
         if (btnGuardar == null) {
             // Tomar el botón cuyo texto sea "Guardar"
@@ -62,24 +62,43 @@ public class EditarNotaController {
             txtContenido.setText(notaActual.getContenido());
         }
         if (notaActual != null && dpFecha != null) {
-            dpFecha.setValue(notaActual.getFecha() != null ? notaActual.getFecha() : LocalDate.now());
+            dpFecha.setValue(
+                    notaActual.getFecha() != null
+                            ? notaActual.getFecha()
+                            : LocalDate.now()
+            );
         }
     }
 
     private void guardar() {
         if (notaActual == null) return;
 
-        String t = (txtTitulo != null && txtTitulo.getText() != null) ? txtTitulo.getText().trim() : "";
-        if (t.isEmpty()) { alerta("El título no puede ir vacío."); return; }
+        String t = (txtTitulo != null && txtTitulo.getText() != null)
+                ? txtTitulo.getText().trim()
+                : "";
+        if (t.isEmpty()) {
+            alerta("El título no puede ir vacío.");
+            return;
+        }
 
-        LocalDate f = (dpFecha != null && dpFecha.getValue() != null) ? dpFecha.getValue() : notaActual.getFecha();
-        String c = (txtContenido != null) ? txtContenido.getText() : "";
+        LocalDate f = (dpFecha != null && dpFecha.getValue() != null)
+                ? dpFecha.getValue()
+                : notaActual.getFecha();
+
+        String c = (txtContenido != null)
+                ? txtContenido.getText()
+                : "";
+
+        // VALIDACIÓN NUEVA: no permitir fecha anterior a hoy al editar
+        if (f != null && f.isBefore(LocalDate.now())) {
+            alerta("No puedes guardar una nota con una fecha anterior a hoy.");
+            return;
+        }
 
         // Actualizar el objeto existente (la fila)
         notaActual.tituloProperty().set(t);
         notaActual.contenidoProperty().set(c);
         notaActual.fechaProperty().set(f);
-
 
         if (onGuardar != null) onGuardar.accept(notaActual);
         cerrarVentana();
@@ -97,4 +116,3 @@ public class EditarNotaController {
         a.showAndWait();
     }
 }
-//p

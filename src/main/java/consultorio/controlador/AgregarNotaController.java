@@ -33,23 +33,40 @@ public class AgregarNotaController {
     private void guardar() {
         // Buscar los controles por tipo (no cambiamos FXML)
         Node root = agregarNota.getScene().getRoot();
-        TextField txtTitulo  = (TextField) root.lookup(".text-field");                 // primer TextField
-        DatePicker dpFecha   = (DatePicker) root.lookup(".date-picker");               // primer DatePicker
-        TextArea txtContenido= (TextArea) root.lookup(".text-area");                   // primer TextArea
+        TextField txtTitulo   = (TextField) root.lookup(".text-field");   // primer TextField
+        DatePicker dpFecha    = (DatePicker) root.lookup(".date-picker"); // primer DatePicker
+        TextArea txtContenido = (TextArea) root.lookup(".text-area");     // primer TextArea
 
-        String titulo = (txtTitulo != null && txtTitulo.getText() != null) ? txtTitulo.getText().trim() : "";
-        String contenido = (txtContenido != null && txtContenido.getText() != null) ? txtContenido.getText().trim() : "";
-        LocalDate fecha = (dpFecha != null && dpFecha.getValue() != null) ? dpFecha.getValue() : LocalDate.now();
+        String titulo = (txtTitulo != null && txtTitulo.getText() != null)
+                ? txtTitulo.getText().trim()
+                : "";
+
+        String contenido = (txtContenido != null && txtContenido.getText() != null)
+                ? txtContenido.getText().trim()
+                : "";
+
+        LocalDate fecha = (dpFecha != null && dpFecha.getValue() != null)
+                ? dpFecha.getValue()
+                : LocalDate.now();
 
         if (titulo.isEmpty()) {
             alerta("El título no puede ir vacío.");
             return;
         }
 
+        // VALIDACIÓN IMPORTANTE: no permitir fecha anterior a hoy
+        if (fecha.isBefore(LocalDate.now())) {
+            alerta("No puedes crear una nota con una fecha anterior a hoy.");
+            return;
+        }
+
         int nuevoId = (idSupplier != null) ? idSupplier.getAsInt() : 1;
         Notas nueva = new Notas(nuevoId, titulo, contenido, fecha);
 
-        if (onGuardar != null) onGuardar.accept(nueva);
+        if (onGuardar != null) {
+            onGuardar.accept(nueva);
+        }
+
         cerrarVentana();
     }
 
@@ -65,4 +82,3 @@ public class AgregarNotaController {
         a.showAndWait();
     }
 }
-//p
