@@ -6,24 +6,15 @@ import javafx.stage.Stage;
 
 public class EdiciondeCitaController {
 
-    @FXML
-    private TextField txtPaciente;
-
-    @FXML
-    private DatePicker dpFechaHora;
-
-    @FXML
-    private TextField txtTipoConsulta;
-
-    @FXML
-    private TextField txtNotas;
-
+    @FXML private TextField txtPaciente;
+    @FXML private DatePicker dpFechaHora;
+    @FXML private TextField txtTipoConsulta;
+    @FXML private TextField txtNotas;
     private String horaOriginal;
     private String descripcionOriginal;
 
     private boolean guardado = false;
 
-    // Método para inicializar con los datos actuales
     public void setDatos(String hora, String descripcion) {
         this.horaOriginal = hora;
         this.descripcionOriginal = descripcion;
@@ -35,7 +26,6 @@ public class EdiciondeCitaController {
 
     @FXML
     private void onGuardar() {
-        // Podrías validar campos aquí antes de cerrar
         guardado = true;
         cerrarVentana();
     }

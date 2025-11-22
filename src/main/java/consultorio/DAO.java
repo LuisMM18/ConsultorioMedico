@@ -425,7 +425,6 @@ public class DAO {
 
     public List<PacientesViewController.Paciente> getAllPacientes() {
         List<PacientesViewController.Paciente> lista = new ArrayList<>();
-        // Asumo que tu tabla se llama 'pacientes' y tiene estas columnas. AJÚSTALAS SI ES NECESARIO.
         String sql = "SELECT idPaciente, nombre, apellidoUNO, apellidoDOS, fechaNacimiento, telefono, correo FROM pacientes WHERE activo = 1";
 
         try (Connection conn = DBUtil.getConnection();
@@ -498,6 +497,60 @@ public class DAO {
             e.printStackTrace();
             return false;
         }
+    }
+
+
+    //Generacion de Reporte (Excel / PDF)
+    public List<CitaCalendario> getCitasPorRango(LocalDate fechaInicio, LocalDate fechaFin) {
+        String sql = """
+            SELECT 
+                c.idCitas, 
+                c.idUsuarioRef, 
+                c.idPacienteRef, 
+                c.fechaHora, 
+                c.tipoConsulta, 
+                c.activo,
+                CONCAT(p.nombre, ' ', p.apellidoUNO, ' ', p.apellidoDOS) AS pacienteNombre,
+                CONCAT(u.nombre, ' ', u.apellidoUNO) AS usuarioNombre
+            FROM citas c
+            LEFT JOIN pacientes p ON c.idPacienteRef = p.idPaciente
+            LEFT JOIN usuarios u ON c.idUsuarioRef = u.idUsuario
+            WHERE c.fechaHora >= ? AND c.fechaHora < ? 
+            ORDER BY c.fechaHora
+        """;
+
+        List<CitaCalendario> citas = new ArrayList<>();
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setObject(1, fechaInicio.atStartOfDay());
+            ps.setObject(2, fechaFin.plusDays(1).atStartOfDay());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CitaCalendario cita = new CitaCalendario();
+                    cita.setIdCitas(rs.getInt("idCitas"));
+                    cita.setIdUsuarioRef(rs.getInt("idUsuarioRef"));
+                    cita.setIdPacienteRef(rs.getInt("idPacienteRef"));
+
+                    // Conversión segura de Timestamp a LocalDateTime
+                    java.sql.Timestamp ts = rs.getTimestamp("fechaHora");
+                    if (ts != null) {
+                        cita.setFechaHora(ts.toLocalDateTime());
+                    }
+
+                    cita.setTipoConsulta(rs.getString("tipoConsulta"));
+                    cita.setActivo(rs.getBoolean("activo"));
+                    cita.setPacienteNombre(rs.getString("pacienteNombre"));
+                    cita.setUsuarioNombre(rs.getString("usuarioNombre"));
+                    citas.add(cita);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return citas;
     }
 
 }//DAO
