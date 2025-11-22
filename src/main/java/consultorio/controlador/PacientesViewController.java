@@ -109,7 +109,13 @@ public class PacientesViewController {
             stage.setScene(new Scene(root, 500, 500));
             stage.setResizable(false);
             stage.initOwner(tablaPacientes.getScene().getWindow());
+
+            //Con esta linea ya no se abriran mas ventanas
+            stage.initModality(Modality.APPLICATION_MODAL);
+
             stage.showAndWait();
+
+
 
             // MODIFICADO: Si se guardó un paciente, refrescamos toda la tabla desde la BD
             if (controller.isGuardado()) {
