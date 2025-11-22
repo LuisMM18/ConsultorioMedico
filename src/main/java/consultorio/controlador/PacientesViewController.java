@@ -110,9 +110,9 @@ public class PacientesViewController {
             stage.setResizable(false);
             stage.initOwner(tablaPacientes.getScene().getWindow());
 
-            //Con esta linea ya no se abriran mas ventanas
+            //Con esta linea ya no se abriran mas ventanas. Pacientes
             stage.initModality(Modality.APPLICATION_MODAL);
-
+            //
             stage.showAndWait();
 
 
