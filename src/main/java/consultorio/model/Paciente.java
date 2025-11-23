@@ -20,4 +20,13 @@ public class Paciente {
         if (apellidoDOS != null && !apellidoDOS.isEmpty()) s += " " + apellidoDOS;
         return s.trim();
     }
+
+    @Override
+    public String toString() {
+        // Esto es lo que verá el ComboBox
+        return getNombreCompleto();
+    }
+
+
+
 }

@@ -3,7 +3,8 @@ package consultorio;
 import consultorio.controlador.PacientesViewController;
 import consultorio.model.CitaCalendario;
 import consultorio.model.Nota;
-import lombok.Getter;
+import consultorio.model.Paciente;
+import consultorio.model.Usuario;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -59,7 +60,7 @@ public class DAO {
         }
     }
 
-    public consultorio.model.Usuario getUsuarioPorId(int idUsuario) {
+    public Usuario getUsuarioPorId(int idUsuario) {
         String sql = "SELECT idUsuario, nombre, apellidoUNO, apellidoDOS, email, telefono, contrasena FROM usuarios WHERE idUsuario = ?";
 
         try (Connection conn = DBUtil.getConnection();
@@ -69,7 +70,7 @@ public class DAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    consultorio.model.Usuario u = new consultorio.model.Usuario();
+                    Usuario u = new Usuario();
                     u.setIdUsuario(rs.getInt("idUsuario"));
                     u.setNombre(rs.getString("nombre"));
                     u.setApellidoUNO(rs.getString("apellidoUNO"));
@@ -125,16 +126,16 @@ public class DAO {
         }
     }
 
-    public java.util.List<consultorio.model.Usuario> getAllUsuarios() {
-        java.util.List<consultorio.model.Usuario> lista = new java.util.ArrayList<>();
+    public List<Usuario> getAllUsuarios() {
+        List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT idUsuario, nombre, apellidoUNO, apellidoDOS, email FROM usuarios WHERE activo = 1";
 
-        try (java.sql.Connection conn = DBUtil.getConnection();
-             java.sql.PreparedStatement ps = conn.prepareStatement(sql);
-             java.sql.ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                consultorio.model.Usuario u = new consultorio.model.Usuario();
+                Usuario u = new Usuario();
                 u.setIdUsuario(rs.getInt("idUsuario"));
                 u.setNombre(rs.getString("nombre"));
                 u.setApellidoUNO(rs.getString("apellidoUNO"));
@@ -142,13 +143,13 @@ public class DAO {
                 u.setCorreo(rs.getString("email"));
                 lista.add(u);
             }
-        } catch (java.sql.SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return lista;
     }
 
-    // Codigo de Calendario?
+    // Código de Calendario
     public List<CitaCalendario> getCitasForDate(LocalDate fecha) {
         String sql = "SELECT c.idCitas, c.idUsuarioRef, c.idPacienteRef, c.fechaHora, c.tipoConsulta, c.activo, " +
                 "p.nombre AS pnombre, p.apellidoUNO AS pap1, p.apellidoDOS AS pap2, " +
@@ -160,7 +161,7 @@ public class DAO {
                 "ORDER BY c.fechaHora";
 
         List<CitaCalendario> lista = new ArrayList<>();
-        ZoneId zone = ZoneId.of("America/Hermosillo"); // usa tu zona
+        ZoneId zone = ZoneId.of("America/Hermosillo");
         ZonedDateTime zInicio = fecha.atStartOfDay(zone);
         ZonedDateTime zFin = fecha.plusDays(1).atStartOfDay(zone);
         Timestamp tsInicio = Timestamp.from(zInicio.toInstant());
@@ -220,6 +221,7 @@ public class DAO {
         }
         return lista;
     }
+
     private String buildFullName(String a, String b, String c) {
         StringBuilder sb = new StringBuilder();
         if (a != null && !a.isEmpty()) sb.append(a);
@@ -228,7 +230,7 @@ public class DAO {
         return sb.toString().trim();
     }
 
-    //CITAS
+    // CITAS
     public boolean actualizarCita(int idCitas, LocalDateTime nuevaFechaHora, String nuevoTipo) {
         String sql = "UPDATE citas SET fechaHora = ?, tipoConsulta = ? WHERE idCitas = ?";
         try (Connection conn = DBUtil.getConnection();
@@ -267,7 +269,7 @@ public class DAO {
         }
     }
 
-    //crear Reporte-pendiente
+    // Reportes
     public boolean crearReporte(int idUsuarioRef, String titulo, String contenido, LocalDate fecha) {
         String sql = "INSERT INTO reportes (idUsuarioRef, titulo, contenido, fecha) VALUES (?,?,?,?)";
         try (Connection conn = DBUtil.getConnection();
@@ -277,7 +279,6 @@ public class DAO {
             ps.setString(2, titulo);
             ps.setString(3, contenido);
 
-            // Si no se pasa fecha, usa la actual
             LocalDate fechaFinal = (fecha != null) ? fecha : LocalDate.now();
             ps.setDate(4, java.sql.Date.valueOf(fechaFinal));
 
@@ -288,8 +289,7 @@ public class DAO {
         }
     }
 
-    //Notas-pendiente en BD
-    //Crear Nota
+    // Notas
     public Integer crearNota(int idCitasRef, String titulo, String textoNota, LocalDate fecha) {
         final String sql = "INSERT INTO notas (idCitasRef, titulo, textoNota, fechaNota) VALUES (?,?,?,?)";
         try (Connection c = DBUtil.getConnection();
@@ -309,7 +309,6 @@ public class DAO {
         return null;
     }
 
-    //act nota
     public boolean actualizarNota(int idNotas, String titulo, String textoNota, LocalDate fecha) {
         final String sql = "UPDATE notas SET titulo=?, textoNota=?, fechaNota=? WHERE idNotas=?";
         try (Connection c = DBUtil.getConnection();
@@ -324,7 +323,6 @@ public class DAO {
         return false;
     }
 
-    //eliminar not
     public boolean eliminarNota(int idNotas) {
         final String sql = "DELETE FROM notas WHERE idNotas=?";
         try (Connection c = DBUtil.getConnection();
@@ -334,7 +332,7 @@ public class DAO {
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
     }
-    //obtener Notas por cita ID
+
     public List<Nota> getNotasPorCita(int idCitasRef) {
         final String sql = """
             SELECT idNotas, idCitasRef, titulo, textoNota, fechaNota
@@ -362,7 +360,6 @@ public class DAO {
         return list;
     }
 
-    // no termi
     public Integer getUltimaCitaIdPorPaciente(int idPaciente) {
         final String sql = "SELECT idCitas FROM citas WHERE idPacienteRef=? AND activo=1 ORDER BY fechaHora DESC LIMIT 1";
         try (Connection c = DBUtil.getConnection();
@@ -421,8 +418,7 @@ public class DAO {
         return citas;
     }
 
-    //Pacientes
-
+    // Pacientes - Métodos de la primera clase
     public List<PacientesViewController.Paciente> getAllPacientes() {
         List<PacientesViewController.Paciente> lista = new ArrayList<>();
         String sql = "SELECT idPaciente, nombre, apellidoUNO, apellidoDOS, fechaNacimiento, telefono, correo FROM pacientes WHERE activo = 1";
@@ -436,9 +432,8 @@ public class DAO {
                 String nombre = rs.getString("nombre");
                 String ap1 = rs.getString("apellidoUNO");
                 String ap2 = rs.getString("apellidoDOS");
-                String nombreCompleto = buildFullName(nombre, ap1, ap2); // Reutilizamos tu método
+                String nombreCompleto = buildFullName(nombre, ap1, ap2);
 
-                // Para calcular la edad, necesitamos la fecha de nacimiento
                 Date fechaNacimientoSql = rs.getDate("fechaNacimiento");
                 LocalDate fechaNacimiento = (fechaNacimientoSql != null) ? fechaNacimientoSql.toLocalDate() : null;
 
@@ -466,7 +461,7 @@ public class DAO {
         }
     }
 
-    public boolean crearPaciente (String nombreCompleto, LocalDate fechaNacimiento, String telefono, String correo) {
+    public boolean crearPaciente(String nombreCompleto, LocalDate fechaNacimiento, String telefono, String correo) {
         String[] partesNombre = (nombreCompleto != null && !nombreCompleto.isEmpty()) ? nombreCompleto.split(" ") : new String[0];
         String nombre = (partesNombre.length > 0) ? partesNombre[0] : "";
         String ap1 = (partesNombre.length > 1) ? partesNombre[1] : null;
@@ -499,8 +494,33 @@ public class DAO {
         }
     }
 
+    // PACIENTES - Métodos adicionales de la segunda clase
+    public List<Paciente> getPacientesActivosBasico() {
+        List<Paciente> lista = new ArrayList<>();
+        String sql = "SELECT idPaciente, nombre, apellidoUNO, apellidoDOS " +
+                "FROM pacientes WHERE activo = 1 " +
+                "ORDER BY nombre, apellidoUNO, apellidoDOS";
 
-    //Generacion de Reporte (Excel / PDF)
+        try (Connection conn = DBUtil.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Paciente p = new Paciente();
+                p.setIdPaciente(rs.getInt("idPaciente"));
+                p.setNombre(rs.getString("nombre"));
+                p.setApellidoUNO(rs.getString("apellidoUNO"));
+                p.setApellidoDOS(rs.getString("apellidoDOS"));
+                lista.add(p);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    // Generación de Reporte (Excel / PDF) - Método adicional de la primera clase
     public List<CitaCalendario> getCitasPorRango(LocalDate fechaInicio, LocalDate fechaFin) {
         String sql = """
             SELECT 
@@ -533,7 +553,6 @@ public class DAO {
                     cita.setIdUsuarioRef(rs.getInt("idUsuarioRef"));
                     cita.setIdPacienteRef(rs.getInt("idPacienteRef"));
 
-                    // Conversión segura de Timestamp a LocalDateTime
                     java.sql.Timestamp ts = rs.getTimestamp("fechaHora");
                     if (ts != null) {
                         cita.setFechaHora(ts.toLocalDateTime());
@@ -552,5 +571,4 @@ public class DAO {
         }
         return citas;
     }
-
 }//DAO
