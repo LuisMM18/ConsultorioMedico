@@ -42,8 +42,8 @@
         <columns>
             <TableColumn fx:id="colID" prefWidth="34.0" text="ID" />
             <TableColumn fx:id="colNombre" prefWidth="176.0" text="Nombre" />
-            <TableColumn fx:id="colEdad" prefWidth="152.0" text="Fecha de Nacimiento" />
-            <TableColumn fx:id="colTelefono" prefWidth="98.0" text="Teléfono" />
+            <TableColumn fx:id="colEdad" prefWidth="118.0" text="Edad" />
+            <TableColumn fx:id="colTelefono" prefWidth="132.0" text="Teléfono" />
             <TableColumn fx:id="colCorreo" prefWidth="200" text="Correo Electrónico" />
             <TableColumn fx:id="colAcciones" prefWidth="150" text="Acciones" />
         </columns>
