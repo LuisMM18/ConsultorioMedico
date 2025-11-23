@@ -6,7 +6,7 @@
 <ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="consultorio.controlador.GenerarReporteController">
 
     <content>
-        <VBox alignment="TOP_CENTER" maxWidth="Infinity" spacing="25" style="-fx-padding: 30;">
+        <VBox alignment="TOP_CENTER" maxWidth="Infinity" prefHeight="618.0" prefWidth="667.0" spacing="25" style="-fx-padding: 30;">
 
             <Label alignment="CENTER" maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Generar Reporte" />
 
@@ -25,7 +25,8 @@
                 </HBox>
 
                 <VBox fx:id="panelSemanal" managed="false" spacing="5" visible="false">
-                    <Label style="-fx-font-size: 12px; -fx-text-fill: grey;" text="Selecciona cualquier día dentro de la semana deseada:" />
+                    <Label style="-fx-font-size: 12px; -fx-text-fill: grey;" text="Selecciona cualquier día de la semana deseada:" />
+                    <Label style="-fx-font-size: 12px; -fx-text-fill: grey;" text="El sistema generará el reporte completo de la semana que contenga la fecha seleccionada." />
                     <DatePicker fx:id="fechaSemanaPicker" maxWidth="Infinity" prefHeight="40" promptText="Ej. Selecciona el miércoles para sacar toda esa semana" />
                 </VBox>
 
