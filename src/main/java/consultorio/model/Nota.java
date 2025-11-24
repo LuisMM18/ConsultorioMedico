@@ -28,4 +28,3 @@ public class Nota {
         return (titulo == null || titulo.isBlank()) ? "(Sin título)" : titulo;
     }
 }
-//p

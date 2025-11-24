@@ -17,7 +17,6 @@ import java.util.List;
 
 public class EdiciondeCitaController {
 
-    // CAMBIO 1: Usamos ComboBox en lugar de TextField
     @FXML private ComboBox<Paciente> comboPacientes;
 
     @FXML private DatePicker dpFecha;
@@ -34,7 +33,7 @@ public class EdiciondeCitaController {
     @FXML
     public void initialize() {
         cargarHorarios();
-        cargarPacientes(); // Cargar la lista de la BD
+        cargarPacientes();
     }
 
     private void cargarHorarios() {
@@ -48,17 +47,14 @@ public class EdiciondeCitaController {
         comboHora.getItems().addAll(horarios);
     }
 
-    // Nuevo método para llenar el combo de pacientes
     private void cargarPacientes() {
-        List<Paciente> lista = dao.getPacientesActivosBasico(); // Usamos el método que ya tienes en DAO
+        List<Paciente> lista = dao.getPacientesActivosBasico();
         comboPacientes.setItems(FXCollections.observableArrayList(lista));
     }
 
     public void initData(CitaCalendario cita) {
         this.citaActual = cita;
 
-        // 1. Seleccionar el Paciente Correcto en el Combo
-        // Buscamos en la lista el paciente cuyo ID coincida con el de la cita
         if (comboPacientes.getItems() != null) {
             for (Paciente p : comboPacientes.getItems()) {
                 if (p.getIdPaciente() == cita.getIdPacienteRef()) {
@@ -68,7 +64,6 @@ public class EdiciondeCitaController {
             }
         }
 
-        // 2. Llenar Fecha
         if (cita.getFechaHora() != null) {
             dpFecha.setValue(cita.getFechaHora().toLocalDate());
             LocalTime hora = cita.getFechaHora().toLocalTime();
@@ -93,13 +88,11 @@ public class EdiciondeCitaController {
             LocalDateTime fechaHoraFinal = LocalDateTime.of(fechaNueva, horaNueva);
             String nuevoTipo = txtTipoConsulta.getText();
 
-            // CAMBIO 2: Obtenemos el ID del nuevo paciente seleccionado
             int idNuevoPaciente = comboPacientes.getValue().getIdPaciente();
 
-            // CAMBIO 3: Llamamos al DAO actualizado
             boolean exito = dao.actualizarCita(
                     citaActual.getIdCitas(),
-                    idNuevoPaciente, // Pasamos el nuevo ID
+                    idNuevoPaciente,
                     fechaHoraFinal,
                     nuevoTipo
             );
@@ -124,7 +117,7 @@ public class EdiciondeCitaController {
     }
 
     private void cerrarVentana() {
-        Stage stage = (Stage) dpFecha.getScene().getWindow(); // Cambié txtPaciente por dpFecha porque borramos txtPaciente
+        Stage stage = (Stage) dpFecha.getScene().getWindow();
         stage.close();
     }
 

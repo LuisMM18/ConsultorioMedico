@@ -110,9 +110,7 @@ public class PacientesViewController {
             stage.setResizable(false);
             stage.initOwner(tablaPacientes.getScene().getWindow());
 
-            //Con esta linea ya no se abriran mas ventanas. Pacientes
             stage.initModality(Modality.APPLICATION_MODAL);
-            //
             stage.showAndWait();
 
 
@@ -141,12 +139,17 @@ public class PacientesViewController {
                 notasBtn.setStyle("-fx-background-color: #grey; -fx-text-fill: black; -fx-background-radius: 6;");
 
                 editarBtn.setOnAction(e -> {
-                    // Lógica para editar (requiere pasar el paciente a la nueva ventana)
                     try {
                         Paciente pacienteSeleccionado = getTableView().getItems().get(getIndex());
 
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/EditarPacienteView.fxml"));
                         Parent root = loader.load();
+
+                        // --- ESTO ES LO NUEVO ---
+                        // Obtenemos el controlador nuevo y le pasamos los datos
+                        EditarPacienteController controller = loader.getController();
+                        controller.setPaciente(pacienteSeleccionado);
+                        // ------------------------
 
                         Stage stage = new Stage();
                         stage.setTitle("Editar Paciente");

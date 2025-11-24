@@ -22,9 +22,8 @@ public class AjustesController {
 
     private int idUsuarioEnEdicion;
 
-    // FXML Elements
-    @FXML private VBox adminPanel;          // El panel amarillo nuevo
-    @FXML private ComboBox<Usuario> usuarioCombo; // El selector
+    @FXML private VBox adminPanel;
+    @FXML private ComboBox<Usuario> usuarioCombo;
 
     @FXML private TextField nombreField;
     @FXML private TextField correoField;
@@ -69,9 +68,9 @@ public class AjustesController {
         usuarioCombo.setOnAction(e -> {
             Usuario seleccionado = usuarioCombo.getSelectionModel().getSelectedItem();
             if (seleccionado != null) {
-                this.idUsuarioEnEdicion = seleccionado.getIdUsuario(); // ¡CAMBIO DE OBJETIVO!
+                this.idUsuarioEnEdicion = seleccionado.getIdUsuario();
                 cargarDatosEnFormulario(this.idUsuarioEnEdicion);
-                limpiarCamposPass(); // Limpiar passwords por seguridad al cambiar de usuario
+                limpiarCamposPass();
             }
         });
     }
@@ -109,7 +108,7 @@ public class AjustesController {
         }
 
         boolean exito = dao.actualizarUsuario(
-                this.idUsuarioEnEdicion, // <--- AQUÍ ESTÁ LA CLAVE
+                this.idUsuarioEnEdicion,
                 nombreField.getText(),
                 correoField.getText(),
                 telefonoField.getText(),

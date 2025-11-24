@@ -17,11 +17,11 @@ public class LoginController {
 
     @FXML private TextField userField;
     @FXML private PasswordField passField;
-    @FXML private Button loginButton; // ¡ESTA LÍNEA ES IMPORTANTE!
+    @FXML private Button loginButton;
 
     @FXML
     private void initialize() {
-        // Inicialización si es necesaria
+
     }
     @FXML
     private void handleLogin() {
@@ -37,8 +37,6 @@ public class LoginController {
     }
 
     private boolean autenticarUsuario(String usuario, String contrasena) {
-        // en caso de no poder iniciar sesión establecer código como comentario
-        //return !usuario.isEmpty() && !contraseña.isEmpty();
         DAO dao = new DAO();
 
         return dao.DAOautenticarUsuario(usuario, contrasena);
@@ -47,7 +45,6 @@ public class LoginController {
 
     private void abrirVistaPrincipal() {
         try {
-            // Verificar que el archivo existe
             URL fxmlUrl = getClass().getResource("/vista/MainView.fxml");
             if (fxmlUrl == null) {
                 mostrarError("No se encuentra MainView.fxml. Verifica la ruta.");
@@ -71,13 +68,11 @@ public class LoginController {
     }
 
     private void cerrarVentanaLogin() {
-        // Buscar el botón en la escena si la inyección falla
         Button btn = (Button) userField.getScene().lookup("#loginButton");
         if (btn != null) {
             Stage stage = (Stage) btn.getScene().getWindow();
             stage.close();
         } else {
-            // Alternativa: usar cualquier nodo de la escena
             Stage stage = (Stage) userField.getScene().getWindow();
             stage.close();
         }

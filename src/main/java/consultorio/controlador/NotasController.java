@@ -34,7 +34,7 @@ public class NotasController {
     private final ObservableList<Notas> listaNotas = FXCollections.observableArrayList();
 
     private final DAO dao = new DAO();
-    private Integer idCitaRef; // id de la cita a la que pertenecen las notas
+    private Integer idCitaRef;
 
 
     @FXML
@@ -66,7 +66,6 @@ public class NotasController {
         tablaNotas.setItems(filtrada);
     }
 
-    //CARGAR NOTASSS
     public void setCitaContext(int idCitaRef) {
         this.idCitaRef = idCitaRef;
         cargarNotasDesdeBD();
@@ -86,7 +85,6 @@ public class NotasController {
             ));
         }
     }
-    //CARGAR NOTASSSS
 
     private void agregarBotonesAcciones() {
         Callback<TableColumn<Notas, Void>, TableCell<Notas, Void>> cellFactory = param -> new TableCell<>() {
@@ -126,7 +124,6 @@ public class NotasController {
         colAcciones.setCellFactory(cellFactory);
     }
 
-    //AGREGAR NOTA ACTUALIZADO
     @FXML
     private void AgregarNota() {
         try {
@@ -134,14 +131,12 @@ public class NotasController {
             Parent root = loader.load();
             AgregarNotaController ctrl = loader.getController();
 
-            // Al guardar: primero BD, luego la lista
             ctrl.setOnGuardar(nuevaNota -> {
                 if (idCitaRef == null) {
                     mostrarAlerta("Error", "No se puede guardar la nota porque no se recibió el id de la cita.");
                     return;
                 }
 
-                // Guardar en BD
                 Integer idGenerado = dao.crearNota(
                         idCitaRef,
                         nuevaNota.getTitulo(),
@@ -154,37 +149,8 @@ public class NotasController {
                     return;
                 }
 
-                // Actualizar el id de la nota en la tabla para que coincida con la BD
                 nuevaNota.idProperty().set(idGenerado);
 
-                listaNotas.add(nuevaNota);
-                tablaNotas.refresh();
-            }, this::nextId); // el nextId solo se usa para crear el objeto; luego lo sobreescribimos con el id real
-
-            Stage stage = new Stage();
-            stage.setTitle("Agregar Nota");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    //AGREGAR NOTA ACTUALIZADO
-
-    /* VIEJO AGREGAR NOTA
-    @FXML
-    private void AgregarNota() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/AgregarNotaView.fxml"));
-            Parent root = loader.load();
-            AgregarNotaController ctrl = loader.getController();
-
-            // Al guardar: agrega a la tabla; el ID se genera aquí
-            ctrl.setOnGuardar(nuevaNota -> {
                 listaNotas.add(nuevaNota);
                 tablaNotas.refresh();
             }, this::nextId);
@@ -199,16 +165,13 @@ public class NotasController {
             e.printStackTrace();
         }
     }
- VIEJO AGREGAR NOTA */
 
-    //NUEVO ABRIR NOTA BD
     private void abrirEditar(Notas nota) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/EditarNotaView.fxml"));
             Parent root = loader.load();
             EditarNotaController ctrl = loader.getController();
 
-            // Al guardar: actualizar en BD y luego refrescar tabla
             ctrl.setNota(nota, n -> {
                 boolean ok = dao.actualizarNota(
                         n.getId(),
@@ -233,32 +196,6 @@ public class NotasController {
         }
     }
 
-//NUEVO ABRIR NOTA BD
-
-
-    /*  ABRIR NOTA ANTERIOR
-    private void abrirEditar(Notas nota) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/EditarNotaView.fxml"));
-            Parent root = loader.load();
-            EditarNotaController ctrl = loader.getController();
-
-            // Al guardar: refresca la tabla (es el mismo objeto editado)
-            ctrl.setNota(nota, n -> tablaNotas.refresh());
-
-            Stage stage = new Stage();
-            stage.setTitle("Editar Nota");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-     ABRIR NOTA ANTERIOR  */
-
-    //ELIMINAR NOTA BD
     private void eliminarNota(Notas nota) {
         if (nota == null) return;
 
@@ -269,16 +206,7 @@ public class NotasController {
         }
         listaNotas.remove(nota);
     }
-    // ELIMINAR NOTA BD
 
-    //ELIMINAR NOTA ANTERIOR
-    //private void eliminarNota(Notas nota) {
-    //    listaNotas.remove(nota);
-   // }
-
-
-
-    // Genera un ID consecutivo simple
     private int nextId() {
         return listaNotas.stream().mapToInt(Notas::getId).max().orElse(0) + 1;
     }
@@ -290,7 +218,4 @@ public class NotasController {
         alerta.setContentText(mensaje);
         alerta.showAndWait();
     }
-
-
-
 }

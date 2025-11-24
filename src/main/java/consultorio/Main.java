@@ -9,13 +9,10 @@ import java.net.URL;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        // NOTA: El nombre del archivo debe coincidir EXACTAMENTE
-        // Si se llama "Loginview.fxml" (con v minúscula), usa eso
         URL fxmlUrl = getClass().getResource("/vista/Loginview.fxml");
 
         if (fxmlUrl == null) {
             System.err.println("No se pudo encontrar el archivo FXML");
-            // Probemos con mayúscula por si acaso
             fxmlUrl = getClass().getResource("/vista/LoginView.fxml");
         }
 

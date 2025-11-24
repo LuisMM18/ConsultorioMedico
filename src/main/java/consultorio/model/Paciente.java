@@ -25,7 +25,4 @@ public class Paciente {
     public String toString() {
         return getNombreCompleto();
     }
-
-
-
 }

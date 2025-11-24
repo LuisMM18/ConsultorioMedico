@@ -46,7 +46,6 @@ public class CalendarController  {
     private DAO dao;
     private final DateTimeFormatter horaFormatter = DateTimeFormatter.ofPattern("h:mm a", new Locale("es","ES"));
 
-    // Map día -> lista de citas en ese día
     private Map<Integer, List<CitaCalendario>> eventosPorDia = new HashMap<>();
 
     @FXML
@@ -105,7 +104,6 @@ public class CalendarController  {
         }
     }
 
-    // Dibuja los días en el grid con las citas cargadas
     private void mostrarDias() {
         gridDias.getChildren().clear();
 
@@ -113,12 +111,11 @@ public class CalendarController  {
         int diasEnMes = yearMonth.lengthOfMonth();
         LocalDate primerDiaMes = fechaActual.withDayOfMonth(1);
 
-        int diaSemana = primerDiaMes.getDayOfWeek().getValue()-1; // Lunes=1 ... Domingo=7
+        int diaSemana = primerDiaMes.getDayOfWeek().getValue()-1;
         int row = 0;
         int col = diaSemana;
 
         for (int dia = 1; dia <= diasEnMes; dia++) {
-            //StackPane celda = crearCeldaDiaConEventos(dia);
             Button celdaBoton = crearCeldaDiaConEventos(dia);
             gridDias.add(celdaBoton, col, row);
 
@@ -133,7 +130,6 @@ public class CalendarController  {
         }
     }
 
-    // Crea la celda y agrega eventos (si los hay) usando eventosPorDia
     private Button crearCeldaDiaConEventos(int dia) {
         StackPane celda = new StackPane();
         celda.setStyle("-fx-border-color: #DDE3EA; -fx-border-width: 1 1 1 1;");
@@ -157,11 +153,10 @@ public class CalendarController  {
         if (citasDelDia != null && !citasDelDia.isEmpty()) {
             // ordenar por hora
             citasDelDia.sort(Comparator.comparing(CitaCalendario::getFechaHora));
-            int maxMostrar = 4; // cantidad máxima de líneas a mostrar por celda
+            int maxMostrar = 4;
             int mostradas = 0;
             for (CitaCalendario c : citasDelDia) {
                 if (mostradas >= maxMostrar) {
-                    // si hay más, mostrar un resumen
                     Label mas = new Label("… y " + (citasDelDia.size() - mostradas) + " más");
                     mas.setStyle("-fx-font-size:11px; -fx-text-fill:#4F5966;");
                     vbox.getChildren().add(mas);
@@ -196,11 +191,6 @@ public class CalendarController  {
             } else {
                 System.err.println("mainController es null — asigna setMainController(...) al inicializar.");
             }
-
-            // ejemplo: abrir un diálogo con las citas del día
-            //mostrarDetallesDia(dia);
-            //System.out.println("WELL WELL WELL, LOOK WHAT WE GOT HERE");
-            // o si tienes un método en mainController: mainController.mostrarDia(fechaActual.withDayOfMonth(dia));
         });
 
         botonCelda.setOnMouseEntered(e -> botonCelda.setStyle(
@@ -215,7 +205,6 @@ public class CalendarController  {
         return botonCelda;
     }
 
-    // Construye visualmente la línea de evento (punto + hora + paciente/tipo)
     private HBox crearEventoNode(CitaCalendario c) {
         HBox evento = new HBox(6);
         evento.setAlignment(Pos.CENTER_LEFT);

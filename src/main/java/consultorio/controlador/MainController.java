@@ -55,7 +55,6 @@ public class MainController {
         }
     }
 
-    // --- CORRECCIÓN IMPORTANTE AQUÍ ---
     @FXML
     private void cambiarVistaCitas() {
         try {
@@ -120,7 +119,6 @@ public class MainController {
                     javafx.scene.layout.AnchorPane.setRightAnchor(calendarioRoot, 0.0);
                 }
             } else {
-                // SI YA ESTABA CARGADO, LO REFRESCAMOS POR SI ACASO
                 refrescarCalendarioSiEstaAbierto();
             }
 
@@ -150,7 +148,7 @@ public class MainController {
 
     @FXML
     public void cambiarVistaAjustes(){
-        if(Rol.getInstance().getRol() == 3){ // Ejemplo: Recepcionista restringido
+        if(Rol.getInstance().getRol() == 3){
             mostrarError("No cuenta con el rol necesario para acceder a esta sección.");
         } else {
             try {
@@ -222,7 +220,6 @@ public class MainController {
         alert.showAndWait();
     }
 
-    // Este método es el que usan los hijos para pedir refresh
     public void refrescarCalendarioSiEstaAbierto() {
         if (calendarioLoader != null) {
             Object ctrl = calendarioLoader.getController();

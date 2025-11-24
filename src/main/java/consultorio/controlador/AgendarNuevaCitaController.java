@@ -52,14 +52,12 @@ public class AgendarNuevaCitaController {
         }
         rbNuevoPaciente.setSelected(true);
 
-        // Cargar lista de pacientes
         ObservableList<Paciente> pacientes = FXCollections.observableArrayList(dao.getPacientesActivosBasico());
         comboPacientes.setItems(pacientes);
         comboPacientes.setDisable(true);
 
         tipoPacienteGroup.selectedToggleProperty().addListener((obs, oldT, newT) -> actualizarModoPaciente());
 
-        // Deshabilitar fechas pasadas
         fechaCitaPicker.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
@@ -76,7 +74,6 @@ public class AgendarNuevaCitaController {
     }
 
     private void guardarDatos() {
-        // Validaciones
         if (fechaCitaPicker.getValue() == null) {
             mostrarAlerta("Faltan datos", "Debes seleccionar una fecha para la cita.");
             return;
@@ -106,7 +103,6 @@ public class AgendarNuevaCitaController {
             }
             idPacienteFinal = seleccionado.getIdPaciente();
         } else {
-            // Lógica Nuevo Paciente
             String nombre = nombreField.getText();
             String telefono = telefonoField.getText();
 
@@ -121,7 +117,6 @@ public class AgendarNuevaCitaController {
             boolean pacienteCreado = dao.crearPaciente(nombre, fechaNac, telefono, correo);
 
             if (pacienteCreado) {
-                // Buscar el paciente recién creado para obtener su ID
                 Paciente pNuevo = dao.getPacientesActivosBasico().stream()
                         .filter(p -> p.getNombreCompleto().equals(nombre))
                         .findFirst()
@@ -136,7 +131,6 @@ public class AgendarNuevaCitaController {
             }
         }
 
-        // --- CREAR LA CITA EN BD ---
         if (idPacienteFinal != null) {
             int idUsuario = consultorio.Rol.getInstance().getIdUsuario();
 
@@ -145,11 +139,9 @@ public class AgendarNuevaCitaController {
             if (citaCreada) {
                 this.guardado = true;
 
-                // --- 3. AGREGAR ESTO: AVISAR AL CALENDARIO ---
                 if (mainController != null) {
                     mainController.refrescarCalendarioSiEstaAbierto();
                 }
-                // ---------------------------------------------
 
                 mostrarAlertaInfo("Éxito", "Cita agendada correctamente.");
                 cerrarVentana();

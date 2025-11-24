@@ -30,9 +30,9 @@ public class AgregarNotaController {
 
     private void guardar() {
         Node root = agregarNota.getScene().getRoot();
-        TextField txtTitulo   = (TextField) root.lookup(".text-field");   // primer TextField
-        DatePicker dpFecha    = (DatePicker) root.lookup(".date-picker"); // primer DatePicker
-        TextArea txtContenido = (TextArea) root.lookup(".text-area");     // primer TextArea
+        TextField txtTitulo   = (TextField) root.lookup(".text-field");
+        DatePicker dpFecha    = (DatePicker) root.lookup(".date-picker");
+        TextArea txtContenido = (TextArea) root.lookup(".text-area");
 
         String titulo = (txtTitulo != null && txtTitulo.getText() != null)
                 ? txtTitulo.getText().trim()

@@ -149,6 +149,35 @@ public class DAO {
         return lista;
     }
 
+    public boolean actualizarPaciente(int idPaciente, String nombre, LocalDate fechaNac, String telefono, String correo) {
+        String[] partes = nombre.split(" ");
+        String nom = partes.length > 0 ? partes[0] : "";
+        String ap1 = partes.length > 1 ? partes[1] : "";
+        String ap2 = partes.length > 2 ? String.join(" ", java.util.Arrays.copyOfRange(partes, 2, partes.length)) : "";
+
+        String sql = "UPDATE pacientes SET nombre=?, apellidoUNO=?, apellidoDOS=?, fechaNacimiento=?, telefono=?, correo=? WHERE idPaciente=?";
+
+        try (java.sql.Connection conn = DBUtil.getConnection();
+             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, nom);
+            ps.setString(2, ap1);
+            ps.setString(3, ap2);
+
+            if (fechaNac != null) ps.setDate(4, java.sql.Date.valueOf(fechaNac));
+            else ps.setNull(4, java.sql.Types.DATE);
+
+            ps.setString(5, telefono);
+            ps.setString(6, correo);
+            ps.setInt(7, idPaciente);
+
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // Código de Calendario
     public List<CitaCalendario> getCitasForDate(LocalDate fecha) {
         String sql = "SELECT c.idCitas, c.idUsuarioRef, c.idPacienteRef, c.fechaHora, c.tipoConsulta, c.activo, " +
