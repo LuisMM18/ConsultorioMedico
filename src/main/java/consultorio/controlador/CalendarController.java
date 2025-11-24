@@ -55,7 +55,7 @@ public class CalendarController  {
         fechaActual = LocalDate.now();
         dao = new DAO();
         actualizarVista();
-        cargarCitasMes();    // carga inicial desde DB
+        cargarCitasMes();
         mostrarDias();
     }
 
@@ -93,7 +93,6 @@ public class CalendarController  {
         return texto.substring(0, 1).toUpperCase() + texto.substring(1);
     }
 
-    // carga desde DB las citas del mes actual y llena eventosPorDia
     private void cargarCitasMes() {
         eventosPorDia.clear();
         int year = fechaActual.getYear();

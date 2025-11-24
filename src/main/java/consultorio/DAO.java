@@ -231,19 +231,39 @@ public class DAO {
     }
 
     // CITAS
-    public boolean actualizarCita(int idCitas, LocalDateTime nuevaFechaHora, String nuevoTipo) {
+    public boolean actualizarCita(int idCitas, int idPaciente, LocalDateTime nuevaFechaHora, String nuevoTipo) {
+        // 1. Validación (Opcional, si quieres evitar citas en el pasado)
         if (nuevaFechaHora.toLocalDate().isBefore(LocalDate.now())) {
+            System.out.println("Error: No se puede mover una cita al pasado.");
             return false;
         }
 
-        String sql = "UPDATE citas SET fechaHora = ?, tipoConsulta = ? WHERE idCitas = ?";
+        String sql = "UPDATE citas SET idPacienteRef = ?, fechaHora = ?, tipoConsulta = ? WHERE idCitas = ? AND activo = 1";
+
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setTimestamp(1, Timestamp.valueOf(nuevaFechaHora));
-            ps.setString(2, nuevoTipo);
-            ps.setInt(3, idCitas);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) { e.printStackTrace(); return false; }
+
+            // --- CORRECCIÓN DE ÍNDICES AQUÍ ---
+            ps.setInt(1, idPaciente);                           // 1er interrogación
+            ps.setTimestamp(2, Timestamp.valueOf(nuevaFechaHora)); // 2da interrogación
+            ps.setString(3, nuevoTipo);                         // 3ra interrogación
+            ps.setInt(4, idCitas);                              // 4ta interrogación
+
+            int filasAfectadas = ps.executeUpdate();
+
+            if (filasAfectadas > 0) {
+                System.out.println("Cita ID " + idCitas + " actualizada correctamente.");
+                return true;
+            } else {
+                System.out.println("Advertencia: No se encontró la cita ID " + idCitas + ".");
+                return false;
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error SQL al actualizar cita: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public boolean crearCita(int idUsuarioRef, int idPacienteRef, LocalDateTime fechaHora, String tipoConsulta) {
@@ -390,12 +410,12 @@ public class DAO {
             c.fechaHora, 
             c.tipoConsulta, 
             c.activo,
-            CONCAT(p.nombre, ' ', p.apellidoUNO, ' ', p.apellidoDOS) AS pacienteNombre,
-            CONCAT(u.nombre, ' ', u.apellidoUNO) AS usuarioNombre
+            CONCAT_WS(' ', p.nombre, p.apellidoUNO, p.apellidoDOS) AS pacienteNombre,
+            CONCAT_WS(' ', u.nombre, u.apellidoUNO) AS usuarioNombre
         FROM citas c
         LEFT JOIN pacientes p ON c.idPacienteRef = p.idPaciente
         LEFT JOIN usuarios u ON c.idUsuarioRef = u.idUsuario
-        WHERE c.fechaHora >= ? AND c.fechaHora < ? 
+        WHERE c.fechaHora >= ? AND c.fechaHora < ? AND c.activo = 1
         ORDER BY c.fechaHora
     """;
 
@@ -539,8 +559,8 @@ public class DAO {
                 c.fechaHora, 
                 c.tipoConsulta, 
                 c.activo,
-                CONCAT(p.nombre, ' ', p.apellidoUNO, ' ', p.apellidoDOS) AS pacienteNombre,
-                CONCAT(u.nombre, ' ', u.apellidoUNO) AS usuarioNombre
+                CONCAT_WS(p.nombre, ' ', p.apellidoUNO, ' ', p.apellidoDOS) AS pacienteNombre,
+                CONCAT_WS(u.nombre, ' ', u.apellidoUNO) AS usuarioNombre
             FROM citas c
             LEFT JOIN pacientes p ON c.idPacienteRef = p.idPaciente
             LEFT JOIN usuarios u ON c.idUsuarioRef = u.idUsuario

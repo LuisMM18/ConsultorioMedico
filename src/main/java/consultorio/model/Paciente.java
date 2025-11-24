@@ -23,7 +23,6 @@ public class Paciente {
 
     @Override
     public String toString() {
-        // Esto es lo que verá el ComboBox
         return getNombreCompleto();
     }
 

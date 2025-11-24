@@ -10,49 +10,37 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
 public class ListaVistaDiaController {
 
-    @FXML
-    private VBox appointmentContainer; // el contenedor de todas las citas
+    @FXML private VBox appointmentContainer;
+    @FXML private Label fechaLabel;
 
-    @FXML
-    private Button btnNuevo, btnGuardar;
-
-    private final DateTimeFormatter horaFmt =
-            DateTimeFormatter.ofPattern("h:mm a", new Locale("es", "MX"));
-    @FXML
-    private Label fechaLabel;
     private LocalDate fechaHoy;
-
-    private final DateTimeFormatter formatter =
-            DateTimeFormatter.ofPattern("EEEE d ' / ' MMMM ' / ' yyyy", new Locale("es", "MX"));
+    private final DateTimeFormatter horaFmt = DateTimeFormatter.ofPattern("h:mm a", new Locale("es", "MX"));
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE d ' / ' MMMM ' / ' yyyy", new Locale("es", "MX"));
 
     @FXML
     private void initialize() {
-        // valor por defecto si nadie setea la fecha (se carga "hoy")
         fechaHoy = LocalDate.now(ZoneId.of("America/Hermosillo"));
         actualizarLabelFecha();
-        // carga las citas de la fecha actual (puede re-ejecutarse si MainController llama setFecha después)
         cargarCitasParaFechaAsync();
     }
 
     public void setFecha(LocalDate fecha) {
         this.fechaHoy = fecha != null ? fecha : LocalDate.now(ZoneId.of("America/Hermosillo"));
-        // actualizar label y recargar citas de la nueva fecha
         Platform.runLater(() -> {
             actualizarLabelFecha();
             cargarCitasParaFechaAsync();
@@ -70,34 +58,23 @@ public class ListaVistaDiaController {
             @Override
             protected List<CitaCalendario> call() throws Exception {
                 DAO dao = new DAO();
-                return dao.getCitasCalendarioForDate(fechaHoy); // método agregado en DAO
+                return dao.getCitasCalendarioForDate(fechaHoy); // Debe buscar por el día completo
             }
         };
 
         task.setOnSucceeded(evt -> {
             List<CitaCalendario> citas = task.getValue();
             appointmentContainer.getChildren().clear();
+
             if (citas != null && !citas.isEmpty()) {
                 for (CitaCalendario c : citas) {
-                    // c.getFechaHora() es LocalDateTime
-                    String horaStr = c.getFechaHora() != null ? c.getFechaHora().format(horaFmt) : "";
-                    String descripcion = c.getPacienteNombre() != null ? c.getPacienteNombre() : "(sin paciente)";
-                    /*
-                    try{
-                        descripcion = c.getPacienteNombre();
-                    } catch (Exception ex) {
-                        descripcion = c.getTipoConsulta() != null ? c.getTipoConsulta() : "(sin descripción)";
-                    }
-                    */
-                    //String descripcion = c.getPacienteNombre();
-                    //String descripcion = "prueba"; // reemplaza si tu modelo tiene descripción o paciente
-                    // si tu modelo tiene paciente, p.ej. c.getPacienteNombre() -> descripción
-                    VBox nodo = crearCita(horaStr, descripcion);
+                    // CAMBIO 1: Pasamos el objeto 'c' completo, no solo strings
+                    VBox nodo = crearCita(c);
                     appointmentContainer.getChildren().add(nodo);
                 }
             } else {
-                // opcional: mostrar mensaje de "no hay citas"
                 Label nada = new Label("No hay citas para este día");
+                nada.setStyle("-fx-font-size: 16px; -fx-text-fill: grey; -fx-padding: 20;");
                 appointmentContainer.getChildren().add(nada);
             }
         });
@@ -105,208 +82,158 @@ public class ListaVistaDiaController {
         task.setOnFailed(evt -> {
             Throwable ex = task.getException();
             ex.printStackTrace();
-            // opcional: mostrar alert en UI
-            Platform.runLater(() -> {
-                Alert a = new Alert(Alert.AlertType.ERROR, "Error cargando citas: " + ex.getMessage(), ButtonType.OK);
-                a.showAndWait();
-            });
         });
 
         new Thread(task, "carga-citas-hoy").start();
     }
 
+    // ... (Métodos titleCaseSegments y capitalizeFirst se quedan igual) ...
     private String titleCaseSegments(String s) {
         String[] partes = s.split(" / ");
         for (int i = 0; i < partes.length; i++) {
             String seg = partes[i].trim();
-            if (seg.isEmpty()) continue;
-            int firstSpace = seg.indexOf(' ');
-            if (firstSpace == -1) {
-                partes[i] = capitalizeFirst(seg);
-            } else {
-                String first = seg.substring(0, firstSpace);
-                String rest  = seg.substring(firstSpace);
-                partes[i] = capitalizeFirst(first) + rest;
-            }
+            if (!seg.isEmpty()) partes[i] = seg.substring(0,1).toUpperCase() + seg.substring(1);
         }
         return String.join(" / ", partes);
     }
 
-    private String capitalizeFirst(String s) {
-        if (s == null || s.isEmpty()) return s;
-        return s.substring(0,1).toUpperCase() + s.substring(1);
-    }
-    public void cargarDatosDeHoy(Connection conn) throws SQLException {
-        // SQL que usa rango [inicio, inicioDelSiguienteDia)
-        String sql = "SELECT * FROM citas WHERE fechaHora >= ? AND fechaHora < ? ORDER BY fechaHora";
-
-        // Si usas ZoneId especifico (lo definiste antes)
-        ZoneId zone = ZoneId.of("America/Hermosillo");
-
-        // Inicio del día en la zona y el inicio del siguiente día
-        ZonedDateTime zInicio = fechaHoy.atStartOfDay(zone);
-        ZonedDateTime zFin = fechaHoy.plusDays(1).atStartOfDay(zone);
-
-        Timestamp tsInicio = Timestamp.from(zInicio.toInstant());
-        Timestamp tsFin = Timestamp.from(zFin.toInstant());
-
-        DateTimeFormatter horaFmt = DateTimeFormatter.ofPattern("HH:mm");
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setTimestamp(1, tsInicio);
-            ps.setTimestamp(2, tsFin);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                // Limpiar contenedor antes de poblar
-                if (appointmentContainer != null) appointmentContainer.getChildren().clear();
-
-                while (rs.next()) {
-                    Timestamp ts = rs.getTimestamp("fechaHora");
-                    String descripcion = rs.getString("descripcion"); // ajusta nombre de columna
-                    // Convertir timestamp a LocalDateTime y formatear sólo la hora
-                    String horaStr = ts.toLocalDateTime().format(horaFmt);
-
-                    // Crear y añadir la cita a la UI
-                    VBox cita = crearCita(horaStr, descripcion != null ? descripcion : "");
-                    appointmentContainer.getChildren().add(cita);
-                }
-            }
-        }
-    }
-    public LocalDate getFechaHoy() {
-        return fechaHoy;
-    }
-    //-----------------------------------------------------------------------------------------------------------------------------------
-
     @FXML
     private void onNuevo() {
-        //VBox nuevaCita = crearCita("Hora nueva", "Nueva cita sin descripción");
-        //appointmentContainer.getChildren().add(nuevaCita);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/AgendarNuevaCitaView.fxml"));
+            Parent root = loader.load();
 
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/AgendarNuevaCitaView.fxml"));
-                Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Nueva Cita");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
 
-                Stage stage = new Stage();
-                stage.setTitle("Nueva Cita");
-                stage.initModality(Modality.APPLICATION_MODAL); // Bloquea la principal hasta cerrar
-                stage.setScene(new Scene(root));
-                stage.showAndWait();
+            // Recargar lista al volver por si se creó una
+            cargarCitasParaFechaAsync();
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    @FXML
-    private void onGuardar() {
-        System.out.println("Guardar todos los cambios en base de datos o archivo...");
-    }
-
+    // CAMBIO 2: Lógica de Edición corregida
     @FXML
     private void onEditar(javafx.event.ActionEvent event) {
         Button boton = (Button) event.getSource();
-        VBox cita = (VBox) boton.getParent().getParent();
+        VBox citaBox = (VBox) boton.getParent().getParent();
+        CitaCalendario citaObj = (CitaCalendario) citaBox.getUserData();
 
-        Label lblHora = null;
-        Label lblDescripcion = null;
-
-        for (var node : cita.getChildren()) {
-            if (node instanceof HBox header) {
-                for (var subNode : header.getChildren()) {
-                    if (subNode instanceof Label label) lblHora = label;
-                }
-            } else if (node instanceof Label label) {
-                lblDescripcion = label;
-            }
-        }
+        if (citaObj == null) return;
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/EdicionDeCita.fxml"));
             Parent root = loader.load();
 
             EdiciondeCitaController controller = loader.getController();
-            controller.setDatos(lblHora.getText(), lblDescripcion.getText());
+            controller.initData(citaObj);
 
             Stage stage = new Stage();
             stage.setTitle("Editar Cita");
             stage.setScene(new Scene(root));
-            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
 
+            // --- AQUÍ ESTÁ LA ACTUALIZACIÓN ---
             if (controller.isGuardado()) {
-                lblDescripcion.setText(controller.getNuevoDescripcion());
+                System.out.println("Cambios detectados. Recargando lista...");
+                try { Thread.sleep(100); } catch (InterruptedException ignored) {}
+                cargarCitasParaFechaAsync();
             }
+            // ----------------------------------
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
     @FXML
     private void onEliminar(javafx.event.ActionEvent event) {
         Button boton = (Button) event.getSource();
-        VBox citaOriginal = null;
-        if (boton.getParent() instanceof HBox && boton.getParent().getParent() instanceof VBox) {
-            citaOriginal = (VBox) boton.getParent().getParent();
-        }
+        // Estructura: Button -> HBox (header) -> VBox (cita)
+        VBox citaBox = (VBox) boton.getParent().getParent();
+        CitaCalendario citaObj = (CitaCalendario) citaBox.getUserData();
 
-        if (citaOriginal != null) {
-            // Creamos una variable final para usar en la lambda
-            final VBox citaParaEliminar = citaOriginal;
+        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+        alerta.setTitle("Confirmar Eliminación");
+        alerta.setHeaderText("¿Eliminar cita de " + citaObj.getPacienteNombre() + "?");
+        alerta.setContentText("Esta acción no se puede deshacer.");
 
-            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
-            alerta.setTitle("Confirmar Eliminación");
-            alerta.setHeaderText("¿Estás seguro de que deseas eliminar esta cita?");
-            alerta.setContentText("Esta acción no se puede deshacer.");
+        alerta.showAndWait().ifPresent(respuesta -> {
+            if (respuesta == ButtonType.OK) {
+                // Llamar al DAO para borrar de la BD
+                DAO dao = new DAO();
+                boolean eliminado = dao.cancelarCita(citaObj.getIdCitas()); // Asegúrate de tener este método
 
-            alerta.showAndWait().ifPresent(respuesta -> {
-                if (respuesta == ButtonType.OK) {
-                    // Usamos la nueva variable que sí es final
-                    appointmentContainer.getChildren().remove(citaParaEliminar);
+                if (eliminado) {
+                    appointmentContainer.getChildren().remove(citaBox);
+                } else {
+                    Alert error = new Alert(Alert.AlertType.ERROR, "No se pudo eliminar en la BD");
+                    error.show();
                 }
-            });
-        }
+            }
+        });
     }
 
-    private VBox crearCita(String hora, String descripcionTexto) {
+    @FXML
+    private void onGuardar (){
+
+    }
+
+    // CAMBIO 3: Ahora recibe el objeto CitaCalendario completo
+    private VBox crearCita(CitaCalendario c) {
         VBox cita = new VBox();
-        cita.setStyle("-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white;");
+
+        // ¡IMPORTANTE! Guardamos el objeto dentro del componente visual para usarlo luego en Editar/Eliminar
+        cita.setUserData(c);
+
+        cita.setStyle("-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);");
         cita.setSpacing(5);
 
+        // --- Preparar Textos ---
+        String horaStr = c.getFechaHora() != null ? c.getFechaHora().format(horaFmt) : "--:--";
+        String paciente = c.getPacienteNombre() != null ? c.getPacienteNombre() : "Sin Paciente";
+        String tipo = c.getTipoConsulta() != null ? c.getTipoConsulta() : "";
+        String descripcionTexto = paciente + (tipo.isEmpty() ? "" : " (" + tipo + ")");
+
+        // --- Header (Hora + Botón Eliminar) ---
         HBox header = new HBox();
         header.setSpacing(5);
         header.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        Label lblHora = new Label(hora);
-        lblHora.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
-        lblHora.setMaxWidth(Double.MAX_VALUE);
-        lblHora.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        HBox.setHgrow(lblHora, javafx.scene.layout.Priority.ALWAYS);
+        Label lblHora = new Label(horaStr);
+        lblHora.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         Region spacer = new Region();
-        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button btnEliminar = new Button("X");
-        btnEliminar.setStyle("-fx-background-color: transparent; -fx-font-size: 20px; -fx-font-weight: bold;");
+        Button btnEliminar = new Button("✕");
+        btnEliminar.setStyle("-fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-font-size: 16px; -fx-font-weight: bold; -fx-cursor: hand;");
+        btnEliminar.setTooltip(new Tooltip("Cancelar Cita"));
         btnEliminar.setOnAction(this::onEliminar);
 
         header.getChildren().addAll(lblHora, spacer, btnEliminar);
 
+        // --- Cuerpo (Descripción) ---
         Label descripcion = new Label(descripcionTexto);
-        descripcion.setStyle("-fx-font-size: 20px;");
+        descripcion.setStyle("-fx-font-size: 16px; -fx-text-fill: #34495e;");
         descripcion.setWrapText(true);
 
-        Button btnEditar = new Button("Editar");
-        btnEditar.setStyle("-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;");
+        // --- Pie (Botón Editar) ---
+        Button btnEditar = new Button("Editar Detalles");
+        btnEditar.setStyle("-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 5;");
         btnEditar.setOnAction(this::onEditar);
 
         HBox pie = new HBox(btnEditar);
         pie.setAlignment(javafx.geometry.Pos.BOTTOM_RIGHT);
+        pie.setPadding(new javafx.geometry.Insets(5, 0, 0, 0));
 
         cita.getChildren().addAll(header, descripcion, pie);
         return cita;
-    }}
+    }
+}

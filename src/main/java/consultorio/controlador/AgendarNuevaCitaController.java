@@ -18,8 +18,8 @@ public class AgendarNuevaCitaController {
     @FXML private TextField telefonoField;
     @FXML private TextField correoField;
 
-    @FXML private DatePicker fechaCitaPicker; // ID: fechaCitaPicker
-    @FXML private ChoiceBox<String> horaChoiceBox; // ID: horaChoiceBox
+    @FXML private DatePicker fechaCitaPicker;
+    @FXML private ChoiceBox<String> horaChoiceBox;
 
     @FXML private Button guardarButton;
     @FXML private Button cancelarButton;
