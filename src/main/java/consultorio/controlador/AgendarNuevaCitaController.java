@@ -8,10 +8,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import lombok.Getter;
+import lombok.Setter; // <--- 1. IMPORTANTE: Importar Setter
 
 import java.time.LocalDate;
 
 public class AgendarNuevaCitaController {
+
+    @Setter
+    private MainController mainController;
 
     @FXML private TextField nombreField;
     @FXML private DatePicker fechaNacimientoPicker;
@@ -48,17 +52,18 @@ public class AgendarNuevaCitaController {
         }
         rbNuevoPaciente.setSelected(true);
 
+        // Cargar lista de pacientes
         ObservableList<Paciente> pacientes = FXCollections.observableArrayList(dao.getPacientesActivosBasico());
         comboPacientes.setItems(pacientes);
         comboPacientes.setDisable(true);
 
         tipoPacienteGroup.selectedToggleProperty().addListener((obs, oldT, newT) -> actualizarModoPaciente());
 
+        // Deshabilitar fechas pasadas
         fechaCitaPicker.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
-
                 if (date.isBefore(LocalDate.now())) {
                     setDisable(true);
                     setStyle("-fx-background-color: #ffc0cb;");
@@ -71,7 +76,7 @@ public class AgendarNuevaCitaController {
     }
 
     private void guardarDatos() {
-        // 1. Validaciones iniciales (IGUAL QUE ANTES)
+        // Validaciones
         if (fechaCitaPicker.getValue() == null) {
             mostrarAlerta("Faltan datos", "Debes seleccionar una fecha para la cita.");
             return;
@@ -101,6 +106,7 @@ public class AgendarNuevaCitaController {
             }
             idPacienteFinal = seleccionado.getIdPaciente();
         } else {
+            // Lógica Nuevo Paciente
             String nombre = nombreField.getText();
             String telefono = telefonoField.getText();
 
@@ -112,10 +118,10 @@ public class AgendarNuevaCitaController {
             String correo = correoField.getText();
             LocalDate fechaNac = fechaNacimientoPicker.getValue();
 
-            // Creamos al paciente
             boolean pacienteCreado = dao.crearPaciente(nombre, fechaNac, telefono, correo);
 
             if (pacienteCreado) {
+                // Buscar el paciente recién creado para obtener su ID
                 Paciente pNuevo = dao.getPacientesActivosBasico().stream()
                         .filter(p -> p.getNombreCompleto().equals(nombre))
                         .findFirst()
@@ -130,7 +136,7 @@ public class AgendarNuevaCitaController {
             }
         }
 
-        // 4. --- EL PASO QUE FALTABA: CREAR LA CITA EN LA BD ---
+        // --- CREAR LA CITA EN BD ---
         if (idPacienteFinal != null) {
             int idUsuario = consultorio.Rol.getInstance().getIdUsuario();
 
@@ -138,6 +144,14 @@ public class AgendarNuevaCitaController {
 
             if (citaCreada) {
                 this.guardado = true;
+
+                // --- 3. AGREGAR ESTO: AVISAR AL CALENDARIO ---
+                if (mainController != null) {
+                    mainController.refrescarCalendarioSiEstaAbierto();
+                }
+                // ---------------------------------------------
+
+                mostrarAlertaInfo("Éxito", "Cita agendada correctamente.");
                 cerrarVentana();
             } else {
                 mostrarAlerta("Error", "No se pudo agendar la cita en la base de datos.");
@@ -145,7 +159,6 @@ public class AgendarNuevaCitaController {
         }
     }
 
-    // --- MÉTODO AUXILIAR PARA CONVERTIR LA HORA ---
     private java.time.LocalTime convertirHora(String horaString) {
         try {
             java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("hh:mm a", java.util.Locale.ENGLISH);
@@ -157,12 +170,10 @@ public class AgendarNuevaCitaController {
 
     private void actualizarModoPaciente() {
         boolean esNuevo = rbNuevoPaciente.isSelected();
-
         nombreField.setDisable(!esNuevo);
         fechaNacimientoPicker.setDisable(!esNuevo);
         telefonoField.setDisable(!esNuevo);
         correoField.setDisable(!esNuevo);
-
         comboPacientes.setDisable(esNuevo);
     }
 
@@ -173,6 +184,14 @@ public class AgendarNuevaCitaController {
 
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.WARNING);
+        alerta.setHeaderText(null);
+        alerta.setTitle(titulo);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
+    }
+
+    private void mostrarAlertaInfo(String titulo, String mensaje) {
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setHeaderText(null);
         alerta.setTitle(titulo);
         alerta.setContentText(mensaje);

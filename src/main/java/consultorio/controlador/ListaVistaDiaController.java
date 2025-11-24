@@ -25,15 +25,29 @@ import java.util.Locale;
 
 public class ListaVistaDiaController {
 
+    // --- VARIABLES FXML ---
     @FXML private VBox appointmentContainer;
     @FXML private Label fechaLabel;
+    @FXML private Button btnNuevo;
+    @FXML private Button btnGuardar;
 
+    // --- VARIABLES DE LÓGICA ---
     private LocalDate fechaHoy;
     private final DateTimeFormatter horaFmt = DateTimeFormatter.ofPattern("h:mm a", new Locale("es", "MX"));
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE d ' / ' MMMM ' / ' yyyy", new Locale("es", "MX"));
 
+    // Conexión con el controlador principal (para refrescar el calendario)
+    private MainController mainController;
+
+    // --- SETTER PARA MAIN CONTROLLER ---
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
+    // --- INICIALIZACIÓN ---
     @FXML
     private void initialize() {
+        // Por defecto hoy, pero setFecha lo puede cambiar
         fechaHoy = LocalDate.now(ZoneId.of("America/Hermosillo"));
         actualizarLabelFecha();
         cargarCitasParaFechaAsync();
@@ -41,6 +55,7 @@ public class ListaVistaDiaController {
 
     public void setFecha(LocalDate fecha) {
         this.fechaHoy = fecha != null ? fecha : LocalDate.now(ZoneId.of("America/Hermosillo"));
+        // Usamos Platform.runLater para asegurar que la UI esté lista
         Platform.runLater(() -> {
             actualizarLabelFecha();
             cargarCitasParaFechaAsync();
@@ -53,12 +68,14 @@ public class ListaVistaDiaController {
         fechaLabel.setText(titleCaseSegments(raw));
     }
 
+    // --- CARGA DE DATOS (ASYNC) ---
     private void cargarCitasParaFechaAsync() {
         Task<List<CitaCalendario>> task = new Task<>() {
             @Override
             protected List<CitaCalendario> call() throws Exception {
                 DAO dao = new DAO();
-                return dao.getCitasCalendarioForDate(fechaHoy); // Debe buscar por el día completo
+                // Importante: El DAO debe filtrar por "activo = 1"
+                return dao.getCitasCalendarioForDate(fechaHoy);
             }
         };
 
@@ -68,7 +85,6 @@ public class ListaVistaDiaController {
 
             if (citas != null && !citas.isEmpty()) {
                 for (CitaCalendario c : citas) {
-                    // CAMBIO 1: Pasamos el objeto 'c' completo, no solo strings
                     VBox nodo = crearCita(c);
                     appointmentContainer.getChildren().add(nodo);
                 }
@@ -87,15 +103,7 @@ public class ListaVistaDiaController {
         new Thread(task, "carga-citas-hoy").start();
     }
 
-    // ... (Métodos titleCaseSegments y capitalizeFirst se quedan igual) ...
-    private String titleCaseSegments(String s) {
-        String[] partes = s.split(" / ");
-        for (int i = 0; i < partes.length; i++) {
-            String seg = partes[i].trim();
-            if (!seg.isEmpty()) partes[i] = seg.substring(0,1).toUpperCase() + seg.substring(1);
-        }
-        return String.join(" / ", partes);
-    }
+    // --- ACCIONES (NUEVO, EDITAR, ELIMINAR) ---
 
     @FXML
     private void onNuevo() {
@@ -103,13 +111,20 @@ public class ListaVistaDiaController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/AgendarNuevaCitaView.fxml"));
             Parent root = loader.load();
 
+            // Pasamos el MainController también a la ventana de nueva cita
+            // para que ella también pueda refrescar el calendario al guardar
+            AgendarNuevaCitaController controller = loader.getController();
+            if (this.mainController != null) {
+                controller.setMainController(this.mainController);
+            }
+
             Stage stage = new Stage();
             stage.setTitle("Nueva Cita");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
             stage.showAndWait();
 
-            // Recargar lista al volver por si se creó una
+            // Al volver, recargamos la lista por si se creó una cita en ESTE día
             cargarCitasParaFechaAsync();
 
         } catch (IOException e) {
@@ -117,11 +132,10 @@ public class ListaVistaDiaController {
         }
     }
 
-    // CAMBIO 2: Lógica de Edición corregida
     @FXML
     private void onEditar(javafx.event.ActionEvent event) {
         Button boton = (Button) event.getSource();
-        VBox citaBox = (VBox) boton.getParent().getParent();
+        VBox citaBox = (VBox) boton.getParent().getParent(); // Botón -> HBox -> VBox
         CitaCalendario citaObj = (CitaCalendario) citaBox.getUserData();
 
         if (citaObj == null) return;
@@ -139,13 +153,21 @@ public class ListaVistaDiaController {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
 
-            // --- AQUÍ ESTÁ LA ACTUALIZACIÓN ---
+            // Si hubo cambios guardados...
             if (controller.isGuardado()) {
                 System.out.println("Cambios detectados. Recargando lista...");
+
+                // Pequeña pausa para asegurar que la BD procesó el commit
                 try { Thread.sleep(100); } catch (InterruptedException ignored) {}
+
+                // 1. Recargar esta lista
                 cargarCitasParaFechaAsync();
+
+                // 2. Avisar al Calendario (puntos de colores)
+                if (mainController != null) {
+                    mainController.refrescarCalendarioSiEstaAbierto();
+                }
             }
-            // ----------------------------------
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -155,23 +177,29 @@ public class ListaVistaDiaController {
     @FXML
     private void onEliminar(javafx.event.ActionEvent event) {
         Button boton = (Button) event.getSource();
-        // Estructura: Button -> HBox (header) -> VBox (cita)
-        VBox citaBox = (VBox) boton.getParent().getParent();
+        VBox citaBox = (VBox) boton.getParent().getParent(); // Botón -> HBox -> VBox
         CitaCalendario citaObj = (CitaCalendario) citaBox.getUserData();
+
+        if (citaObj == null) return;
 
         Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
         alerta.setTitle("Confirmar Eliminación");
         alerta.setHeaderText("¿Eliminar cita de " + citaObj.getPacienteNombre() + "?");
-        alerta.setContentText("Esta acción no se puede deshacer.");
+        alerta.setContentText("Esta acción marcará la cita como cancelada.");
 
         alerta.showAndWait().ifPresent(respuesta -> {
             if (respuesta == ButtonType.OK) {
-                // Llamar al DAO para borrar de la BD
                 DAO dao = new DAO();
-                boolean eliminado = dao.cancelarCita(citaObj.getIdCitas()); // Asegúrate de tener este método
+                boolean eliminado = dao.cancelarCita(citaObj.getIdCitas());
 
                 if (eliminado) {
+                    // Quitamos visualmente
                     appointmentContainer.getChildren().remove(citaBox);
+
+                    // Avisamos al Calendario para quitar el puntito
+                    if (mainController != null) {
+                        mainController.refrescarCalendarioSiEstaAbierto();
+                    }
                 } else {
                     Alert error = new Alert(Alert.AlertType.ERROR, "No se pudo eliminar en la BD");
                     error.show();
@@ -181,27 +209,26 @@ public class ListaVistaDiaController {
     }
 
     @FXML
-    private void onGuardar (){
-
+    private void onGuardar() {
+        // Método placeholder para evitar errores en el FXML
+        System.out.println("Botón Guardar presionado (Sin lógica asignada por ahora)");
     }
 
-    // CAMBIO 3: Ahora recibe el objeto CitaCalendario completo
+    // --- CONSTRUCTOR DE CELDAS VISUALES ---
     private VBox crearCita(CitaCalendario c) {
         VBox cita = new VBox();
-
-        // ¡IMPORTANTE! Guardamos el objeto dentro del componente visual para usarlo luego en Editar/Eliminar
-        cita.setUserData(c);
+        cita.setUserData(c); // Guardamos el objeto real aquí
 
         cita.setStyle("-fx-border-color: #d3d3d3; -fx-border-width: 1; -fx-padding: 10; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);");
         cita.setSpacing(5);
 
-        // --- Preparar Textos ---
+        // Textos
         String horaStr = c.getFechaHora() != null ? c.getFechaHora().format(horaFmt) : "--:--";
         String paciente = c.getPacienteNombre() != null ? c.getPacienteNombre() : "Sin Paciente";
         String tipo = c.getTipoConsulta() != null ? c.getTipoConsulta() : "";
         String descripcionTexto = paciente + (tipo.isEmpty() ? "" : " (" + tipo + ")");
 
-        // --- Header (Hora + Botón Eliminar) ---
+        // Header (Hora + Eliminar)
         HBox header = new HBox();
         header.setSpacing(5);
         header.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
@@ -219,12 +246,12 @@ public class ListaVistaDiaController {
 
         header.getChildren().addAll(lblHora, spacer, btnEliminar);
 
-        // --- Cuerpo (Descripción) ---
+        // Descripción
         Label descripcion = new Label(descripcionTexto);
         descripcion.setStyle("-fx-font-size: 16px; -fx-text-fill: #34495e;");
         descripcion.setWrapText(true);
 
-        // --- Pie (Botón Editar) ---
+        // Botón Editar
         Button btnEditar = new Button("Editar Detalles");
         btnEditar.setStyle("-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 5;");
         btnEditar.setOnAction(this::onEditar);
@@ -235,5 +262,15 @@ public class ListaVistaDiaController {
 
         cita.getChildren().addAll(header, descripcion, pie);
         return cita;
+    }
+
+    // --- UTILIDADES ---
+    private String titleCaseSegments(String s) {
+        String[] partes = s.split(" / ");
+        for (int i = 0; i < partes.length; i++) {
+            String seg = partes[i].trim();
+            if (!seg.isEmpty()) partes[i] = seg.substring(0,1).toUpperCase() + seg.substring(1);
+        }
+        return String.join(" / ", partes);
     }
 }

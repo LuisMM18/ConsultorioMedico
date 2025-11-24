@@ -290,4 +290,10 @@ public class CalendarController  {
         Button btn = (Button) e.getSource();
         btn.setStyle("-fx-background-color: #D9D9D9; -fx-border-color: #969696; -fx-border-radius: 8px;");
     }
+
+    public void recargarDatosExternamente(){
+        System.out.println("Sincronizando Calendario");
+        cargarCitasMes();
+        mostrarDias();
+    }
 }
