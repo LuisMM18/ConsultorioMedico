@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<ScrollPane fitToWidth="true" fitToHeight="true"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="consultorio.controlador.AgregarUsuarioController">
+    <content>
+        <VBox spacing="20" style="-fx-padding: 30;">
+            <Label fx:id="tituloLabel" alignment="CENTER" text="Crear nuevo usuario"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+            <GridPane hgap="10" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints halignment="LEFT" minWidth="120.0" prefWidth="150.0" />
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="200.0" prefWidth="300.0" />
+                </columnConstraints>
+
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #555;" text="Nombre:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="nombreField" promptText="Nombre completo"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #555;" text="Correo:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="correoField" promptText="correo@ejemplo.com"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #555;" text="Teléfono:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="telefonoField" promptText="correo@ejemplo.com"
+                           GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #555;" text="Contraseña:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <PasswordField fx:id="passField" promptText="Contraseña"
+                               GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #555;" text="Confirmar contraseña:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <PasswordField fx:id="passConfirmField" promptText="Repite la contraseña"
+                               GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #555;" text="Rol:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                <TextField fx:id="rolField" promptText="correo@ejemplo.com"
+                           GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <HBox alignment="CENTER" spacing="24">
+                <Button fx:id="cancelarBtn" text="Cancelar" onAction="#cerrarVentana"
+                        style="-fx-background-color: white; -fx-text-fill: #7f8c8d; -fx-border-color: #bdc3c7; -fx-border-radius: 5; -fx-background-radius: 5; -fx-cursor: hand;"
+                        prefWidth="130" prefHeight="40">
+                    <font><Font name="System Bold" size="14.0" /></font>
+                </Button>
+
+
+                <Button fx:id="guardarBtn" text="Guardar" onAction="#guardar"
+                        style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(154, 221, 255, 0.4), 10, 0, 0, 4); -fx-cursor: hand;"
+                        prefWidth="130" prefHeight="40">
+                    <font><Font name="System Bold" size="14.0" /></font>
+                </Button>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

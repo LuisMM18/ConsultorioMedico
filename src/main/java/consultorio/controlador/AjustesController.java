@@ -5,13 +5,20 @@ import consultorio.Rol;
 import consultorio.model.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import lombok.Setter;
 
+import java.io.IOException;
 import java.util.List;
 
 public class AjustesController {
@@ -149,5 +156,39 @@ public class AjustesController {
         alert.setHeaderText(null);
         alert.setContentText(contenido);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void AgregarUsuarioVentana(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/AgregarUsuarioView.fxml"));
+            Parent root = loader.load();
+
+            // controlador del diálogo
+            AgregarUsuarioController ctrl = loader.getController();
+            // pasar DAO
+            ctrl.setDao(this.dao);
+            // callback para refrescar si se crea un usuario
+            ctrl.setOnUserCreated(() -> {
+                usuarioCombo.getItems().clear();
+                usuarioCombo.getItems().addAll(dao.getAllUsuarios());
+            });
+
+            Stage stage = new Stage();
+            stage.setTitle("Crear nuevo usuario");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(((Node) event.getSource()).getScene().getWindow());
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("Error", "No se pudo abrir la ventana de creación de usuario:\n" + e.getMessage());
+        } catch (NullPointerException npe) {
+            // Por si getResource devolvió null
+            npe.printStackTrace();
+            mostrarAlerta("Error", "No se encontró el FXML '/vista/AgregarUsuarioView.fxml'. Verifica que esté en src/main/resources/vista/");
+        }
     }
 }

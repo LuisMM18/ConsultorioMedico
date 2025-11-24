@@ -629,4 +629,39 @@ public class DAO {
         }
         return citas;
     }
+    public boolean crearUsuario(String nombreCompleto, String correo, String telefono, String contrasena, Integer rol) {
+        if (nombreCompleto == null) nombreCompleto = "";
+        String[] partes = nombreCompleto.trim().isEmpty() ? new String[0] : nombreCompleto.trim().split(" ");
+        String nombre = partes.length > 0 ? partes[0] : "";
+        String ap1 = partes.length > 1 ? partes[1] : "";
+        String ap2 = partes.length > 2 ? String.join(" ", java.util.Arrays.copyOfRange(partes, 2, partes.length)) : null;
+
+        String sql = "INSERT INTO usuarios (nombre, apellidoUNO, apellidoDOS, email, telefono, contrasena, rol, activo) VALUES (?, ?, ?, ?, ?, ?, ?, 1)";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, nombre);
+            ps.setString(2, ap1);
+            if (ap2 != null && !ap2.isEmpty()) ps.setString(3, ap2); else ps.setNull(3, java.sql.Types.VARCHAR);
+            ps.setString(4, correo);
+
+            if (telefono != null && !telefono.isEmpty()) ps.setString(5, telefono);
+            else ps.setNull(5, java.sql.Types.VARCHAR);
+
+            //TODO hashear la contraseña antes de guardarla
+            ps.setString(6, contrasena);
+
+            if (rol != null) ps.setInt(7, rol); else ps.setInt(7, 2);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (java.sql.SQLIntegrityConstraintViolationException icv) {
+            // email duplicado u otra restricción de unicidad
+            System.err.println("Error de integridad al crear usuario (posible email duplicado): " + icv.getMessage());
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }//DAO

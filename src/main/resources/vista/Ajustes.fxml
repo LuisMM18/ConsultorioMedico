@@ -20,6 +20,13 @@
 
             <VBox fx:id="adminPanel" alignment="CENTER_LEFT" spacing="5" visible="false" managed="false"
                   style="-fx-background-color: #fff3cd; -fx-border-color: #ffeeba; -fx-padding: 15; -fx-background-radius: 5;">
+                <Label text="MODO ADMINISTRADOR: Crear un usuario" style="-fx-font-weight: bold; -fx-text-fill: #856404;" />
+                <Button fx:id="CreacionUsuarioButton" onAction="#AgregarUsuarioVentana" prefHeight="40" prefWidth="200"
+                        style="-fx-background-color: #9ADDFF; -fx-text-fill: white; -fx-font-weight: bold;"
+                        text="Crear nuevo usuario">
+                    <font><Font size="15.0" /></font>
+                </Button>
+
                 <Label text="MODO ADMINISTRADOR: Editar otro usuario" style="-fx-font-weight: bold; -fx-text-fill: #856404;" />
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <Label text="Seleccionar Usuario:" />
