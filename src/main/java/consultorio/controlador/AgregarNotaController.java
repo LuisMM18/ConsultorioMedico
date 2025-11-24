@@ -14,9 +14,7 @@ public class AgregarNotaController {
     @FXML public Button Cancelar;
     @FXML public Label agregarNota;
 
-    // callback para devolver la nueva nota al NotasController
     private Consumer<Notas> onGuardar;
-    // proveedor de ID consecutivo (lo manda NotasController)
     private java.util.function.IntSupplier idSupplier;
 
     public void setOnGuardar(Consumer<Notas> onGuardar, java.util.function.IntSupplier idSupplier) {
@@ -31,7 +29,6 @@ public class AgregarNotaController {
     }
 
     private void guardar() {
-        // Buscar los controles por tipo (no cambiamos FXML)
         Node root = agregarNota.getScene().getRoot();
         TextField txtTitulo   = (TextField) root.lookup(".text-field");   // primer TextField
         DatePicker dpFecha    = (DatePicker) root.lookup(".date-picker"); // primer DatePicker
@@ -54,7 +51,6 @@ public class AgregarNotaController {
             return;
         }
 
-        // VALIDACIÓN IMPORTANTE: no permitir fecha anterior a hoy
         if (fecha.isBefore(LocalDate.now())) {
             alerta("No puedes crear una nota con una fecha anterior a hoy.");
             return;

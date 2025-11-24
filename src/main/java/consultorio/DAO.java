@@ -232,6 +232,10 @@ public class DAO {
 
     // CITAS
     public boolean actualizarCita(int idCitas, LocalDateTime nuevaFechaHora, String nuevoTipo) {
+        if (nuevaFechaHora.toLocalDate().isBefore(LocalDate.now())) {
+            return false;
+        }
+
         String sql = "UPDATE citas SET fechaHora = ?, tipoConsulta = ? WHERE idCitas = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -243,6 +247,11 @@ public class DAO {
     }
 
     public boolean crearCita(int idUsuarioRef, int idPacienteRef, LocalDateTime fechaHora, String tipoConsulta) {
+        if (fechaHora.toLocalDate().isBefore(LocalDate.now())) {
+            System.out.println("Intento de Agendar Cita en una fecha anterior (" + fechaHora + ")");
+            return false;
+        }
+
         String sql = "INSERT INTO citas (idUsuarioRef, idPacienteRef, fechaHora, tipoConsulta, activo) VALUES (?,?,?,?,1)";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

@@ -88,13 +88,11 @@ public class MainController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/ListaVistaDia.fxml"));
             Parent VistaCitas = loader.load();
 
-            // Obtener el controller de la vista cargada y pasarle la fecha
             ListaVistaDiaController controller = loader.getController();
             if (controller != null) {
                 controller.setFecha(fecha);
             }
 
-            // reemplaza el area de contenido
             contentArea.getChildren().setAll(VistaCitas);
 
             actualizarBotonActivo(btnCitas);
@@ -106,17 +104,6 @@ public class MainController {
     @FXML
     public void cambiarVistaCalendario(){
         try {
-
-            // Cargar el archivo FXML de la vista de citas
-            //FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/CalendarioView.fxml"));
-            //Parent vistaCitas = loader.load();
-
-            // Reemplazar el contenido actual con la nueva vista
-            //contentArea.getChildren().setAll(vistaCitas);
-
-            // Mantener el botón activo
-            //actualizarBotonActivo(btnCalendario);
-
 
             if (calendarioRoot == null) {
                 calendarioLoader = new FXMLLoader(getClass().getResource("/vista/CalendarioView.fxml"));
@@ -159,14 +146,11 @@ public class MainController {
     @FXML
     private void cambiarVistaPacientes() {
         try {
-            // Cargar el archivo FXML de la vista de citas
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/PacientesView.fxml"));
             Parent vistaCitas = loader.load();
 
-            // Reemplazar el contenido actual con la nueva vista
             contentArea.getChildren().setAll(vistaCitas);
 
-            // Mantener el botón activo
             actualizarBotonActivo(btnPacientes);
 
         } catch (IOException e) {
@@ -178,22 +162,18 @@ public class MainController {
     @FXML
     public void cambiarVistaAjustes(){
         if(Rol.getInstance().getRol() == 3){
-            mostrarError("No cuanta con el rol necesario para acceder a esta ");
+            mostrarError("No cuenta con el rol necesario para acceder a esta ");
         }else {
             try {
-                // Cargar solo la primera vez (cache)
                 if (ajustesRoot == null) {
-                    // Ajusta la ruta según tu estructura de resources
                     ajustesLoader = new FXMLLoader(getClass().getResource("/vista/Ajustes.fxml"));
                     ajustesRoot = ajustesLoader.load();
 
-                    // Si quieres pasar la referencia del MainController al controlador de ajustes:
                     Object ctrl = ajustesLoader.getController();
                     if (ctrl instanceof consultorio.controlador.AjustesController) {
                         ((consultorio.controlador.AjustesController) ctrl).setMainController(this);
                     }
 
-                    /* Hacer que la vista ocupe dtodo el contentArea */
                     if (ajustesRoot instanceof javafx.scene.layout.Region) {
                         javafx.scene.layout.Region region = (javafx.scene.layout.Region) ajustesRoot;
                         region.prefWidthProperty().bind(contentArea.widthProperty());
@@ -206,9 +186,8 @@ public class MainController {
                     }
                 }
 
-                // Reemplazar el contenido del contentArea por la vista de ajustes
                 contentArea.getChildren().setAll(ajustesRoot);
-                actualizarBotonActivo(btnAjustes); // o el botón que corresponda para Ajustes
+                actualizarBotonActivo(btnAjustes);
 
             } catch (NullPointerException npe) {
                 npe.printStackTrace();
@@ -229,13 +208,11 @@ public class MainController {
     }
 
     private void actualizarBotonActivo(Button botonActivo) {
-        // Restablecer todos los botones
         Button[] botones = {btnInicio, btnCitas, btnCalendario, btnPacientes, btnAjustes};
         for (Button boton : botones) {
             boton.getStyleClass().remove("nav-button-active");
         }
 
-        // Establecer el botón activo
         if (botonActivo != null) {
             botonActivo.getStyleClass().add("nav-button-active");
         }
@@ -248,7 +225,6 @@ public class MainController {
     @FXML
     private void cerrarSesion() {
         try {
-            // Aquí irá la lógica para volver al login
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/Loginview.fxml"));
             Parent root = (Parent) loader.load();
 

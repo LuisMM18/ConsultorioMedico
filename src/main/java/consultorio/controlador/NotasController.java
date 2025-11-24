@@ -46,16 +46,13 @@ public class NotasController {
 
         agregarBotonesAcciones();
 
-        // Datos de ejemplo
         listaNotas.addAll(
                 new Notas(1, "Seguimiento Juan", "Revisar presión arterial", LocalDate.now()),
                 new Notas(2, "Llamar laboratorio", "Preguntar resultados de sangre", LocalDate.now())
         );
 
-        // Lista filtrada
         FilteredList<Notas> filtrada = new FilteredList<>(listaNotas, p -> true);
 
-        // Filtro en tiempo real
         buscarNotaField.textProperty().addListener((obs, oldValue, newValue) -> {
             String filtro = (newValue == null) ? "" : newValue.toLowerCase();
             filtrada.setPredicate(nota -> {
@@ -70,7 +67,6 @@ public class NotasController {
     }
 
     //CARGAR NOTASSS
-    // Lo llamaremos desde PacientesViewController
     public void setCitaContext(int idCitaRef) {
         this.idCitaRef = idCitaRef;
         cargarNotasDesdeBD();
@@ -83,7 +79,7 @@ public class NotasController {
         List<Nota> notasBD = dao.getNotasPorCita(idCitaRef);
         for (Nota nBD : notasBD) {
             listaNotas.add(new Notas(
-                    nBD.getIdNotas(),        // este será el idNotas real de la BD
+                    nBD.getIdNotas(),
                     nBD.getTitulo(),
                     nBD.getTextoNota(),
                     nBD.getFechaNota()
